@@ -1,0 +1,27 @@
+{
+  "name": "servant-api",
+  "version": "0.1.0",
+  "description": "servant API",
+  "scripts": {
+    "start": "node src/server.js",
+    "test": "jest --verbose"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/TrentoCrowdAI/servant.git"
+  },
+  "author": "Jorge Ramírez",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/TrentoCrowdAI/servant/issues"
+  },
+  "homepage": "https://github.com/TrentoCrowdAI/servant#readme",
+  "dependencies": {
+    "body-parser": "^1.18.3",
+    "express": "^4.16.4",
+    "jest": "^24.1.0",
+    "node-fetch": "^2.3.0",
+    "pg": "^7.8.0",
+    "supertest": "^3.4.2"
+  }
+}
