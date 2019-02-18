@@ -8,14 +8,14 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/TrentoCrowdAI/servant.git"
+    "url": "git+https://github.com/TrentoCrowdAI/servant-api.git"
   },
   "author": "Jorge Ramírez",
   "license": "ISC",
   "bugs": {
-    "url": "https://github.com/TrentoCrowdAI/servant/issues"
+    "url": "https://github.com/TrentoCrowdAI/servant-api/issues"
   },
-  "homepage": "https://github.com/TrentoCrowdAI/servant#readme",
+  "homepage": "https://github.com/TrentoCrowdAI/servant-api#readme",
   "dependencies": {
     "body-parser": "^1.18.3",
     "express": "^4.16.4",
