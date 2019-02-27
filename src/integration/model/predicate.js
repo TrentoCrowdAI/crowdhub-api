@@ -1,11 +1,12 @@
 class Predicate {
     constructor(text) {
-        super();
+        if (typeof text !== 'string')
+            throw new Error("Invalid text parameter type!");
 
         let _text = text;
 
         this.setText = function (text) {
-            if(typeof text === 'string') {
+            if (typeof text === 'string') {
                 _text = text;
                 return true;
             }
@@ -13,7 +14,7 @@ class Predicate {
             return false;
         };
 
-        this.getText = function() {
+        this.getText = function () {
             return _text;
         }
     }
