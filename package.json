@@ -18,10 +18,12 @@
   "homepage": "https://github.com/TrentoCrowdAI/servant-api#readme",
   "dependencies": {
     "body-parser": "^1.18.3",
+    "boom": "^7.3.0",
     "express": "^4.16.4",
     "jest": "^24.1.0",
     "node-fetch": "^2.3.0",
     "pg": "^7.8.0",
+    "promise-retry": "^1.1.1",
     "supertest": "^3.4.2"
   }
 }
