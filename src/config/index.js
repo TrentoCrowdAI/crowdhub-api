@@ -1,7 +1,9 @@
 module.exports = {
   aws: {
     clientId: process.env.AWS_ACCESS_KEY_ID,
-    secret: process.env.AWS_SECRET_KEY
+    secret: process.env.AWS_SECRET_KEY,
+    region: process.env.AWS_REGIONAWS_REGION,
+    endpoint: process.env.AWS_ENDPOINT
   },
   db: {
     user: process.env.PGUSER,
