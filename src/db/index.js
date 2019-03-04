@@ -28,7 +28,7 @@ pool.on('error', (error, client) => {
 
 const TABLES = Object.freeze({
   Requester: 'requester',
-  Hit: 'hit',
+  Job: 'job',
   Item: 'item',
   Predicate: 'predicate'
 });

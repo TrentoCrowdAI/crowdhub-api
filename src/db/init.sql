@@ -11,7 +11,7 @@
 --	instructions,   // html/text content for the instructions of the task
 --	platform: <string> // to be defined better
 -- }
-CREATE TABLE hit (
+CREATE TABLE job (
   id bigserial NOT NULL,
   created_at timestamp,
   updated_at timestamp,
