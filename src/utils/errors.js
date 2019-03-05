@@ -8,7 +8,7 @@ const Boom = require('boom');
  * @returns {Error}
  */
 const createBusinessError = msg => {
-  var e = new Error(msg);
+  let e = new Error(msg);
   e.name = 'business';
   return e;
 };
