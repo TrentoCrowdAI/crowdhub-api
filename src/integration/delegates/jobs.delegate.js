@@ -2,7 +2,7 @@
 // any of the supported platforms. Also to implement any other 
 // functionality related to HITs.
 
-const jobsDao = require('../dao/jobs.dao');
+const jobsDao = require(__base + 'integration/dao/jobs.dao');
 const errHandler = require(__base + 'utils/errors');
 
 const publish = async () => {
