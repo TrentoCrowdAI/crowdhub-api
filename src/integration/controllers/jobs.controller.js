@@ -3,7 +3,7 @@
 
 const express = require("express");
 const Boom = require('boom');
-const jobs_delegate = require("../delegates/jobs.delegate");
+const jobsDelegate = require("../delegates/jobs.delegate");
 
 const router = express.Router();
 
@@ -14,8 +14,8 @@ const router = express.Router();
 router.post('/jobs', async (req, res) => {
     let job = req.body;
 
-    jobs_delegate.createJob(job).then((new_job) => {
-        res.json(new_job);
+    jobsDelegate.createJob(job).then((newJob) => {
+        res.json(newJob);
     }).catch((err) => {
         res.status(err.httpStatusCode).send(err.message);
     });
