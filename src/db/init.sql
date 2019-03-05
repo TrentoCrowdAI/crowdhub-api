@@ -18,5 +18,5 @@ CREATE TABLE job (
   deleted_at timestamp,
   id_requester bigint, -- to be NOT NULL
   data JSONB,
-  CONSTRAINT pk_requester PRIMARY KEY (id)
+  CONSTRAINT pk_job PRIMARY KEY (id)
 );
