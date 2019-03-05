@@ -1,9 +1,9 @@
 // this file exposes the logic implemented in jobs.delegate.js 
 // as services using express
 
-const express = require("express");
-const Boom = require('boom');
-const jobsDelegate = require("../delegates/jobs.delegate");
+const express = require('express');
+const jobsDelegate = require('../delegates/jobs.delegate');
+const errHandler = require(__base + 'utils/errors');
 
 const router = express.Router();
 
@@ -14,11 +14,13 @@ const router = express.Router();
 router.post('/jobs', async (req, res) => {
     let job = req.body;
 
-    jobsDelegate.createJob(job).then((newJob) => {
+    try{
+        let newJob = await jobsDelegate.createJob(job);
         res.json(newJob);
-    }).catch((err) => {
-        res.status(err.httpStatusCode).send(err.message);
-    });
+    }
+    catch(e){
+        throw errHandler.createServiceError(e);
+    }
 });
 
 // PUT /jobs/<job id>

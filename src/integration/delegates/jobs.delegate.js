@@ -2,35 +2,29 @@
 // any of the supported platforms. Also to implement any other 
 // functionality related to HITs.
 
-const jobsDao = require("../dao/jobs.dao");
+const jobsDao = require('../dao/jobs.dao');
+const errHandler = require(__base + 'utils/errors');
 
 const publish = async () => {
   // TODO
 };
 
 const createJob = async (job) => {
-  const error = new Error();
-  error.httpStatusCode = 400;
-
   if (!(job instanceof Object)) {
-    error.message = 'Job not defined!';
+    throw errHandler.createBusinessError('Job not defined!'); 
   }
-  else if (!(job.data instanceof Object)) {
-    error.message = 'Job data not defined!';
+  if (!(job.data instanceof Object)) {
+    throw errHandler.createBusinessError('Job data not defined!');
   }
-  else if (job.data.name === undefined) {
-    error.message = 'Job name not defined!';
+  if (job.data.name === undefined) {
+    throw errHandler.createBusinessError('Job name not defined!');
   }
-  else if (job.data.reward === undefined) {
-    error.message = 'Job reward not defined!';
+  if (job.data.reward === undefined) {
+    throw errHandler.createBusinessError('Job reward not defined!');
   }
-  else if (job.data.items_csv === undefined) {
-    error.message = 'Items CSV path not defined!';
+  if (job.data.items_csv === undefined) {
+    throw errHandler.createBusinessError('Items CSV path not defined!');
   }
-
-  //throw error only if necessary
-  if(error.message != "")
-    throw error;
 
   let newJob = await jobsDao.createJob(job);
   return newJob;
