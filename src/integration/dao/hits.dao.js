@@ -1,4 +1,0 @@
-// create
-// get
-// delete
-// update

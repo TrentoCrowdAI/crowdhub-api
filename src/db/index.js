@@ -14,7 +14,8 @@ let credentials = {
 if (config.db.url) {
   // if a db URL is provided, we use it.
   credentials = {
-    connectionString: config.db.url
+    connectionString: config.db.url,
+    ssl: true
   };
 }
 
@@ -28,7 +29,7 @@ pool.on('error', (error, client) => {
 
 const TABLES = Object.freeze({
   Requester: 'requester',
-  Hit: 'hit',
+  Job: 'job',
   Item: 'item',
   Predicate: 'predicate'
 });
