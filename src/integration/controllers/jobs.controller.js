@@ -2,7 +2,7 @@
 // as services using express
 
 const express = require('express');
-const jobsDelegate = require('../delegates/jobs.delegate');
+const jobsDelegate = require(__base + 'integration/delegates/jobs.delegate');
 
 const router = express.Router();
 
