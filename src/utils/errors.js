@@ -1,3 +1,5 @@
+const Boom = require('boom');
+
 /**
  * Returns a business error. The name property
  * of the error object is set to "business".
