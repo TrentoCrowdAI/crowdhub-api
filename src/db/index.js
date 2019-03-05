@@ -14,7 +14,8 @@ let credentials = {
 if (config.db.url) {
   // if a db URL is provided, we use it.
   credentials = {
-    connectionString: config.db.url
+    connectionString: config.db.url,
+    ssl: true
   };
 }
 
