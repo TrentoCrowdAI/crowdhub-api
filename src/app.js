@@ -9,6 +9,16 @@ const app = express();
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 
+// health check (public endpoint)
+app.get('/', (req, res) => {
+  res.json({ msg: 'Hello world!' });
+});
+
+
+// define routes here
+
+
+
 app.use((err, req, res, next) => {
   console.error('Error', error);
 
@@ -20,11 +30,6 @@ app.use((err, req, res, next) => {
     error = Boom.badImplementation();
   }
   res.status(error.output.statusCode).send(error.output);
-});
-
-// health check (public endpoint)
-app.get('/', (req, res) => {
-  res.json({ msg: 'Hello world!' });
 });
 
 module.exports = app;
