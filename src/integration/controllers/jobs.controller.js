@@ -14,7 +14,7 @@ router.post('/jobs', async (req, res, next) => {
   try {
     let job = req.body;
     let newJob = await jobsDelegate.createJob(job);
-    res.json(newJob);
+    res.status(201).json(newJob);
   } catch (e) {
     // we delegate to the error-handling middleware
     next(e);
