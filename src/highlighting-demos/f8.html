@@ -3,6 +3,9 @@
     right text area.
 
     This code is based on the sample Jorge sample.
+
+    Description: this code is used to let the user select phrases in the text highlighting them
+    Every time the user highlights something the value of a hidden textarea get's updated to include or exclude that highlighted part.
 -->
 
 <!-- CML -->
@@ -27,7 +30,7 @@
 <cml:textarea label="Explain your decision." name="decision_explaination" validates="required" />
 
 <!-- Hidden field -->
-<cml:textarea label="If you were to select one or more sentences (up to 3) most useful for your decision, which ones would you select?" validates="required" name="highlighted_parts disable-manual"/>
+<cml:textarea label="If you were to select one or more sentences (up to 3) most useful for your decision, which ones would you select?" validates="required" name="highlighted_parts"/>
 
 
 <!-- Javscript -->
@@ -50,12 +53,13 @@ document.addEvent('domready', function() {
 
         });
     } catch (e) {
-        console.log('ERR: ' + e)
+        console.error(e);
     }
 })
 
 
 function onLibrariesLoaded($) {
+    // Utility function used later to hide the validation error popup
     $.fn.focusWithoutScrolling = function() {
         var x = window.scrollX,
             y = window.scrollY;
@@ -64,64 +68,85 @@ function onLibrariesLoaded($) {
         return this;
     };
 
-    var items = $(".marker-target p");
+    // Handles to the objects created by the highlight library.
+    // There is a handle for every paper.
     var handlers = [];
 
-    var updatePattern = function(marks) {
-        $el = $(marks.el).parents().filter(".cml").children().find(".highlighted_parts");
+    // Initialize the highlite libraries for every paper and setups
+    // listeners to clear the highlighted parts
+    function initialize () {
+      var papers = $(".marker-target p");
+      for (var i = 0; i < papers.length; i++) {
+          var paper = papers[i];
+          var id = $(paper).parent().parent().attr('id');
+
+          var hand = new TextHighlighter(paper, {
+              onAfterHighlight: afterHighlight
+          });
+
+          handlers[id] = hand;
+      }
+
+      setupClearSingleHighlight();
+      setupClearAllHighlightsButton();
+    }
+
+    initialize();
+
+    function afterHighlight(range, normalizedHighlights, timestamp) {
+
+        var id = $(range.commonAncestorContainer).parent().parent().attr('id');
+        updateHiddenField(handlers[id]);
+
+        hideValidationError(range);
+    };
+
+    // Add the listener to handle a click on an highlighted part (to remove it)
+    function setupClearSingleHighlight () {
+      $(".marker-target p").on("click", ".highlighted", function(e) {
+          var $el = $(e.currentTarget);
+          var id = $el.parent().parent().parent().attr('id');
+          handlers[id].removeHighlights($el[0]);
+
+          updateHiddenField(handlers[id]);
+      });
+    }
+
+    // Add the listneer for the button to clear all the highlights of a paper
+    function setupClearAllHighlightsButton() {
+      $(".opt-clear").click(function(e) {
+          e.preventDefault();
+          var id = $(e.currentTarget).parent().parent().parent().attr('id');
+          handlers[id].removeHighlights();
+
+          updateHiddenField(handlers[id]);
+      });
+    }
+
+    function updateHiddenField(marks) {
+        $hiddenField = $(marks.el).parents().filter(".cml").children().find(".highlighted_parts");
 
         var pattern = "";
         if (marks.getHighlights().length > 0) {
             pattern = marks.serializeHighlights();
         }
 
-        $el.val(pattern);
+        $hiddenField.val(pattern);
 
     };
 
-    var afterHighlight = function(range, normalizedHighlights, timestamp) {
-
-        var id = $(range.commonAncestorContainer).parent().parent().attr('id');
-        updatePattern(handlers[id]);
-
-        $els = $(range.commonAncestorContainer).parents().filter(".cml").children();
+    function hideValidationError (marks) {
+        $els = $(marks.commonAncestorContainer).parents().filter(".cml").children();
+        $hiddenField = $els.parents().filter(".cml").children().find(".highlighted_parts");
 
         // This is just to make the error message dissapear when selecting
         // the pattern after a validation error
         if ($els.find(".highlighted_parts").hasClass("validation-failed")) {
-            $el.focusWithoutScrolling();
+            $hiddenField.focusWithoutScrolling();
             $els.filter(".cml").children().find(".excl_crit").focusWithoutScrolling();
         }
-    };
-
-    for (var i = 0; i < items.length; i++) {
-        var item = items[i];
-        var id = $(item).parent().parent().attr('id');
-
-        var hand = new TextHighlighter(item, {
-            onAfterHighlight: afterHighlight
-        });
-
-        handlers[id] = hand;
-
     }
 
-    $(".marker-target p").on("click", ".highlighted", function(e) {
-        var $el = $(e.currentTarget);
-        var id = $el.parent().parent().parent().attr('id');
-        handlers[id].removeHighlights($el[0]);
-
-        updatePattern(handlers[id]);
-    });
-
-    $(".opt-clear").click(function(e) {
-        e.preventDefault();
-        var id = $(e.currentTarget).parent().parent().parent().attr('id');
-        handlers[id].removeHighlights();
-
-        updatePattern(handlers[id]);
-
-    });
 }
 </script>
 
