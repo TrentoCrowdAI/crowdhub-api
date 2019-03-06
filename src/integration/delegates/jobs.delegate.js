@@ -5,13 +5,13 @@
 const jobsDao = require(__base + 'integration/dao/jobs.dao');
 const errHandler = require(__base + 'utils/errors');
 
-const publish = async () => {
-  // TODO
+const publish = async (job) => {
+  //TODO
 };
 
 const createJob = async (job) => {
   if (!(job instanceof Object)) {
-    throw errHandler.createBusinessError('Job not defined!'); 
+    throw errHandler.createBusinessError('Job not defined!');
   }
   if (!(job.data instanceof Object)) {
     throw errHandler.createBusinessError('Job data not defined!');
@@ -30,7 +30,22 @@ const createJob = async (job) => {
   return newJob;
 };
 
+const getJob = async (jobId) => {
+  if (typeof jobId != "number") {
+    throw errHandler.createBusinessError('Job id is of an invalid type!');
+  }
+
+  try {
+    let job = await jobsDao.getJob(jobId);
+    return job;
+  }
+  catch (e) {
+    throw errHandler.createBusinessError('Job id does not exist!');
+  }
+};
+
 module.exports = {
   publish,
-  createJob
+  createJob,
+  getJob
 };
