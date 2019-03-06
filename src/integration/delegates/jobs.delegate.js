@@ -5,8 +5,11 @@
 const jobsDao = require(__base + 'integration/dao/jobs.dao');
 const errHandler = require(__base + 'utils/errors');
 
+const f8 = require(__base + 'integration/platforms/f8');
+
 const publish = async (job) => {
-  //TODO
+  //f8 publishing
+  f8.publish(job);
 };
 
 const createJob = async (job) => {
