@@ -1,0 +1,232 @@
+<!--
+    Toloka has 3 different text areas into which put the HTML, JS and CSS. You need to put each section in the 
+    right text area.
+
+    You also need to specify js libraries outside the HTML (in the UI you need to click the settings gear icon and
+    add the scripts url). The scripts needed are:
+    - https://code.jquery.com/jquery-3.3.1.min.js
+    - https://cdnjs.cloudflare.com/ajax/libs/texthighlighter/1.2.0/TextHighlighter.min.js
+
+    
+    How the highlight works?
+    In this paltform, simply updating the form field when the user highlights something doesn't work. Probably
+    some javascript of Toloka stores something based on events and if we update the textarea with jQuery, the
+    validate method of the Task subclass is still called with the empty text area.
+    One of the solutions is to copy the textarea value when the validate method is called.
+
+    What about the task id?
+    Toloka puts multiple tasks on the same webpage, giving the same names to the form inputs. To distinguish between
+    them, the code below uses a task id found in the Task model of Toloka.
+-->
+
+<!-- Start of the HTML section -->
+<div class="paper-task">
+    <!-- Paper -->
+    <div class="paper-container">
+        <h2>{{paper_title}}</h2>
+        <p class="paper-text">{{paper}}</p>
+            
+        <div>
+            <button type="button" class="clear-all-highlights-button">Clear highlights</button> 
+            <small class="small">Select from the text above to highlight the part that supports your decision.</small>
+        </div>
+    </div>
+
+    <!-- About older adults? -->
+    <div>
+        <p>Does the paper describe a study that involves older adults?</p>
+             
+        
+        {{field type="radio" name="about_older_adults" label="Yes" value="yes" hotkey="1"}}
+        {{field type="radio" name="about_older_adults" label="No" value="no" hotkey="2"}}
+        {{field type="radio" name="about_older_adults" label="Maybe" value="maybe" hotkey="3"}}
+    </div>
+       
+    <!-- Decision explaination -->
+    <div>
+        <p>Explain your decision</p>
+        {{field type="textarea" name="decision_explaination"}}
+    </div>
+        
+    <!-- Highlight text -->
+    <div class="highlighted_parts_container">
+        <p>If you were to select one or more sentences (up to 3) most useful for your decision, which ones would you select?</p>
+        <p>In the abstract, select the part of the text that motivated your decision. The resulting text will be highlighted.</p>
+            
+        <!-- Hidden field that contains the higlighted parts of paper -->
+        {{field type="textarea" name="highlighted_parts"}}
+    </div>
+</div>
+<!-- End of the HTML section -->
+
+<!-- Start of the JS section -->
+<script>
+exports.Task = extend(TolokaHandlebarsTask, function (options) {
+    TolokaHandlebarsTask.call(this, options);
+}, {
+
+    onRender: function() {
+        const that = this;
+
+        // When onRender is called, the question and the input fields are not attached to the DOM yet, so
+        // we need to initialize the highlight library in the next loop
+        setTimeout(function () {
+            initialize(that.getTask().id, that.getDOMElement());
+        });
+    },
+
+    validate: function(solution) {
+        // Copy the highlighted text on the solution object
+        const id = this.getTask().id;
+        solution.output_values.highlighted_parts = updateHiddenField(id, false);
+
+        // then delegate the validation logic to Toloka
+        return TolokaHandlebarsTask.prototype.validate.apply(this, arguments);
+    },
+
+});
+
+    
+const highlighters = {};
+
+function initialize (taskId, DOMElement) {
+    if (highlighters[taskId]) {
+        // Toloka updates the same page when the performer completes a HIT, so we need to clear
+        // the last instance of the library
+        highlighters[taskId].destroy();
+        console.log('old highlighter destroyed');
+    }
+
+    const paperContainer = $(DOMElement).find('.paper-task');
+
+    setupHighlighter(taskId, paperContainer);
+
+    setupClearAllHighlightsButton();
+    setupClearSingleHighlight();
+}
+    
+function setupHighlighter (id, container) {
+    const $container = $(container);
+
+    // Assign an id
+    $container.attr('data-paper-id', id);
+    
+    const paperText = $container.find('.paper-text')[0];
+    highlighters[id] = new TextHighlighter(paperText, {
+        onAfterHighlight: function (range) {
+            updateHiddenField(id, true);
+        }
+    });   
+}
+    
+function updateHiddenField (id, hideValidationErrorPopup) {
+    if (hideValidationErrorPopup){
+        $('div.highlighted_parts_container .popup').removeClass('popup_visible');
+    }
+
+
+    const highlithter = highlighters[id];
+    const $hiddenField = $('div.paper-task[data-paper-id=' + id + '] textarea[name=highlighted_parts]');
+
+    let json = "";
+    if (highlithter.getHighlights().length > 0) {
+        json = highlithter.serializeHighlights();
+    }
+        
+    $hiddenField.val(json);
+    return json;
+}
+    
+function setupClearAllHighlightsButton () {
+    $('button.clear-all-highlights-button').on('click', function (e) {
+        e.preventDefault();
+            
+        const id = $(e.currentTarget).parent().parent().parent().attr('data-paper-id');
+            
+        highlighters[id].removeHighlights();
+
+        updateHiddenField(id, true);
+    });
+}
+   
+function setupClearSingleHighlight () {
+    $('.paper-container p').on('click', '.highlighted', function (e) {
+        const $target = $(e.currentTarget);
+        const id = $target.parent().parent().parent().attr('data-paper-id');
+
+        highlighters[id].removeHighlights($target[0]);
+            
+        updateHiddenField(id, true);
+    });
+}
+
+// utility function given by F8
+function extend(ParentClass, constructorFunction, prototypeHash) {
+  constructorFunction = constructorFunction || function () {};
+  prototypeHash = prototypeHash || {};
+  if (ParentClass) {
+    constructorFunction.prototype = Object.create(ParentClass.prototype);
+  }
+  for (var i in prototypeHash) {
+    constructorFunction.prototype[i] = prototypeHash[i];
+  }
+  return constructorFunction;
+}
+</script>
+<!-- End of the JS section -->
+
+<!-- Start of the CSS section -->
+<style>
+    /*
+        Instead of hiding the hidden text area with the 'hidden' attribute, use the css to make it
+        invisible. Doing this we can use the validation provided by AMT.
+    */
+    textarea.textarea__textarea[name=highlighted_parts] {
+        height: 0;
+        width: 0;
+        padding: 0;
+        overflow: hidden;
+        border: 0;
+        resize: none;
+        outline: none !important;
+        background: transparent;
+        color: transparent;
+  
+        box-shadow: none;
+        -webkit-box-shadow: none;
+        -moz-box-shadow: none;    
+    }
+    
+    /*
+        Little flag near the highlighted portion of text to clear the highlight
+    */
+    .highlighted:hover:before {
+        color: white;
+        content: "×";
+        position: absolute;
+        padding-left: 2px;
+        padding-right: 2px;
+        background: black;
+        padding-left: 2px;
+    }
+
+    .paper-container {
+        border: 1px solid black;
+        padding: 1em;
+    }
+
+    .paper-text {
+        cursor: copy;
+    }
+
+    textarea {
+        width: 100%;
+    }
+
+    
+    .field_type_textarea {
+        width: 100%;
+    }
+
+</style>
+<!-- End of the CSS section -->
