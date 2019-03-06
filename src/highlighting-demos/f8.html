@@ -1,0 +1,167 @@
+<!--
+	F8 has 3 different text areas into which put the HTML, JS and CSS. You need to put each section in the 
+    right text area.
+
+    This code is based on the sample Jorge sample.
+-->
+
+<!-- CML -->
+<div class="html-element-wrapper marker-target">
+  <h2>{{title}}</h2>
+  <p>{{abstract}}</p>
+
+  <div>
+  	<button class="opt-clear">Clear highlights</button> 
+    <small class="small">Select from the text above to highlight the part that supports your decision.</small>
+  </div>
+</div>
+
+<!-- About older adults? -->
+<cml:radios label="Does the paper describe a study that involves older adults?" validates="required" name="about_older_adults">
+  <cml:radio label="Yes"/>
+  <cml:radio label="No" />
+  <cml:radio label="Maybe" />
+</cml:radios>
+
+<!-- Explain decision-->
+<cml:textarea label="Explain your decision." name="decision_explaination" validates="required" />
+
+<!-- Hidden field -->
+<cml:textarea label="If you were to select one or more sentences (up to 3) most useful for your decision, which ones would you select?" validates="required" name="highlighted_parts disable-manual"/>
+
+
+<!-- Javscript -->
+<script type="text/javascript">
+document.addEvent('domready', function() {
+    try {
+        require({
+            paths: {
+                "jquery-ui": "https://code.jquery.com/ui/1.11.3/jquery-ui.min",
+                "TextHighlighter": "https://cdnjs.cloudflare.com/ajax/libs/texthighlighter/1.2.0/TextHighlighter.min"
+            },
+            map: {
+                "*": {
+                    "jquery": "jquery-noconflict"
+                }
+            }
+        }, ["jquery-noconflict", "jquery-ui", "TextHighlighter"], function($) {
+
+        	onLibrariesLoaded($);
+
+        });
+    } catch (e) {
+        console.log('ERR: ' + e)
+    }
+})
+
+
+function onLibrariesLoaded($) {
+    $.fn.focusWithoutScrolling = function() {
+        var x = window.scrollX,
+            y = window.scrollY;
+        this.focus();
+        window.scrollTo(x, y);
+        return this;
+    };
+
+    var items = $(".marker-target p");
+    var handlers = [];
+
+    var updatePattern = function(marks) {
+        $el = $(marks.el).parents().filter(".cml").children().find(".highlighted_parts");
+
+        var pattern = "";
+        if (marks.getHighlights().length > 0) {
+            pattern = marks.serializeHighlights();
+        }
+
+        $el.val(pattern);
+
+    };
+
+    var afterHighlight = function(range, normalizedHighlights, timestamp) {
+
+        var id = $(range.commonAncestorContainer).parent().parent().attr('id');
+        updatePattern(handlers[id]);
+
+        $els = $(range.commonAncestorContainer).parents().filter(".cml").children();
+
+        // This is just to make the error message dissapear when selecting
+        // the pattern after a validation error
+        if ($els.find(".highlighted_parts").hasClass("validation-failed")) {
+            $el.focusWithoutScrolling();
+            $els.filter(".cml").children().find(".excl_crit").focusWithoutScrolling();
+        }
+    };
+
+    for (var i = 0; i < items.length; i++) {
+        var item = items[i];
+        var id = $(item).parent().parent().attr('id');
+
+        var hand = new TextHighlighter(item, {
+            onAfterHighlight: afterHighlight
+        });
+
+        handlers[id] = hand;
+
+    }
+
+    $(".marker-target p").on("click", ".highlighted", function(e) {
+        var $el = $(e.currentTarget);
+        var id = $el.parent().parent().parent().attr('id');
+        handlers[id].removeHighlights($el[0]);
+
+        updatePattern(handlers[id]);
+    });
+
+    $(".opt-clear").click(function(e) {
+        e.preventDefault();
+        var id = $(e.currentTarget).parent().parent().parent().attr('id');
+        handlers[id].removeHighlights();
+
+        updatePattern(handlers[id]);
+
+    });
+}
+</script>
+
+<style>
+
+
+.marker-target p {
+  cursor: copy;
+}
+
+.disable-manual .cml_row .reason_pattern, .disable-manual .cml_row .highlighted_parts:focus {
+  height: 0;
+  width: 0;
+  overflow: auto;
+  border: 0px;
+  resize: none;
+  outline: none !important;
+  background: transparent;
+  color: transparent;
+  
+  box-shadow: none;
+  -webkit-box-shadow: none;
+  -moz-box-shadow: none;  
+}
+
+.disable-manual p {
+  margin-top: -30px;
+}
+
+.highlighted {
+  cursor: pointer;
+}
+
+.highlighted:hover:before {
+  color: white;
+  content: "×";
+  position: absolute;
+  padding-left: 2px;
+  padding-right: 2px;
+  background: black;
+  padding-left: 2px;
+}
+</style>
