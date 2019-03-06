@@ -1,0 +1,182 @@
+<!--
+	F8 has 3 different text areas into which put the HTML, JS and CSS. You need to put each section in the 
+  right text area.
+
+  Description: this code is used to let the user select phrases in the text using some checkboxes.
+  Every time the user clicks on a checkbox the value of a hidden textarea get's updated to include or
+  exclude that phrase.
+-->
+
+<!-- CML -->
+<div class="html-element-wrapper">
+  <h2>{{title}}</h2>
+  <p class="paper-abstract">{{abstract}}</p>
+
+  <div>
+  	<button class="opt-clear">Clear highlights</button> 
+    <small class="small">Select from the text above to highlight the part that supports your decision.</small>
+  </div>
+</div>
+
+<!-- About older adults? -->
+<cml:radios label="Does the paper describe a study that involves older adults?" validates="required" name="about_older_adults">
+  <cml:radio label="Yes"/>
+  <cml:radio label="No" />
+  <cml:radio label="Maybe" />
+</cml:radios>
+
+<!-- Explain decision-->
+<cml:textarea label="Explain your decision." name="decision_explaination" validates="required" />
+
+<!-- Hidden field -->
+<cml:textarea label="If you were to select one or more sentences (up to 3) most useful for your decision, which ones would you select?" validates="required" name="highlighted_parts"/>
+<!-- End of CML -->
+
+<!-- Javscript -->
+<script type="text/javascript">
+
+// Code provided by F8 to load jquery
+document.addEvent('domready', function() {
+    try {
+        require({
+            paths: {
+                "jquery-ui": "https://code.jquery.com/ui/1.11.3/jquery-ui.min"
+            },
+            map: {
+                "*": {
+                    "jquery": "jquery-noconflict"
+                }
+            }
+        }, ["jquery-noconflict", "jquery-ui"], function($) {
+
+        	onLibrariesLoaded($);
+
+        });
+    } catch (e) {
+        console.error(e);
+    }
+})
+
+
+function onLibrariesLoaded($) {
+
+    // Utility function used later to hide the validation error popup
+    $.fn.focusWithoutScrolling = function() {
+        var x = window.scrollX,
+            y = window.scrollY;
+        this.focus();
+        window.scrollTo(x, y);
+        return this;
+    };
+
+    // Calls createCheckboxes on every. paper
+    function initialize () {
+      var papers = $("p.paper-abstract");
+
+      for (var i = 0; i < papers.length; i++) {
+        var paper = papers[i];
+        var id = $(paper).parent().parent().attr('id');
+
+        createCheckboxes(paper, id);
+      }
+    }
+
+    initialize();
+
+    // Gets all the papers in the page and replace their abstract with inputs and span that contain checkboxes and
+    // phrases. It then setups a listener for each paper to handle the user click
+    function createCheckboxes (paper, id) {
+      var $paper = $(paper);
+      var text = $paper.text();
+
+      // phrases of the abstract of the paper
+      var phrases = text.split('.');
+
+      // wheter or not the phrase is selected
+      var selected = [];
+
+      // clear paper html
+      $paper.html('');
+
+      // create a checkbox and a span for every phrase
+      for (var i = 0; i < phrases.length; i++) {
+          var phrase = phrases[i];
+          selected[i] = false;
+
+          var checkbox = $('<input type="checkbox" data-index=' + i + '><span>' + phrase + '.</span> ');
+          $paper.append(checkbox);
+      }
+
+      // listen for the user click on the checkbox
+      $paper.find('input[type=checkbox]').on('click', function (e) {
+          var phraseI = parseInt($(e.target).attr('data-index'));
+
+          selected[phraseI] = !selected[phraseI];
+
+          updateChecked(id, phrases, selected);
+      });
+    }
+
+    // Updates the hidden text area
+    function updateChecked (id, phrases, selected) {
+      var selectedPhrases = filterSelectedPhrases(phrases, selected);
+
+      var $rootPaper = $('#' + id);
+      var $hiddenField = $rootPaper.find("textarea.highlighted_parts");
+
+      if (selectedPhrases.length > 0) {
+          $hiddenField.val(JSON.stringify(selectedPhrases));
+
+          hideValidationError($rootPaper, $hiddenField);
+      } else {
+          $hiddenField.val("");
+      }
+    }
+
+    function filterSelectedPhrases(phrases, selected) {
+        return phrases.filter(function (phrase, index) {
+            return selected[index];
+        });
+    }
+
+    function hideValidationError($rootPaper, $hiddenField) {
+        if ($rootPaper.find(".highlighted_parts").hasClass("validation-failed")) {
+            $hiddenField.focusWithoutScrolling();
+            $rootPaper.filter(".cml").children().find(".excl_crit").focusWithoutScrolling();
+        }
+    }
+}
+</script>
+
+<!-- CSS -->
+<style>
+
+.paper-abstract input[type=checkbox] {
+  margin: 0 8px;
+}
+
+.paper-abstract input[type=checkbox]:checked + span {
+  background-color: rgb(255, 255, 123);
+}
+
+
+.disable-manual .cml_row .reason_pattern, .disable-manual .cml_row .highlighted_parts:focus {
+  height: 0;
+  width: 0;
+  overflow: auto;
+  border: 0px;
+  resize: none;
+  outline: none !important;
+  background: transparent;
+  color: transparent;
+  
+  box-shadow: none;
+  -webkit-box-shadow: none;
+  -moz-box-shadow: none;  
+}
+
+.disable-manual p {
+  margin-top: -30px;
+}
+
+</style>
