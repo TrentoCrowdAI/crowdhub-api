@@ -1,4 +1,5 @@
 const fetch = require('node-fetch');
+const querystring = require('querystring');
 
 const config = require(__base + 'config/index');
 
@@ -13,6 +14,11 @@ const publish = async (job) => {
     //recognise gold items
     await convertGoldQuestions(job);
 
+    //set the CML of the job
+    job = await updateJobCML(job);
+
+    console.log(job);
+
     return job;
 };
 
@@ -20,12 +26,15 @@ const createNewJob = async (job) => {
     let url = config.f8.baseEndpoint + 'jobs.json?key=' + config.f8.apiKey;
 
     //TODO: add more info
-    let body = 'job[title]=' + job.data.name;
+    let newJob = {
+        'job[title]': job.data.name
+    };
+    let body = querystring.stringify(newJob);
 
     let res = await fetch(url, {
         method: 'post',
         body: body,
-        headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+        headers: { 'Content-Type': 'application/x-www-form-urlencoded' }
     });
     let json = await res.json();
 
@@ -62,7 +71,23 @@ const updateJobInfo = async (job) => {
 };
 
 const updateJobCML = async (job) => {
-    //TODO
+    let url = config.f8.baseEndpoint + `jobs/${job.data.platform.f8.id}.json?key=${config.f8.apiKey}`;
+
+    let data = {
+        'job[cml]': job.data.design
+    };
+    let body = querystring.stringify(data);
+
+    let res = await fetch(url, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+        body: body
+    });
+
+    let json = await res.json();
+    job.data.platform.f8 = json;
+
+    return job;
 };
 
 const convertGoldQuestions = async (job) => {
