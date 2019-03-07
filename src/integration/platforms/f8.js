@@ -1,15 +1,26 @@
 const fetch = require('node-fetch');
+const fs = require('fs');
+
 const config = require(__base + 'config/index');
 
 const publish = async (job) => {
     job = await createNewJob(job);
-    console.log(job);
+
+    //add items
+    job = await addCsvItems(job, job.data.items_csv);
+
+    //add gold items
+    job = await addCsvItems(job, job.data.items_gold_csv);
+    //recognise gold items
+    await convertGoldQuestions(job);
 
     return job;
 };
 
 const createNewJob = async (job) => {
     let url = config.f8.baseEndpoint + 'jobs.json?key=' + config.f8.apiKey;
+
+    //TODO: add more info
     let body = 'job[title]=' + job.data.name;
 
     let res = await fetch(url, {
@@ -19,22 +30,31 @@ const createNewJob = async (job) => {
     });
     let json = await res.json();
 
+    if (job.data.platform === undefined)
+        job.data.platform = {};
+
     job.data.platform.f8 = json;
-    
+
     return job;
 };
 
-const addCsvItems = async (job) => {
-    let itemsCsv;
-    let goldItemsCsv;
+const addCsvItems = async (job, csvFile) => {
+    let url = config.f8.baseEndpoint + `jobs/${job.data.platform.f8.id}/upload.json?key=${config.f8.apiKey}&force=true`;
 
-    fetch(url, {
-        method: 'post',
-        body: JSON.stringify(body),
-        headers: { 'Content-Type': 'text/csv' },
-    })
-        .then(res => res.json())
-        .then(json => console.log(json));
+    const csvData = fs.readFileSync(csvFile, 'utf-8');
+
+    let res = await fetch(url, {
+        method: 'PUT',
+        headers: {
+            'Content-Type': 'text/csv'
+        },
+        body: csvData
+    });
+
+    let json = await res.json();
+    job.data.platform.f8 = json;
+
+    return job;
 };
 
 const updateJobInfo = async (job) => {
@@ -43,6 +63,13 @@ const updateJobInfo = async (job) => {
 
 const updateJobCML = async (job) => {
     //TODO
+};
+
+const convertGoldQuestions = async (job) => {
+    let url = config.f8.baseEndpoint + `jobs/${job.data.platform.f8.id}/gold.json?key=${config.f8.apiKey}`;
+    await fetch(url, {
+        method: 'PUT'
+    });
 };
 
 module.exports = {
