@@ -1,5 +1,4 @@
 const fetch = require('node-fetch');
-const fs = require('fs');
 
 const config = require(__base + 'config/index');
 
@@ -41,7 +40,8 @@ const createNewJob = async (job) => {
 const addCsvItems = async (job, csvFile) => {
     let url = config.f8.baseEndpoint + `jobs/${job.data.platform.f8.id}/upload.json?key=${config.f8.apiKey}&force=true`;
 
-    const csvData = fs.readFileSync(csvFile, 'utf-8');
+    let csvReq = await fetch(csvFile);
+    let csvData = await csvReq.text();
 
     let res = await fetch(url, {
         method: 'PUT',
