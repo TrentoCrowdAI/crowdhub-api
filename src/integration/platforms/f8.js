@@ -45,6 +45,10 @@ const createNewJob = async (job) => {
         body: body,
         headers: { 'Content-Type': 'application/x-www-form-urlencoded' }
     });
+
+    if(res.status !== 200)
+        throw new Error('F8 Error: Not able to create a new Job!');
+
     let json = await res.json();
 
     if (job.data.platform === undefined)
@@ -74,6 +78,9 @@ const addCsvItems = async (job, csvFile) => {
         body: csvData
     });
 
+    if(res.status !== 200)
+        throw new Error('F8 Error: Not able to add CSV items to the Job!');
+
     let json = await res.json();
     job.data.platform.f8 = json;
 
@@ -97,6 +104,9 @@ const updateJobCML = async (job) => {
         headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
         body: body
     });
+
+    if(res.status !== 200)
+        throw new Error('F8 Error: Not able to update the CML of the Job!');
 
     let json = await res.json();
     job.data.platform.f8 = json;
@@ -124,6 +134,9 @@ const updateJobSpec = async (job) => {
         body: body
     });
 
+    if(res.status !== 200)
+        throw new Error('F8 Error: Not able to update the payment specific of the Job!');
+
     let json = await res.json();
     job.data.platform.f8 = json;
 
@@ -136,9 +149,12 @@ const updateJobSpec = async (job) => {
  */
 const convertGoldQuestions = async (job) => {
     let url = config.f8.baseEndpoint + `jobs/${job.data.platform.f8.id}/gold.json?key=${config.f8.apiKey}`;
-    await fetch(url, {
+    let res = await fetch(url, {
         method: 'PUT'
     });
+
+    if(res.status !== 200)
+        throw new Error('F8 Error: Not able to convert the Gold Questions of the Job!');
 };
 
 module.exports = {

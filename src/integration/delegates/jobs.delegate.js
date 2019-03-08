@@ -8,12 +8,16 @@ const errHandler = require(__base + 'utils/errors');
 const f8 = require(__base + 'integration/platforms/f8');
 
 const publish = async (job) => {
-  //f8 publishing
-  job = await f8.publish(job);
+  try {
+    //f8 publishing
+    job = await f8.publish(job);
 
-  //update job with f8 info
-  job = await jobsDao.updateJob(job);
-
+    //update job with f8 info
+    job = await jobsDao.updateJob(job);
+  }
+  catch (e) {
+    throw errHandler.createBusinessError(e.message);
+  }
 
   return job;
 };
@@ -49,7 +53,7 @@ const getJob = async (jobId) => {
     return job;
   }
   catch (e) {
-    throw errHandler.createBusinessError('Job id does not exist!');
+    throw errHandler.createBusinessNotFoundError('Job id does not exist!');
   }
 };
 
