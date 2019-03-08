@@ -44,5 +44,6 @@ const createServiceError = e => {
 
 module.exports = {
   createBusinessError,
+  createBusinessNotFoundError,
   createServiceError
 };
