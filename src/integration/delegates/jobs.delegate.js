@@ -48,13 +48,12 @@ const getJob = async (jobId) => {
     throw errHandler.createBusinessError('Job id is of an invalid type!');
   }
 
-  try {
-    let job = await jobsDao.getJob(jobId);
-    return job;
-  }
-  catch (e) {
+  let job = await jobsDao.getJob(jobId);
+
+  if (!job)
     throw errHandler.createBusinessNotFoundError('Job id does not exist!');
-  }
+
+  return job;
 };
 
 module.exports = {
