@@ -9,7 +9,10 @@ const f8 = require(__base + 'integration/platforms/f8');
 
 const publish = async (job) => {
   //f8 publishing
-  f8.publish(job);
+  job = await f8.publish(job);
+
+  //update job with f8 info
+  job = await jobsDao.updateJob(job);
 };
 
 const createJob = async (job) => {
