@@ -44,6 +44,7 @@ const createJob = async (job) => {
 };
 
 const getJob = async (jobId) => {
+  jobId = parseInt(jobId);
   if (typeof jobId != "number" || isNaN(jobId)) {
     throw errHandler.createBusinessError('Job id is of an invalid type!');
   }
@@ -56,8 +57,23 @@ const getJob = async (jobId) => {
   return job;
 };
 
+const deleteJob = async (jobId) => {
+  jobId = parseInt(jobId);
+  if (typeof jobId != "number" || isNaN(jobId)) {
+    throw errHandler.createBusinessError('Job id is of an invalid type!');
+  }
+
+  let job = await jobsDao.deleteJob(jobId);
+
+  if (!job)
+    throw errHandler.createBusinessNotFoundError('Job id does not exist!');
+
+  return job;
+};
+
 module.exports = {
   publish,
   createJob,
-  getJob
+  getJob,
+  deleteJob
 };

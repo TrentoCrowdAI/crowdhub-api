@@ -27,7 +27,7 @@ router.post('/jobs', async (req, res, next) => {
 // POST   /jobs/<job id>/publish
 router.post('/jobs/:id/publish', async (req, res, next) => {
     try {
-        let id = parseInt(req.params.id);
+        let id = req.params.id;
         let job = await jobsDelegate.getJob(id);
 
         let pubRes = await jobsDelegate.publish(job);
