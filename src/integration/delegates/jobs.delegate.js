@@ -13,6 +13,9 @@ const publish = async (job) => {
 
   //update job with f8 info
   job = await jobsDao.updateJob(job);
+
+
+  return job;
 };
 
 const createJob = async (job) => {
@@ -37,7 +40,7 @@ const createJob = async (job) => {
 };
 
 const getJob = async (jobId) => {
-  if (typeof jobId != "number") {
+  if (typeof jobId != "number" || isNaN(jobId)) {
     throw errHandler.createBusinessError('Job id is of an invalid type!');
   }
 
