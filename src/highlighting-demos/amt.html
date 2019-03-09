@@ -1,0 +1,298 @@
+<!--
+    ATM doesn't have a simple way to show to performers more tasks (paper + questions) in the same HIT, so
+    we need to copy and paste the relative HTML.
+    To do this we need to adapt our CSV file to include different papers. This examples can work with 2 papers at
+    the same time, so the CSV must have the following columns:
+    - paper_title_1
+    - paper_1
+    - paper_title_2
+    - paper_2
+-->
+
+
+<!-- Definition of the AMT web components. For the full list of available Crowd HTML Elements and their input/output documentation,
+ refer to https://docs.aws.amazon.com/sagemaker/latest/dg/sms-ui-template-reference.html -->
+<script type="text/javascript" src="https://assets.crowd.aws/crowd-html-elements.js"></script>
+
+<script type="text/javascript" src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
+<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/texthighlighter/1.2.0/TextHighlighter.min.js"></script>
+
+
+<style>
+    /*
+        Instead of hiding the hidden text area with the 'hidden' attribute, use the css to make it
+        invisible. Doing this we can use the validation provided by AMT.
+    */
+    textarea.highlighted_parts {
+        height: 0;
+        width: 0;
+        overflow: auto;
+        border: 0px;
+        resize: none;
+        outline: none !important;
+        background: transparent;
+        color: transparent;
+  
+        box-shadow: none;
+        -webkit-box-shadow: none;
+        -moz-box-shadow: none;    
+    }
+    
+    /*
+        Little flag near the highlighted portion of text to clear the highlight
+    */
+    .highlighted:hover:before {
+        color: white;
+        content: "×";
+        position: absolute;
+        padding-left: 2px;
+        padding-right: 2px;
+        background: black;
+        padding-left: 2px;
+    }
+
+    .paper-container {
+        border: 1px solid black;
+        padding: 1em;
+    }
+
+    .paper-text {
+        cursor: copy;
+    }
+
+
+</style>
+
+
+<crowd-form answer-format="flatten-objects">
+
+    <!-- Istructions and examples -->
+    <crowd-instructions link-text="View instructions" link-type="button">
+        <short-summary>
+            <p>Identifying Scientific Papers About Older Adults</p>
+        </short-summary>
+      
+        <detailed-instructions>
+            <p>In the following we will show a list of summaries of papers.</p>
+
+            <p>Based on the title and summary (abstract) we ask you to answer the following question (by marking yes, no or maybe):</p>
+
+            <h3><strong>1. Does the paper describe a study involving older adults?</strong></h3>
+
+            <p>The study should target and involve older adults (also referred as senior citizens and other synonyms). For the purposes of this task:</p>
+
+            <p><strong>YES</strong></p>
+
+            <ul><li>We consider older adults those aged 60 and older.&nbsp;</li><li>If no age is provided, then the study should refer to the participants as older adults, retired persons, or other synonyms</li></ul>
+
+            <p><strong>NO</strong></p>
+
+            <ul><li>Those articles specifying &nbsp;younger participants, either by age (less than 60 years old) or by not explicitly mentioning “older adults” or synonyms, are out of scope.</li><li>Studies not targeting ONLY older adults but more general populations (e.g., adults 40 years and older) are out of scope</li></ul>
+
+            <h3><strong>2. Explain your decision</strong></h3>
+
+            <p>In addition to the paper classification, we ask you to</p>
+
+            <ul><li><span style="text-align: initial;">A) explain us your decision (why you think the paper does or doesn't target older adults)&nbsp;</span></li><li><span style="text-align: initial;">B) <strong>select one or more sentences</strong> (up to 3) most useful for your decision</span></li></ul>
+
+            <p><strong><span style="color: rgb(41, 105, 176);">The goal is to identify sentences so that if we show only those, a person would be able to reach a correct decision on this abstract.</span></strong></p>
+
+            <p>Only answers in <strong>English</strong> will be considered.&nbsp;</p>
+
+            <p><br /></p>
+
+            <h4><strong><u>More on age format</u></strong></h4>
+
+            <p>Scientific articles can describe the age of participants in different formats. Some examples:</p>
+
+            <ul><li><strong>Mean age</strong>: &nbsp;The mean age of the participants was 73.2</li><li><strong>Ranges</strong>: We recruited participants aged 60 to 80 years old</li><li><strong>Lower limit</strong>: We recruited participants aged sixty and older</li></ul>
+
+            <p>Make sure whatever format it is used (if provided) matches the definition of older adults given above (those aged 60+)</p>
+
+            <h4><strong><u>How-to highlighting&nbsp;</u></strong></h4>
+
+            <ul><li><strong>Highlighting text</strong>: You simply select the portion of the abstract you want to highlight, and it will be automatically highlighted with a yellow mark (<span style="background-color: rgb(247, 218, 100);">Example</span>).&nbsp;</li><li><strong>Extending the highlighted text</strong>: You can extend the highlighting by selecting a larger portion of the text.&nbsp;</li><li><strong>Removing the highlight</strong>: You can remove the highlighting by&nbsp;<ul><li>clicking on the "Clear highlights" button or by&nbsp;</li><li>positioning the mouse on top of the portion of highlighted text you want to remove (<span style="background-color: rgb(0, 0, 0); color: rgb(255, 255, 255);">&nbsp;x &nbsp;</span><span style="background-color: rgb(247, 218, 100);">Example</span>) and clicking on it</li></ul></li></ul>
+
+        </detailed-instructions>
+      
+        <positive-example>
+            
+            <h2>Example 1</h2>
+
+            <p><strong>Title</strong>: <span data-sheets-userformat="{&quot;2&quot;:4224,&quot;10&quot;:2,&quot;15&quot;:&quot;arial,sans,sans-serif&quot;}" data-sheets-value="{&quot;1&quot;:2,&quot;2&quot;:&quot;Physical and psychosocial effects of Wii video game use among older women&quot;}">Physical and psychosocial effects of Wii video game use among older women</span></p>
+
+            <p><strong>Abstract</strong>: This study investigated the physical and psychosocial effect of exergaming in community dwelling older adult women. <span style="background-color: rgb(247, 218, 100);">In a pilot study consisting of a six-week baseline period and a six-week intervention period, participants (N = 11, mean age = 73.5 years, SD = 9.0) played Nintendo Wii Sports twice weekly.</span> We measured full body movements using accelerometers, and assessed psychosocial effects through end-of-study focus group meetings. There were large self-reported psychological effects related to positive changes in self perception. The game-play deepened social connections within the group and provided a basis for shared experiences with younger aged family members. Physically, the game-play showed significantly higher maximum energy expenditure (t = -4.52, p &lt; 0.05) than baseline, but no significant difference in overall energy expenditure. Findings from the quantitative data showed that Wii-play did not have substantial physical effects; nevertheless, qualitative data revealed that the participants perceived an improved sense of physical, social and psychological wellbeing. © International Journal of Emerging Technologies and Society 2010.</p>
+
+            <p dir="ltr"><strong>Does the paper describe a study that involves older adults?</strong></p>
+
+            <p dir="ltr">Yes &nbsp;( &nbsp;x &nbsp; ) &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;No &nbsp; &nbsp; &nbsp;( &nbsp; &nbsp; &nbsp;) &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; Maybe &nbsp; &nbsp; ( &nbsp; &nbsp; &nbsp; ) &nbsp;&nbsp;</p>
+
+            <p dir="ltr"><strong>Explain your decision. Tell us why you think the paper is &nbsp;(yes / no / maybe) relevant</strong></p>
+
+            <p dir="ltr">The paper describes a study involving 11 older adult women with a mean age of 73.5 years.</p>
+
+            <p dir="ltr"><strong>If you were to select one or more sentences (up to 3) most useful for your decision, which ones would you select?</strong></p>
+
+            <p dir="ltr">[The selected text is highlighted in the Abstract]</p>
+
+            <h2>Example 2</h2>
+
+            <p><strong>Title</strong>: A randomized controlled trial evaluating the effects of online rehabilitative intervention for adult hearing-aid users</p>
+
+            <p><strong>Abstract</strong>: Objective: Previous research shows that the internet can be used in the rehabilitation of hearing-aid users. By further developing the online program, it might be possible to foster behavioral changes that will positively affect hearing-aid users. Design: A randomized controlled study with two groups of participants. The intervention group underwent a five-week online intervention while the control group was referred to a waiting list. Questionnaires were used as outcome measures. Study sample: <span style="color: rgb(0, 0, 0);"><span style="background-color: rgb(247, 218, 100);">Seventy-six experienced hearing-aid users participated in the study, ranging in age from 26 to 81 years (mean 69.3 years)</span>.</span> Results: The findings showed significant improvements in the intervention group after the intervention, measured by the hearing handicap inventory for the elderly. The effects were maintained and improved at the follow-up. Furthermore, the results indicated that the participants in the intervention group improved at two items of the international outcome inventory for hearing aids, and the effects were partly maintained at the follow-up. Finally, significant improvements in the domain of psychosocial wellbeing were found at the follow-up. Conclusions: This study provides further evidence that the internet can be used to deliver intervention of rehabilitation to hearing-aid users. © 2014 British Society of Audiology, International Society of Audiology, and Nordic Audiological Society.</p>
+
+            <p dir="ltr"><strong>Does the paper describe a study that involves older adults?</strong></p>
+
+            <p dir="ltr">Yes &nbsp;( &nbsp; &nbsp; ) &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;No &nbsp; &nbsp; &nbsp;( &nbsp; &nbsp;x &nbsp; &nbsp;) &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; Maybe &nbsp; &nbsp; ( &nbsp; &nbsp; &nbsp; ) &nbsp;&nbsp;</p>
+
+            <p dir="ltr"><strong>Explain your decision. Tell us why you think the paper is &nbsp;(yes / no / maybe) relevant</strong></p>
+
+            <p dir="ltr">The study involved adults in general: those aged from 28 to 81 years old so it is not really targeted at older adults.</p>
+
+            <p dir="ltr"><strong>If you were to select one or more sentences (up to 3) most useful for your decision, which ones would you select?</strong></p>
+
+            <p dir="ltr">[The selected text is highlighted in the Abstract]</p>
+        </positive-example>
+    </crowd-instructions>
+   
+    
+    <!-- Paper 1 -->
+    <div class="paper-container" data-paper-id="1">
+        <h2>${paper_title_1}</h2>
+        <p class="paper-text">${paper_1}</p>
+        
+        <div>
+            <button type="button" class="clear-all-highlights-button">Clear highlights</button> 
+            <small class="small">Select from the text above to highlight the part that supports your decision.</small>
+        </div>
+    </div>
+    <!-- About older adults? -->
+    <div>
+        <p>Does the paper describe a study that involves older adults?</p>
+         
+        <crowd-radio-group>
+            <input type="radio" required name="about_older_adults_1" value="yes">Yes</crowd-radio-button>
+            <input type="radio" required name="about_older_adults_1" value="no">No</crowd-radio-button>
+            <input type="radio" required name="about_older_adults_1" value="maybe">Maybe</crowd-radio-button>
+        </crowd-radio-group>
+    </div>
+   
+    <!-- Decision explaination -->
+    <div>
+        <p>Explain your decision</p>
+        <crowd-text-area name="decision_explaination_1" rows="4" required></crowd-text-area>
+    </div>
+    
+    <!-- Highlight text -->
+    <div>
+        <p>If you were to select one or more sentences (up to 3) most useful for your decision, which ones would you select?</p>
+        <p>In the abstract, select the part of the text that motivated your decision. The resulting text will be highlighted.</p>
+        
+        <!-- Hidden field that contains the higlighted parts of paper -->
+        <textarea class="highlighted_parts" name="highlighted_parts_1" required></textarea>
+    </div>
+    <!-- End of paper 1 -->
+
+
+    <hr>
+    <p>Next paper</p>
+
+
+
+    <!-- Paper 2 -->
+    <div class="paper-container" data-paper-id="2">
+        <h2>${paper_title_2}</h2>
+        <p class="paper-text">${paper_2}</p>
+        
+        <div>
+            <button type="button" class="clear-all-highlights-button">Clear highlights</button> 
+            <small class="small">Select from the text above to highlight the part that supports your decision.</small>
+        </div>
+    </div>
+    <!-- About older adults? -->
+    <div>
+        <p>Does the paper describe a study that involves older adults?</p>
+         
+        <crowd-radio-group>
+            <input type="radio" required name="about_older_adults_2" value="yes">Yes</crowd-radio-button>
+            <input type="radio" required name="about_older_adults_2" value="no">No</crowd-radio-button>
+            <input type="radio" required name="about_older_adults_2" value="maybe">Maybe</crowd-radio-button>
+        </crowd-radio-group>
+    </div>
+   
+    <!-- Decision explaination -->
+    <div>
+        <p>Explain your decision</p>
+        <crowd-text-area name="decision_explaination_2" rows="4" required></crowd-text-area>
+    </div>
+    
+    <!-- Highlight text -->
+    <div>
+        <p>If you were to select one or more sentences (up to 3) most useful for your decision, which ones would you select?</p>
+        <p>In the abstract, select the part of the text that motivated your decision. The resulting text will be highlighted.</p>
+        
+        <!-- Hidden field that contains the higlighted parts of paper -->
+        <textarea class="highlighted_parts" name="highlighted_parts_2" required></textarea>
+    </div>
+    <!-- End of paper 2 -->
+    
+    <br>
+</crowd-form>
+
+<script>
+    const paperContainers = $('.paper-container');
+    const highlithters = {};
+    
+    function setupHighlighter (container) {
+        const $container = $(container);
+        const id = $container.attr('data-paper-id');
+        const paperText = $container.find('.paper-text')[0];
+        highlithters[id] = new TextHighlighter(paperText, {
+            onAfterHighlight: function (range) {
+                updateHiddenField(id);
+            }
+        });   
+    }
+    
+    function updateHiddenField (id) {
+        const highlithter = highlithters[id];
+        const $hiddenField = $('textarea[name=highlighted_parts_' + id + ']');
+
+        let json = "";
+        if (highlithter.getHighlights().length > 0) {
+            json = highlithter.serializeHighlights();
+        }
+        
+        $hiddenField.val(json);
+    }
+    
+    function setupClearAllHighlightsButton () {
+        $('button.clear-all-highlights-button').on('click', function (e) {
+            e.preventDefault();
+            
+            const id = $(e.currentTarget).parent().parent().attr('data-paper-id');
+            
+            highlithters[id].removeHighlights();
+
+            updateHiddenField(id);
+        });
+    }
+   
+    function setupClearSingleHighlight () {
+        $('.paper-container p').on('click', '.highlighted', function (e) {
+            const $target = $(e.currentTarget);
+            const id = $target.parent().parent().attr('data-paper-id');
+
+            highlithters[id].removeHighlights($target[0]);
+            
+            updateHiddenField(id);
+        });
+    }
+   
+    for (let container of paperContainers) {
+        setupHighlighter(container);
+    }
+    setupClearAllHighlightsButton();
+    setupClearSingleHighlight();
+</script>
+
