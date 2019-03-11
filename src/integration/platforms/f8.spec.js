@@ -3,8 +3,8 @@ const jobsDelegate = require(__base + 'integration/delegates/jobs.delegate');
 
 const rightJob = require(__base + 'example/job-example.json');
 
-//set jest timeout to 10 seconds
-jest.setTimeout(10000);
+//set jest timeout to 20 seconds
+jest.setTimeout(20000);
 
 describe('F8 tests', async () => {
     let job;
