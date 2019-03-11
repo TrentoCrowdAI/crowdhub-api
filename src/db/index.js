@@ -8,7 +8,8 @@ let credentials = {
   host: config.db.host,
   port: config.db.port,
   user: config.db.user,
-  password: config.db.password
+  password: config.db.password,
+  ssl: true
 };
 
 if (config.db.url) {
