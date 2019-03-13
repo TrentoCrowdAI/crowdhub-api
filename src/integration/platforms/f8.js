@@ -18,8 +18,10 @@ const publish = async (job) => {
     //recognise gold items
     await convertGoldQuestions(job);
 
-    //set the CML of the job
-    job = await updateJobCML(job);
+    //set the design of the job
+    job = await updateJobMarkup(job);
+    job = await updateJobJS(job);
+    job = await updateJobCSS(job);
 
     //set the reward info of the job
     job = await updateJobSpec(job);
@@ -88,14 +90,14 @@ const addCsvItems = async (job, csvFile) => {
 };
 
 /**
- * Update the CML of an existing F8 job
+ * Update the Markup of an existing F8 job
  * @param {{}} job 
  */
-const updateJobCML = async (job) => {
+const updateJobMarkup = async (job) => {
     let url = config.f8.baseEndpoint + `jobs/${job.data.platform.f8.id}.json?key=${config.f8.apiKey}`;
 
     let data = {
-        'job[cml]': job.data.design
+        'job[cml]': job.data.design.markup
     };
     let body = querystring.stringify(data);
 
@@ -106,7 +108,61 @@ const updateJobCML = async (job) => {
     });
 
     if(res.status !== 200)
-        throw new Error('F8 Error: Not able to update the CML of the Job!');
+        throw new Error('F8 Error: Not able to update the Markup of the Job!');
+
+    let json = await res.json();
+    job.data.platform.f8 = json;
+
+    return job;
+};
+
+/**
+ * Update the JS of an existing F8 job
+ * @param {{}} job 
+ */
+const updateJobJS = async (job) => {
+    let url = config.f8.baseEndpoint + `jobs/${job.data.platform.f8.id}.json?key=${config.f8.apiKey}`;
+
+    let data = {
+        'job[js]': job.data.design.javascript
+    };
+    let body = querystring.stringify(data);
+
+    let res = await fetch(url, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+        body: body
+    });
+
+    if(res.status !== 200)
+        throw new Error('F8 Error: Not able to update the JS of the Job!');
+
+    let json = await res.json();
+    job.data.platform.f8 = json;
+
+    return job;
+};
+
+/**
+ * Update the CSS of an existing F8 job
+ * @param {{}} job 
+ */
+const updateJobCSS = async (job) => {
+    let url = config.f8.baseEndpoint + `jobs/${job.data.platform.f8.id}.json?key=${config.f8.apiKey}`;
+
+    let data = {
+        'job[css]': job.data.design.css
+    };
+    let body = querystring.stringify(data);
+
+    let res = await fetch(url, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+        body: body
+    });
+
+    if(res.status !== 200)
+        throw new Error('F8 Error: Not able to update the CSS of the Job!');
 
     let json = await res.json();
     job.data.platform.f8 = json;
