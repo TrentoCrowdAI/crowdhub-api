@@ -3,7 +3,7 @@ const request = require('supertest');
 const app = require(__base + 'app');
 const jobsDelegate = require(__base + 'integration/delegates/jobs.delegate');
 
-const rightJob = require(__base + 'example/job-example.json');
+const rightJob = require(__base + 'example/job-example-f8.json');
 
 test('POST /jobs should return 400 if mandatory fields are not present', async () => {
   let response = await request(app).post('/jobs');
