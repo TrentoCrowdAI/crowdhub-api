@@ -6,13 +6,34 @@ const jobsDao = require(__base + 'integration/dao/jobs.dao');
 const errHandler = require(__base + 'utils/errors');
 
 const f8 = require(__base + 'integration/platforms/f8');
+const toloka = require(__base + 'integration/platforms/toloka');
 
-const publish = async (job) => {
+const publish = async (job, platform) => {
+  if (!(job instanceof Object)) {
+    throw errHandler.createBusinessError('Job not defined!');
+  }
+  if (platform === undefined) {
+    throw errHandler.createBusinessError('Platform not defined!');
+  }
+
   try {
-    //f8 publishing
-    job = await f8.publish(job);
+    if (platform == 'F8') {
+      //f8 publishing
+      job = await f8.publish(job);
+    }
+    else if (platform == 'Toloka') {
+      //toloka publishing
+      job = await toloka.publish(job);
+    }
+    else if (platform == 'MTurk') {
+      //TODO
 
-    //update job with f8 info
+    }
+    else {
+      throw new Error('Invalid platform!');
+    }
+
+    //update job with platform info
     job = await jobsDao.updateJob(job);
   }
   catch (e) {

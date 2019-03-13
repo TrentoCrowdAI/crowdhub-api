@@ -28,9 +28,10 @@ router.post('/jobs', async (req, res, next) => {
 router.post('/jobs/:id/publish', async (req, res, next) => {
     try {
         let id = req.params.id;
+        let platform = req.body.platform;
         let job = await jobsDelegate.getJob(id);
 
-        let pubRes = await jobsDelegate.publish(job);
+        let pubRes = await jobsDelegate.publish(job, platform);
         res.json(pubRes);
     } catch (e) {
         // we delegate to the error-handling middleware
