@@ -92,6 +92,25 @@ const deleteJob = async (jobId) => {
   return job;
 };
 
+const updateJob = async (job, jobId) => {
+  if (!(job instanceof Object)) {
+    throw errHandler.createBusinessError('Job not defined!');
+  }
+  jobId = parseInt(jobId);
+  if (typeof jobId != "number" || isNaN(jobId)) {
+    throw errHandler.createBusinessError('Job id is of an invalid type!');
+  }
+  
+  job.id = jobId;
+
+  job = await jobsDao.updateJob(job);
+
+  if (!job)
+    throw errHandler.createBusinessNotFoundError('Job id does not exist!');
+
+  return job;
+};
+
 
 const getJobs = async () => {
   return await jobsDao.getJobs();
@@ -102,5 +121,6 @@ module.exports = {
   createJob,
   getJob,
   getJobs,
-  deleteJob
+  deleteJob,
+  updateJob
 };

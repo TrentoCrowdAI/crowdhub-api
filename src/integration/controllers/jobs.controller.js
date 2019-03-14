@@ -43,7 +43,32 @@ router.post('/jobs', async (req, res, next) => {
 });
 
 // PUT /jobs/<job id>
+router.put('/jobs/:id', async (req, res, next) => {
+    try {
+        let id = req.params.id;
+        let job = req.body;
+
+        job = await jobsDelegate.updateJob(job, id);
+        res.json(job);
+    } catch (e) {
+        // we delegate to the error-handling middleware
+        next(e);
+    }
+});
+
 // DELETE /jobs/<job id>
+router.delete('/jobs/:id', async (req, res, next) => {
+    try {
+        let id = req.params.id;
+
+        job = await jobsDelegate.deleteJob(id);
+        res.json(job);
+    } catch (e) {
+        // we delegate to the error-handling middleware
+        next(e);
+    }
+});
+
 
 // POST   /jobs/<job id>/publish
 router.post('/jobs/:id/publish', async (req, res, next) => {

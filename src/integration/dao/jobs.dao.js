@@ -31,12 +31,12 @@ const getJobs = async () => {
 };
 
 // delete
-const deleteJob = async (job) => {
+const deleteJob = async (jobId) => {
     let res = await db.query(
         `update ${db.TABLES.Job} 
             set deleted_at = $1
             where id = $2 returning *`,
-        [new Date(), job.id]
+        [new Date(), jobId]
     );
 
     return res.rows[0];
