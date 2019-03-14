@@ -3,5 +3,6 @@ module.exports = {
   globals: {
     __base: __dirname + '/src/'
   },
-  collectCoverageFrom: ['src/**/*.js']
+  collectCoverageFrom: ['src/**/*.js'],
+  globalTeardown: './jest/teardown.js'
 };

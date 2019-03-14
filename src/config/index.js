@@ -5,6 +5,14 @@ module.exports = {
     region: process.env.AWS_REGIONAWS_REGION,
     endpoint: process.env.AWS_ENDPOINT
   },
+  f8: {
+    apiKey: process.env.F8_API_KEY,
+    baseEndpoint: process.env.F8_BASE_ENDPOINT
+  },
+  toloka: {
+    accessToken: process.env.TOLOKA_ACCESS_TOKEN,
+    baseEndpoint: process.env.TOLOKA_BASE_ENDPOINT
+  },
   db: {
     user: process.env.PGUSER,
     password: process.env.PGPASSWORD,

@@ -7,9 +7,13 @@
 --	reward: <number>,        // how much we pay per vote
 --	items_csv: <string>,  // path to items file in the server
 --	items_gold_csv: <string>,   //   path to gold items file in the server
---	design: <string>,       // html/text content of the task
+--	design: {
+--    markup: <string>,
+--		javascript: <string>,
+--		css: <string>
+--  },
 --	instructions,   // html/text content for the instructions of the task
---	platform: <string> // to be defined better
+--	platform: <> // to be defined better
 -- }
 CREATE TABLE job (
   id bigserial NOT NULL,
