@@ -7,7 +7,28 @@ const jobsDelegate = require(__base + 'integration/delegates/jobs.delegate');
 const router = express.Router();
 
 // GET /jobs
+router.get('/jobs', async (req, res, next) => {
+    try {
+        let jobs = await jobsDelegate.getJobs();
+        res.json(jobs);
+    } catch (e) {
+        // we delegate to the error-handling middleware
+        next(e);
+    }
+});
+
 // GET /jobs/<job id>
+router.get('/jobs/:id', async (req, res, next) => {
+    try {
+        let id = req.params.id;
+        let job = await jobsDelegate.getJob(id);
+
+        res.json(job);
+    } catch (e) {
+        // we delegate to the error-handling middleware
+        next(e);
+    }
+});
 
 // POST /jobs
 router.post('/jobs', async (req, res, next) => {

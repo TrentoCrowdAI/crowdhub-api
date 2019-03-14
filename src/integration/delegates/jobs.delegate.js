@@ -92,9 +92,15 @@ const deleteJob = async (jobId) => {
   return job;
 };
 
+
+const getJobs = async () => {
+  return await jobsDao.getJobs();
+};
+
 module.exports = {
   publish,
   createJob,
   getJob,
+  getJobs,
   deleteJob
 };

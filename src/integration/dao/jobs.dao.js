@@ -21,6 +21,14 @@ const getJob = async (jobId) => {
 
     return res.rows[0];
 };
+const getJobs = async () => {
+    let res = await db.query(
+        `select * from ${db.TABLES.Job} 
+            where deleted_at is NULL`
+    );
+
+    return res.rows;
+};
 
 // delete
 const deleteJob = async (job) => {
@@ -49,6 +57,7 @@ const updateJob = async (job) => {
 module.exports = {
     createJob,
     getJob,
+    getJobs,
     updateJob,
     deleteJob
 };
