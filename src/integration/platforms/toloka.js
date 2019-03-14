@@ -3,6 +3,10 @@ const neatCsv = require('neat-csv');
 
 const config = require(__base + 'config/index');
 
+/**
+ * Publish the job parameter on the Toloka platform as a new job.
+ * @param {{}} job 
+ */
 const publish = async (job) => {
     let inOutParams = await markupToInOutParams(job);
 
@@ -19,6 +23,11 @@ const publish = async (job) => {
     return job;
 };
 
+/**
+ * Create a new project on Toloka
+ * @param {{}} job 
+ * @param {{}} inOutParams 
+ */
 const createProject = async (job, inOutParams) => {
     let url = config.toloka.baseEndpoint + 'projects';
 
@@ -72,6 +81,10 @@ const createProject = async (job, inOutParams) => {
     return job;
 };
 
+/**
+ * Create a new task pool on Toloka
+ * @param {{}} job 
+ */
 const createTaskPool = async (job) => {
     let url = config.toloka.baseEndpoint + 'pools';
 
@@ -113,6 +126,10 @@ const createTaskPool = async (job) => {
 
 };
 
+/**
+ * Extract from the markup part of the job parameter the input and output fields
+ * @param {{}} job 
+ */
 const markupToInOutParams = async (job) => {
     let regInput = /{{([^\ ]+)}}/igm;
     let regOutput = /{field.*name=\"([^\ ]+)\".*}}/igm;
@@ -137,6 +154,12 @@ const markupToInOutParams = async (job) => {
     return inOutSpec;
 };
 
+/**
+ * Convert a CSV file for F8 to an array of Toloka tasks
+ * @param {{}} job 
+ * @param {String} csvFile URL to the CSV file
+ * @param {{}} inOutParams input and output Toloka fields
+ */
 const csvToTasks = async (job, csvFile, inOutParams) => {
     let tasks = [];
 
@@ -185,6 +208,11 @@ const csvToTasks = async (job, csvFile, inOutParams) => {
     return tasks;
 };
 
+/**
+ * Create new tasks on Toloka
+ * @param {{}} job 
+ * @param {[]} tasks 
+ */
 const createTasks = async (job, tasks) => {
     let url = config.toloka.baseEndpoint + 'tasks';
     
