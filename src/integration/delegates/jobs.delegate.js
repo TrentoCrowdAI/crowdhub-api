@@ -9,9 +9,8 @@ const f8 = require(__base + 'integration/platforms/f8');
 const toloka = require(__base + 'integration/platforms/toloka');
 
 const publish = async (job, platform) => {
-  if (!(job instanceof Object)) {
-    throw errHandler.createBusinessError('Job not defined!');
-  }
+  checkJobParams(job);
+  
   if (platform === undefined) {
     throw errHandler.createBusinessError('Platform not defined!');
   }
@@ -44,21 +43,7 @@ const publish = async (job, platform) => {
 };
 
 const createJob = async (job) => {
-  if (!(job instanceof Object)) {
-    throw errHandler.createBusinessError('Job not defined!');
-  }
-  if (!(job.data instanceof Object)) {
-    throw errHandler.createBusinessError('Job data not defined!');
-  }
-  if (job.data.name === undefined) {
-    throw errHandler.createBusinessError('Job name not defined!');
-  }
-  if (job.data.reward === undefined) {
-    throw errHandler.createBusinessError('Job reward not defined!');
-  }
-  if (job.data.items_csv === undefined) {
-    throw errHandler.createBusinessError('Items CSV path not defined!');
-  }
+  checkJobParams(job);
 
   let newJob = await jobsDao.createJob(job);
   return newJob;
@@ -93,14 +78,13 @@ const deleteJob = async (jobId) => {
 };
 
 const updateJob = async (job, jobId) => {
-  if (!(job instanceof Object)) {
-    throw errHandler.createBusinessError('Job not defined!');
-  }
+  checkJobParams(job);
+
   jobId = parseInt(jobId);
   if (typeof jobId != "number" || isNaN(jobId)) {
     throw errHandler.createBusinessError('Job id is of an invalid type!');
   }
-  
+
   job.id = jobId;
 
   job = await jobsDao.updateJob(job);
@@ -109,6 +93,51 @@ const updateJob = async (job, jobId) => {
     throw errHandler.createBusinessNotFoundError('Job id does not exist!');
 
   return job;
+};
+
+const checkJobParams = (job) => {
+  if (!(job instanceof Object)) {
+    throw errHandler.createBusinessError('Job not defined or not valid!');
+  }
+  if (!(job.data instanceof Object)) {
+    throw errHandler.createBusinessError('Job data not defined or not valid!');
+  }
+  if (typeof job.data.name != "string") {
+    throw errHandler.createBusinessError('Name of the job not defined or not valid!');
+  }
+  if (typeof job.data.description != "string") {
+    throw errHandler.createBusinessError('Description not defined or not valid!');
+  }
+  if (typeof job.data.numVotes != "number") {
+    throw errHandler.createBusinessError('NumVotes not defined or not valid!');
+  }
+  if (typeof job.data.maxVotes != "number") {
+    throw errHandler.createBusinessError('MaxVotes not defined or not valid!');
+  }
+  if (typeof job.data.reward != "number") {
+    throw errHandler.createBusinessError('Reward not defined or not valid!');
+  }
+  if (typeof job.data.items_csv != "string") {
+    throw errHandler.createBusinessError('Items CSV URL not defined or not valid!');
+  }
+  if (typeof job.data.items_gold_csv != "string") {
+    throw errHandler.createBusinessError('Items Gold CSV URL not defined or not valid!');
+  }
+  if (!(job.data.design instanceof Object)) {
+    throw errHandler.createBusinessError('Design not defined or not valid!');
+  }
+  if (typeof job.data.design.markup != "string") {
+    throw errHandler.createBusinessError('Markup not defined or not valid!');
+  }
+  if (typeof job.data.design.javascript != "string") {
+    throw errHandler.createBusinessError('Javascript not defined or not valid!');
+  }
+  if (typeof job.data.design.css != "string") {
+    throw errHandler.createBusinessError('Css not defined or not valid!');
+  }
+  if (typeof job.data.instructions != "string") {
+    throw errHandler.createBusinessError('Instructions not defined or not valid!');
+  }
 };
 
 
