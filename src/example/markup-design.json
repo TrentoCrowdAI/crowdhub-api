@@ -1,41 +1,30 @@
 [
     {
-        "__comment": "Text loaded from a CSV field",
+        "__comment": "Text or HTML loaded from a CSV field",
         "type": "input_dynamic_text",
         "csvVariable": "abstract"
     },
     {
-        "__comment": "Static text",
+        "__comment": "Static text or HTML",
         "type": "input_static_text",
         "text": "Some text"
     },
     {
         "__comment": "Image loaded from a CSV field",
         "type": "input_dynamic_image",
-        "imageUrl": "url/to/the/image"
-    },
-    {
-        "__comment": "Static image",
-        "type": "input_static_image",
         "csvVariable": "image_url"
     },
     {
-        "__comment": "F8 cml:text; Toloka field type='input'",
-        "type": "output_open_question_slim",
-        "question": "Summarize the abstract of the paper",
-        "csvVariable": "summary",
-        "required": true
-    },
-    {
-        "__comment": "F8 cml:textarea; Toloka field type='textarea'",
+        "__comment": "F8 cml:text, cml:textarea;; Toloka field type='input', type='textarea'",
         "type": "output_open_question",
         "question": "Summarize the abstract of the paper",
         "csvVariable": "summary",
-        "required": false
+        "required": true,
+        "size": "slim/big"
     },
     {
-        "__comment": "F8 cml:checkboxes; Toloka field type='checkbox'",
-        "type": "output_checkbox",
+        "__comment": "F8 cml:checkboxes, cml:radios, cml:select; Toloka field type='checkbox', Toloka field type='radio', Toloka field type='select'",
+        "type": "output_choices",
         "question": "Sample checkboxes:",
         "choices": [
             {
@@ -48,52 +37,21 @@
             }
         ],
         "csvVariable": "summary",
-        "required": false
-    },
-    {
-        "__comment": "F8 cml:radios; Toloka field type='radio'",
-        "type": "output_radio",
-        "question": "Sample radios:",
-        "choices": [
-            {
-                "label": "First radio",
-                "value": "first"
-            },
-            {
-                "label": "Second radio",
-                "value": "second"
-            }
-        ],
-        "csvVariable": "summary",
-        "required": false
-    },
-    {
-        "__comment": "F8 cml:select; Toloka field type='select'",
-        "type": "output_dropdown",
-        "question": "Sample radios:",
-        "choices": [
-            {
-                "label": "First select",
-                "value": "first"
-            },
-            {
-                "label": "Second select",
-                "value": "second"
-            }
-        ],
-        "csvVariable": "summary",
-        "required": false
+        "required": false,
+        "choice_type": "multiple_checkbox|single_radio|single_dropdown"
     },
     {
         "__comment": "Text highlighting, add even CSS and JS",
         "type": "output_text_highlighting",
         "question": "Highlight some text...",
-        "csvVariable": "text"
+        "textCsvVariable": "abstract",
+        "higlightedCsvVariable": "text"
     },
     {
         "__comment": "Image highlighting, add even CSS and JS",
         "type": "output_image_highlighting",
         "question": "Highlight some part of the image...",
-        "csvVariable": "image"
+        "imageCsvVariable": "image",
+        "higlightedCsvVariable": "text"
     }
 ]
