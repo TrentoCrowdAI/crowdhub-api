@@ -2,7 +2,9 @@
     {
         "__comment": "Text or HTML loaded from a CSV field",
         "type": "input_dynamic_text",
-        "csvVariable": "abstract"
+        "csvVariable": "abstract",
+        "highlightable": true,
+        "highlightedCsvVariable": "highlighted_parts"
     },
     {
         "__comment": "Static text or HTML",
@@ -12,7 +14,9 @@
     {
         "__comment": "Image loaded from a CSV field",
         "type": "input_dynamic_image",
-        "csvVariable": "image_url"
+        "csvVariable": "image_url",
+        "highlightable": true,
+        "highlightedCsvVariable": "highlighted_square"
     },
     {
         "__comment": "F8 cml:text, cml:textarea;; Toloka field type='input', type='textarea'",
@@ -39,19 +43,5 @@
         "csvVariable": "summary",
         "required": false,
         "choice_type": "multiple_checkbox|single_radio|single_dropdown"
-    },
-    {
-        "__comment": "Text highlighting, add even CSS and JS",
-        "type": "output_text_highlighting",
-        "question": "Highlight some text...",
-        "textCsvVariable": "abstract",
-        "higlightedCsvVariable": "text"
-    },
-    {
-        "__comment": "Image highlighting, add even CSS and JS",
-        "type": "output_image_highlighting",
-        "question": "Highlight some part of the image...",
-        "imageCsvVariable": "image",
-        "higlightedCsvVariable": "text"
     }
 ]
