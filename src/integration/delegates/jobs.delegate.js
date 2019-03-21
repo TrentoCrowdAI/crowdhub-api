@@ -10,7 +10,7 @@ const toloka = require(__base + 'integration/platforms/toloka');
 
 const publish = async (job, platform) => {
   checkJobParams(job);
-  
+
   if (platform === undefined) {
     throw errHandler.createBusinessError('Platform not defined!');
   }
@@ -126,18 +126,15 @@ const checkJobParams = (job) => {
   if (!(job.data.design instanceof Object)) {
     throw errHandler.createBusinessError('Design not defined or not valid!');
   }
-  if (typeof job.data.design.markup != "string") {
-    throw errHandler.createBusinessError('Markup not defined or not valid!');
-  }
-  if (typeof job.data.design.javascript != "string") {
-    throw errHandler.createBusinessError('Javascript not defined or not valid!');
-  }
-  if (typeof job.data.design.css != "string") {
-    throw errHandler.createBusinessError('Css not defined or not valid!');
-  }
   if (typeof job.data.instructions != "string") {
     throw errHandler.createBusinessError('Instructions not defined or not valid!');
   }
+
+  checkJobMarkup(job);
+};
+
+const checkJobMarkup = (job) => {
+
 };
 
 
