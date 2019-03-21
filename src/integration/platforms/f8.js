@@ -48,7 +48,7 @@ const createNewJob = async (job) => {
         headers: { 'Content-Type': 'application/x-www-form-urlencoded' }
     });
 
-    if(res.status !== 200)
+    if (res.status !== 200)
         throw new Error('F8 Error: Not able to create a new Job!');
 
     let json = await res.json();
@@ -57,7 +57,7 @@ const createNewJob = async (job) => {
         job.data.platform = {};
 
     job.data.platform.f8 = json;
-    
+
     return job;
 };
 
@@ -80,7 +80,7 @@ const addCsvItems = async (job, csvFile) => {
         body: csvData
     });
 
-    if(res.status !== 200)
+    if (res.status !== 200)
         throw new Error('F8 Error: Not able to add CSV items to the Job!');
 
     let json = await res.json();
@@ -107,7 +107,7 @@ const updateJobMarkup = async (job) => {
         body: body
     });
 
-    if(res.status !== 200)
+    if (res.status !== 200)
         throw new Error('F8 Error: Not able to update the Markup of the Job!');
 
     let json = await res.json();
@@ -134,7 +134,7 @@ const updateJobJS = async (job) => {
         body: body
     });
 
-    if(res.status !== 200)
+    if (res.status !== 200)
         throw new Error('F8 Error: Not able to update the JS of the Job!');
 
     let json = await res.json();
@@ -161,7 +161,7 @@ const updateJobCSS = async (job) => {
         body: body
     });
 
-    if(res.status !== 200)
+    if (res.status !== 200)
         throw new Error('F8 Error: Not able to update the CSS of the Job!');
 
     let json = await res.json();
@@ -190,7 +190,7 @@ const updateJobSpec = async (job) => {
         body: body
     });
 
-    if(res.status !== 200)
+    if (res.status !== 200)
         throw new Error('F8 Error: Not able to update the payment specific of the Job!');
 
     let json = await res.json();
@@ -209,8 +209,58 @@ const convertGoldQuestions = async (job) => {
         method: 'PUT'
     });
 
-    if(res.status !== 200)
+    if (res.status !== 200)
         throw new Error('F8 Error: Not able to convert the Gold Questions of the Job!');
+};
+
+
+
+const renderDesign = (job) => {
+    let res = { markup: '', javascript: '', css: '' };
+
+    for (let elem of job.design) {
+        switch (elem.type) {
+            case 'input_dynamic_text':
+                res.markup += `<p>{{${elem.csvVariable}}}</p>`;
+            case 'input_static_text':
+                res.markup += `<p>${elem.text}</p>`;
+            case 'input_dynamic_image':
+                res.markup += `dyn image TODO`;
+            case 'output_open_question':
+                let elem_tag = 'cml:text';
+                if (elem.size == 'big')
+                    elem_tag = 'cml:textarea';
+                let required = elem.required ? 'validates="required"' : '';
+
+                res.markup += `<${elem_tag} label="${elem.question}" name="${elem.csvVariable}" ${required} />`;
+            case 'output_choices':
+                let elem_tag, item_tag = '';
+                switch (elem.choice_type) {
+                    case 'multiple_checkbox':
+                        elem_tag = 'cml:checkboxes';
+                        item_tag = 'cml:checkbox';
+                    case 'single_radio':
+                        elem_tag = 'cml:radios';
+                        item_tag = 'cml:radio';
+                    case 'single_dropdown':
+                        elem_tag = 'cml:select';
+                        item_tag = 'cml:option';
+                }
+                let required = elem.required ? 'validates="required"' : '';
+
+                res.markup += `<${elem_tag} label="${elem.question}" name="${elem.csvVariable}" ${required}>`;
+                for (let item of elem.choices) {
+                    res.markup += `<${item_tag} label="${item.label}" value="${item.value}" />`;
+                }
+                res.markup += `</${elem_tag}>`;
+            case 'output_text_highlighting':
+                res.markup += ``;
+            case 'output_image_highlighting':
+                res.markup += `image highlighting TODO`;
+        }
+    }
+
+    return res;
 };
 
 module.exports = {
