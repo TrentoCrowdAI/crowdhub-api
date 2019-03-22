@@ -8,8 +8,10 @@ const errHandler = require(__base + 'utils/errors');
 const f8 = require(__base + 'integration/platforms/f8');
 const toloka = require(__base + 'integration/platforms/toloka');
 
+const checkJob = require('./jobValidator.delegate');
+
 const publish = async (job, platform) => {
-  checkJobParams(job);
+  checkJob(job);
 
   if (platform === undefined) {
     throw errHandler.createBusinessError('Platform not defined!');
@@ -43,7 +45,7 @@ const publish = async (job, platform) => {
 };
 
 const createJob = async (job) => {
-  checkJobParams(job);
+  checkJob(job);
 
   let newJob = await jobsDao.createJob(job);
   return newJob;
@@ -78,7 +80,7 @@ const deleteJob = async (jobId) => {
 };
 
 const updateJob = async (job, jobId) => {
-  checkJobParams(job);
+  checkJob(job);
 
   jobId = parseInt(jobId);
   if (typeof jobId != "number" || isNaN(jobId)) {
@@ -93,48 +95,6 @@ const updateJob = async (job, jobId) => {
     throw errHandler.createBusinessNotFoundError('Job id does not exist!');
 
   return job;
-};
-
-const checkJobParams = (job) => {
-  if (!(job instanceof Object)) {
-    throw errHandler.createBusinessError('Job not defined or not valid!');
-  }
-  if (!(job.data instanceof Object)) {
-    throw errHandler.createBusinessError('Job data not defined or not valid!');
-  }
-  if (typeof job.data.name != "string") {
-    throw errHandler.createBusinessError('Name of the job not defined or not valid!');
-  }
-  if (typeof job.data.description != "string") {
-    throw errHandler.createBusinessError('Description not defined or not valid!');
-  }
-  if (typeof job.data.numVotes != "number") {
-    throw errHandler.createBusinessError('NumVotes not defined or not valid!');
-  }
-  if (typeof job.data.maxVotes != "number") {
-    throw errHandler.createBusinessError('MaxVotes not defined or not valid!');
-  }
-  if (typeof job.data.reward != "number") {
-    throw errHandler.createBusinessError('Reward not defined or not valid!');
-  }
-  if (typeof job.data.items_csv != "string") {
-    throw errHandler.createBusinessError('Items CSV URL not defined or not valid!');
-  }
-  if (typeof job.data.items_gold_csv != "string") {
-    throw errHandler.createBusinessError('Items Gold CSV URL not defined or not valid!');
-  }
-  if (!(job.data.design instanceof Object)) {
-    throw errHandler.createBusinessError('Design not defined or not valid!');
-  }
-  if (typeof job.data.instructions != "string") {
-    throw errHandler.createBusinessError('Instructions not defined or not valid!');
-  }
-
-  checkJobMarkup(job);
-};
-
-const checkJobMarkup = (job) => {
-
 };
 
 
