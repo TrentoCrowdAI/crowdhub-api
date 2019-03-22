@@ -13,8 +13,8 @@
             {
                 "type": "input_dynamic_text",
                 "question": "If you were to select one or more sentences (up to 3) most useful...",
-                "csvTitleVariable": "title",
-                "csvVariable": "abstract",
+                "csvTitleVariable": "Title",
+                "csvVariable": "Abstract",
                 "highlightable": true,
                 "highlightedCsvVariable": "highlighted_parts"
             },
@@ -43,14 +43,14 @@
                 "size": "big",
                 "type": "output_open_question",
                 "question": "Explain your decision.",
-                "required": true,
+                "required": false,
                 "csvVariable": "decision_explaination"
             },
             {
                 "type": "input_dynamic_text",
                 "question": "[Again]If you were to select one or more sentences (up to 3) most useful...",
-                "csvTitleVariable": "title",
-                "csvVariable": "abstract",
+                "csvTitleVariable": "Title",
+                "csvVariable": "Abstract",
                 "highlightable": true,
                 "highlightedCsvVariable": "highlighted_parts2"
             }
