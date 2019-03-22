@@ -216,8 +216,10 @@ const convertGoldQuestions = async (job) => {
         throw new Error('F8 Error: Not able to convert the Gold Questions of the Job!');
 };
 
-
-
+/**
+ * Create the F8 markup, js and CSS based on the job design
+ * @param {{}} job 
+ */
 const renderDesign = (job) => {
     let res = { markup: '', javascript: '', css: '' };
     let highlightText = [];
@@ -226,7 +228,9 @@ const renderDesign = (job) => {
         switch (elem.type) {
             case 'input_dynamic_text': {
                 if (!elem.highlightable)
-                    res.markup += `<p>{{${elem.csvVariable}}}</p>`;
+                    res.markup += `
+                        <h2>{{${elem.csvTitleVariable}}}</h2>
+                        <p>{{${elem.csvVariable}}}</p>`;
                 else {
                     res.markup += `
                     <div class="html-element-wrapper marker-target-${elem.highlightedCsvVariable}">
