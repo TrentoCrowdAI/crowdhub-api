@@ -4,6 +4,7 @@
         "type": "input_dynamic_text",
         "csvVariable": "abstract",
         "highlightable": true,
+        "question": "If you were to select one or more sentences (up to 3) most useful...",
         "highlightedCsvVariable": "highlighted_parts"
     },
     {
@@ -16,6 +17,7 @@
         "type": "input_dynamic_image",
         "csvVariable": "image_url",
         "highlightable": true,
+        "question": "Select one or more part from the image...",
         "highlightedCsvVariable": "highlighted_square"
     },
     {
