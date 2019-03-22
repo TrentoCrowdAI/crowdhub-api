@@ -18,10 +18,13 @@ const publish = async (job) => {
     //recognise gold items
     await convertGoldQuestions(job);
 
+    //render the design of the job
+    let design = renderDesign(job);
+
     //set the design of the job
-    job = await updateJobMarkup(job);
-    job = await updateJobJS(job);
-    job = await updateJobCSS(job);
+    job = await updateJobMarkup(job, design);
+    job = await updateJobJS(job, design);
+    job = await updateJobCSS(job, design);
 
     //set the reward info of the job
     job = await updateJobSpec(job);
@@ -93,11 +96,11 @@ const addCsvItems = async (job, csvFile) => {
  * Update the Markup of an existing F8 job
  * @param {{}} job 
  */
-const updateJobMarkup = async (job) => {
+const updateJobMarkup = async (job, design) => {
     let url = config.f8.baseEndpoint + `jobs/${job.data.platform.f8.id}.json?key=${config.f8.apiKey}`;
 
     let data = {
-        'job[cml]': job.data.design.markup
+        'job[cml]': design.markup
     };
     let body = querystring.stringify(data);
 
@@ -120,11 +123,11 @@ const updateJobMarkup = async (job) => {
  * Update the JS of an existing F8 job
  * @param {{}} job 
  */
-const updateJobJS = async (job) => {
+const updateJobJS = async (job, design) => {
     let url = config.f8.baseEndpoint + `jobs/${job.data.platform.f8.id}.json?key=${config.f8.apiKey}`;
 
     let data = {
-        'job[js]': job.data.design.javascript
+        'job[js]': design.javascript
     };
     let body = querystring.stringify(data);
 
@@ -147,11 +150,11 @@ const updateJobJS = async (job) => {
  * Update the CSS of an existing F8 job
  * @param {{}} job 
  */
-const updateJobCSS = async (job) => {
+const updateJobCSS = async (job, design) => {
     let url = config.f8.baseEndpoint + `jobs/${job.data.platform.f8.id}.json?key=${config.f8.apiKey}`;
 
     let data = {
-        'job[css]': job.data.design.css
+        'job[css]': design.css
     };
     let body = querystring.stringify(data);
 
@@ -217,34 +220,64 @@ const convertGoldQuestions = async (job) => {
 
 const renderDesign = (job) => {
     let res = { markup: '', javascript: '', css: '' };
+    let highlightText = [];
 
-    for (let elem of job.design) {
+    for (let elem of job.data.design) {
         switch (elem.type) {
-            case 'input_dynamic_text':
-                res.markup += `<p>{{${elem.csvVariable}}}</p>`;
-            case 'input_static_text':
+            case 'input_dynamic_text': {
+                if (!elem.highlightable)
+                    res.markup += `<p>{{${elem.csvVariable}}}</p>`;
+                else {
+                    res.markup += `
+                    <div class="html-element-wrapper marker-target-${elem.highlightedCsvVariable}">
+                        <p>{{${elem.csvVariable}}}</p>                  
+                        <div>
+                            <button class="opt-clear-${elem.highlightedCsvVariable}">Clear highlights</button> 
+                            <small class="small">Select from the text above to highlight the part that supports your decision.</small>
+                        </div>
+                    </div>
+                    <!-- Hidden field -->
+                    <cml:textarea label="${elem.question}" validates="required" name="${elem.highlightedCsvVariable}"/>`;
+
+                    highlightText.push(elem.highlightedCsvVariable);
+                }
+                break;
+            }
+            case 'input_static_text': {
                 res.markup += `<p>${elem.text}</p>`;
-            case 'input_dynamic_image':
-                res.markup += `dyn image TODO`;
-            case 'output_open_question':
+                break;
+            }
+            case 'input_dynamic_image': {
+                if (!elem.highlightable)
+                    res.markup += `dyn image TODO`;
+                else
+                    res.markup += `dyn image highlight TODO`;
+                break;
+            }
+            case 'output_open_question': {
                 let elem_tag = 'cml:text';
                 if (elem.size == 'big')
                     elem_tag = 'cml:textarea';
                 let required = elem.required ? 'validates="required"' : '';
 
                 res.markup += `<${elem_tag} label="${elem.question}" name="${elem.csvVariable}" ${required} />`;
-            case 'output_choices':
+                break;
+            }
+            case 'output_choices': {
                 let elem_tag, item_tag = '';
                 switch (elem.choice_type) {
                     case 'multiple_checkbox':
                         elem_tag = 'cml:checkboxes';
                         item_tag = 'cml:checkbox';
+                        break;
                     case 'single_radio':
                         elem_tag = 'cml:radios';
                         item_tag = 'cml:radio';
+                        break;
                     case 'single_dropdown':
                         elem_tag = 'cml:select';
                         item_tag = 'cml:option';
+                        break;
                 }
                 let required = elem.required ? 'validates="required"' : '';
 
@@ -253,11 +286,145 @@ const renderDesign = (job) => {
                     res.markup += `<${item_tag} label="${item.label}" value="${item.value}" />`;
                 }
                 res.markup += `</${elem_tag}>`;
-            case 'output_text_highlighting':
-                res.markup += ``;
-            case 'output_image_highlighting':
-                res.markup += `image highlighting TODO`;
+                break;
+            }
         }
+    }
+
+    //add js and css for highlighting parts
+    if (highlightText.length > 0) {
+        res.javascript += `
+        document.addEvent('domready', function() {
+            try {
+                require({
+                    paths: {
+                        "jquery-ui": "https://code.jquery.com/ui/1.11.3/jquery-ui.min",
+                        "TextHighlighter": "https://cdnjs.cloudflare.com/ajax/libs/texthighlighter/1.2.0/TextHighlighter.min"
+                    },
+                    map: {
+                        "*": {
+                            "jquery": "jquery-noconflict"
+                        }
+                    }
+                }, ["jquery-noconflict", "jquery-ui", "TextHighlighter"], function($) {
+                    onLibrariesLoaded($);
+                });
+            } catch (e) {
+                console.error(e);
+            }
+        })
+        function onLibrariesLoaded($) {
+            // Utility function used later to hide the validation error popup
+            $.fn.focusWithoutScrolling = function() {
+                var x = window.scrollX,
+                    y = window.scrollY;
+                this.focus();
+                window.scrollTo(x, y);
+                return this;
+            };`;
+
+        for (let varsText of highlightText) {
+            res.javascript += `
+            // Handles to the objects created by the highlight library.
+            // There is a handle for every paper.
+            var handlers${varsText} = [];
+            // Initialize the highlite libraries for every paper and setups
+            // listeners to clear the highlighted parts
+            function initialize${varsText} () {
+                var papers = $(".marker-target-${varsText} p");
+                for (var i = 0; i < papers.length; i++) {
+                    var paper = papers[i];
+                    var id = $(paper).parent().parent().attr('id');
+                    var hand = new TextHighlighter(paper, {
+                        onAfterHighlight: afterHighlight${varsText}
+                    });
+                    handlers${varsText}[id] = hand;
+                }
+                setupClearSingleHighlight${varsText}();
+                setupClearAllHighlightsButton${varsText}();
+            }
+            initialize${varsText}();
+            function afterHighlight${varsText}(range, normalizedHighlights, timestamp) {
+                var id = $(range.commonAncestorContainer).parent().parent().attr('id');
+                updateHiddenField${varsText}(handlers${varsText}[id]);
+                hideValidationError${varsText}(range);
+            };
+            // Add the listener to handle a click on an highlighted part (to remove it)
+            function setupClearSingleHighlight${varsText} () {
+                $(".marker-target-${varsText} p").on("click", ".highlighted", function(e) {
+                    var $el = $(e.currentTarget);
+                    var id = $el.parent().parent().parent().attr('id');
+                    handlers${varsText}[id].removeHighlights($el[0]);
+                    updateHiddenField${varsText}(handlers${varsText}[id]);
+                });
+            }
+            // Add the listneer for the button to clear all the highlights of a paper
+            function setupClearAllHighlightsButton${varsText}() {
+                $(".opt-clear-${varsText}").click(function(e) {
+                    e.preventDefault();
+                    var id = $(e.currentTarget).parent().parent().parent().attr('id');
+                    handlers${varsText}[id].removeHighlights();
+                    updateHiddenField${varsText}(handlers${varsText}[id]);
+                });
+            }
+            function updateHiddenField${varsText}(marks) {
+                $hiddenField = $(marks.el).parents().filter(".cml").children().find(".${varsText}");
+                var pattern = "";
+                if (marks.getHighlights().length > 0) {
+                    pattern = marks.serializeHighlights();
+                }
+                $hiddenField.val(pattern);
+            };
+            function hideValidationError${varsText} (marks) {
+                $els = $(marks.commonAncestorContainer).parents().filter(".cml").children();
+                $hiddenField = $els.parents().filter(".cml").children().find(".${varsText}");
+                // This is just to make the error message dissapear when selecting
+                // the pattern after a validation error
+                if ($els.find(".${varsText}").hasClass("validation-failed")) {
+                    $hiddenField.focusWithoutScrolling();
+                    $els.filter(".cml").children().find(".excl_crit").focusWithoutScrolling();
+                }
+            }
+            `;
+
+            res.css += `
+            .marker-target-${varsText} p {
+                cursor: copy;
+            }
+            .disable-manual .cml_row .reason_pattern, .disable-manual .cml_row .${varsText}:focus {
+                height: 0;
+                width: 0;
+                overflow: auto;
+                border: 0px;
+                resize: none;
+                outline: none !important;
+                background: transparent;
+                color: transparent;
+                
+                box-shadow: none;
+                -webkit-box-shadow: none;
+                -moz-box-shadow: none;  
+            }
+            `;
+        }
+
+        res.javascript += `}`;
+        res.css += `        
+            .disable-manual p {
+                margin-top: -30px;
+            }
+            .highlighted {
+                cursor: pointer;
+            }
+            .highlighted:hover:before {
+                color: white;
+                content: "×";
+                position: absolute;
+                padding-left: 2px;
+                padding-right: 2px;
+                background: black;
+                padding-left: 2px;
+            }`;
     }
 
     return res;
