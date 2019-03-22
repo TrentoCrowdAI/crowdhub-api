@@ -1,0 +1,57 @@
+{
+    "id_requester": 0,
+    "data": {
+        "name": "My job for all the platforms",
+        "description": "This is my job.",
+        "instructions": "Some intructions....",
+        "numVotes": 10,
+        "maxVotes": 2,
+        "reward": 17,
+        "items_csv": "https://raw.githubusercontent.com/TrentoCrowdAI/servant-api/develop/src/example/papers-short.csv",
+        "items_gold_csv": "https://raw.githubusercontent.com/TrentoCrowdAI/servant-api/develop/src/example/tests-short.csv",
+        "design": [
+            {
+                "type": "input_dynamic_text",
+                "question": "If you were to select one or more sentences (up to 3) most useful...",
+                "csvVariable": "abstract",
+                "highlightable": true,
+                "highlightedCsvVariable": "highlighted_parts"
+            },
+            {
+                "type": "output_choices",
+                "choices": [
+                    {
+                        "label": "Yes",
+                        "value": "Yes"
+                    },
+                    {
+                        "label": "No",
+                        "value": "No"
+                    },
+                    {
+                        "label": "Maybe",
+                        "value": "Maybe"
+                    }
+                ],
+                "question": "Does the paper describe a study that involves older adults?",
+                "required": true,
+                "choice_type": "single_radio",
+                "csvVariable": "in_out_radio"
+            },
+            {
+                "size": "big",
+                "type": "output_open_question",
+                "question": "Explain your decision.",
+                "required": true,
+                "csvVariable": "decision_explaination"
+            },
+            {
+                "type": "input_dynamic_text",
+                "question": "[Again]If you were to select one or more sentences (up to 3) most useful...",
+                "csvVariable": "abstract",
+                "highlightable": true,
+                "highlightedCsvVariable": "highlighted_parts2"
+            }
+        ]
+    }
+}
