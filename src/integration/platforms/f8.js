@@ -230,6 +230,7 @@ const renderDesign = (job) => {
                 else {
                     res.markup += `
                     <div class="html-element-wrapper marker-target-${elem.highlightedCsvVariable}">
+                        <h2>{{${elem.csvTitleVariable}}}</h2>
                         <p>{{${elem.csvVariable}}}</p>                  
                         <div>
                             <button class="opt-clear-${elem.highlightedCsvVariable}">Clear highlights</button> 

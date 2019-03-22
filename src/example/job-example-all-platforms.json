@@ -13,6 +13,7 @@
             {
                 "type": "input_dynamic_text",
                 "question": "If you were to select one or more sentences (up to 3) most useful...",
+                "csvTitleVariable": "title",
                 "csvVariable": "abstract",
                 "highlightable": true,
                 "highlightedCsvVariable": "highlighted_parts"
@@ -48,6 +49,7 @@
             {
                 "type": "input_dynamic_text",
                 "question": "[Again]If you were to select one or more sentences (up to 3) most useful...",
+                "csvTitleVariable": "title",
                 "csvVariable": "abstract",
                 "highlightable": true,
                 "highlightedCsvVariable": "highlighted_parts2"

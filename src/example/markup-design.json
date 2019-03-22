@@ -2,6 +2,7 @@
     {
         "__comment": "Text or HTML loaded from a CSV field",
         "type": "input_dynamic_text",
+        "csvTitleVariable": "title",
         "csvVariable": "abstract",
         "highlightable": true,
         "question": "If you were to select one or more sentences (up to 3) most useful...",
