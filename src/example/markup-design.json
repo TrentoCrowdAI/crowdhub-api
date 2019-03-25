@@ -1,0 +1,50 @@
+[
+    {
+        "__comment": "Text or HTML loaded from a CSV field",
+        "type": "input_dynamic_text",
+        "csvTitleVariable": "title",
+        "csvVariable": "abstract",
+        "highlightable": true,
+        "question": "If you were to select one or more sentences (up to 3) most useful...",
+        "highlightedCsvVariable": "highlighted_parts"
+    },
+    {
+        "__comment": "Static text or HTML",
+        "type": "input_static_text",
+        "text": "Some text"
+    },
+    {
+        "__comment": "Image loaded from a CSV field",
+        "type": "input_dynamic_image",
+        "csvVariable": "image_url",
+        "highlightable": true,
+        "question": "Select one or more part from the image...",
+        "highlightedCsvVariable": "highlighted_square"
+    },
+    {
+        "__comment": "F8 cml:text, cml:textarea;; Toloka field type='input', type='textarea'",
+        "type": "output_open_question",
+        "question": "Summarize the abstract of the paper",
+        "csvVariable": "summary",
+        "required": true,
+        "size": "slim/big"
+    },
+    {
+        "__comment": "F8 cml:checkboxes, cml:radios, cml:select; Toloka field type='checkbox', Toloka field type='radio', Toloka field type='select'",
+        "type": "output_choices",
+        "question": "Sample checkboxes:",
+        "choices": [
+            {
+                "label": "First checkbox",
+                "value": "first"
+            },
+            {
+                "label": "Second checkbox",
+                "value": "second"
+            }
+        ],
+        "csvVariable": "summary",
+        "required": false,
+        "choice_type": "multiple_checkbox|single_radio|single_dropdown"
+    }
+]

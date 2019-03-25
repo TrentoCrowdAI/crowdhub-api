@@ -1,7 +1,7 @@
 const toloka = require('./toloka');
 const jobsDelegate = require(__base + 'integration/delegates/jobs.delegate');
 
-const rightJob = require(__base + 'example/job-example-toloka.json');
+const rightJob = require(__base + 'example/job-example-all-platforms.json');
 
 //set jest timeout to 20 seconds
 jest.setTimeout(20000);
