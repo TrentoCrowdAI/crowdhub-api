@@ -221,11 +221,18 @@ const csvToTasks = async (job, csvFile, inOutParams) => {
  * @param {[]} tasks 
  */
 const createTasks = async (job, tasks) => {
-    let url = config.toloka.baseEndpoint + 'tasks';
+    let url = config.toloka.baseEndpoint + 'task-suites';
+
+    //every task-suite is a page
+    let body = {
+        pool_id: tasks[0].pool_id,
+        tasks: tasks,
+        overlap: 1
+    };
 
     let res = await fetch(url, {
         method: 'post',
-        body: JSON.stringify(tasks),
+        body: JSON.stringify(body),
         headers: {
             'Authorization': 'OAuth ' + config.toloka.accessToken,
             'Content-Type': 'application/JSON'
