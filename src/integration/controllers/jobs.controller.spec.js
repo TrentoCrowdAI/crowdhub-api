@@ -2,7 +2,7 @@ const request = require('supertest');
 
 const app = require(__base + 'app');
 
-const rightJob = require(__base + 'example/job-example-all-platforms.json');
+const rightJob = require(__base + 'example/job-example-text-highlighting.json');
 
 //set jest timeout to 20 seconds
 jest.setTimeout(20000);
