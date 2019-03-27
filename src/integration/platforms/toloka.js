@@ -104,6 +104,11 @@ const createTaskPool = async (job) => {
         assignment_max_duration_seconds: 60,
         defaults: {
             default_overlap_for_new_task_suites: 1
+        },
+        mixer_config: {
+            real_tasks_count: 1,                    //TODO: change
+            golden_tasks_count: 1,
+            training_tasks_count: 0
         }
     };
 
@@ -221,18 +226,11 @@ const csvToTasks = async (job, csvFile, inOutParams) => {
  * @param {[]} tasks 
  */
 const createTasks = async (job, tasks) => {
-    let url = config.toloka.baseEndpoint + 'task-suites';
-
-    //every task-suite is a page
-    let body = {
-        pool_id: tasks[0].pool_id,
-        tasks: tasks,
-        overlap: 1
-    };
+    let url = config.toloka.baseEndpoint + 'tasks';
 
     let res = await fetch(url, {
         method: 'post',
-        body: JSON.stringify(body),
+        body: JSON.stringify(tasks),
         headers: {
             'Authorization': 'OAuth ' + config.toloka.accessToken,
             'Content-Type': 'application/JSON'
