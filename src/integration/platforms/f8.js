@@ -2,6 +2,7 @@ const fetch = require('node-fetch');
 const querystring = require('querystring');
 
 const config = require(__base + 'config/index');
+const sleep = require(__base + 'utils/utils').sleep;
 
 /**
  * Publish the job parameter on the F8 platform as a new job.
@@ -10,21 +11,31 @@ const config = require(__base + 'config/index');
 const publish = async (job) => {
     job = await createNewJob(job);
 
+    await sleep(100);
+
     //add items
     job = await addCsvItems(job, job.data.items_csv);
 
+    await sleep(100);
+
     //add gold items
     job = await addCsvItems(job, job.data.items_gold_csv);
+    await sleep(100);
+
     //recognise gold items
     await convertGoldQuestions(job);
+    await sleep(100);
 
     //render the design of the job
     let design = renderDesign(job);
 
     //set the design of the job
     job = await updateJobMarkup(job, design);
+    await sleep(100);
     job = await updateJobJS(job, design);
+    await sleep(100);
     job = await updateJobCSS(job, design);
+    await sleep(100);
 
     //set the reward info of the job
     job = await updateJobSpec(job);
@@ -254,9 +265,11 @@ const renderDesign = (job) => {
             }
             case 'input_dynamic_image': {
                 if (!elem.highlightable)
-                    res.markup += `dyn image TODO`;
+                    res.markup += `<img src="{{${elem.csvVariable}}}"/>`;
                 else
-                    res.markup += `dyn image highlight TODO`;
+                    res.markup += `
+                        <p>${elem.question}</p> 
+                        <cml:shapes type="['box']" image-url="{{${elem.csvVariable}}}" name="${elem.highlightedCsvVariable}" label="${elem.question}" validates="required" box-threshold="0.7" />`;
                 break;
             }
             case 'output_open_question': {
