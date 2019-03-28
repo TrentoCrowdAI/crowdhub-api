@@ -1,0 +1,37 @@
+{
+    "id_requester": 0,
+    "data": {
+        "name": "My image classification job",
+        "description": "This is my job.",
+        "instructions": "Some intructions....",
+        "numVotes": 10,
+        "maxVotes": 2,
+        "reward": 17,
+        "items_csv": "https://raw.githubusercontent.com/TrentoCrowdAI/servant-api/job-templates/src/example/image-classification.csv",
+        "items_gold_csv": "https://raw.githubusercontent.com/TrentoCrowdAI/servant-api/job-templates/src/example/image-classification-gold.csv",
+        "design": [
+            {
+                "type": "input_dynamic_image",
+                "csvVariable": "image_url",
+                "highlightable": false
+            },
+            {
+                "type": "output_choices",
+                "question": "Does this image contain a cat?",
+                "choices": [
+                    {
+                        "label": "Yes",
+                        "value": "yes"
+                    },
+                    {
+                        "label": "No",
+                        "value": "no"
+                    }
+                ],
+                "csvVariable": "cat_radio",
+                "required": true,
+                "choice_type": "single_radio"
+            }
+        ]
+    }
+}
