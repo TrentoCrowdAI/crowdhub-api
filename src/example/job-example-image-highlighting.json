@@ -7,8 +7,8 @@
         "numVotes": 10,
         "maxVotes": 2,
         "reward": 17,
-        "items_csv": "https://raw.githubusercontent.com/TrentoCrowdAI/servant-api/job-templates/src/example/image-highlighting.csv",
-        "items_gold_csv": "https://raw.githubusercontent.com/TrentoCrowdAI/servant-api/job-templates/src/example/image-highlighting-gold.csv",
+        "items_csv": "https://raw.githubusercontent.com/TrentoCrowdAI/servant-api/develop/src/example/image-highlighting.csv",
+        "items_gold_csv": "https://raw.githubusercontent.com/TrentoCrowdAI/servant-api/develop/src/example/image-highlighting-gold.csv",
         "design": [
             {
                 "type": "input_dynamic_image",
