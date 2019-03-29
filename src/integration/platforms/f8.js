@@ -11,31 +11,31 @@ const sleep = require(__base + 'utils/utils').sleep;
 const publish = async (job) => {
     job = await createNewJob(job);
 
-    await sleep(100);
+    await sleep(250);
 
     //add items
     job = await addCsvItems(job, job.data.items_csv);
 
-    await sleep(100);
+    await sleep(250);
 
     //add gold items
     job = await addCsvItems(job, job.data.items_gold_csv);
-    await sleep(100);
+    await sleep(250);
 
     //recognise gold items
     await convertGoldQuestions(job);
-    await sleep(100);
+    await sleep(250);
 
     //render the design of the job
     let design = renderDesign(job);
 
     //set the design of the job
     job = await updateJobMarkup(job, design);
-    await sleep(100);
+    await sleep(250);
     job = await updateJobJS(job, design);
-    await sleep(100);
+    await sleep(250);
     job = await updateJobCSS(job, design);
-    await sleep(100);
+    await sleep(250);
 
     //set the reward info of the job
     job = await updateJobSpec(job);
