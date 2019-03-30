@@ -409,19 +409,20 @@ const renderDesign = (job) => {
             .marker-target-${varsText} p {
                 cursor: copy;
             }
-            .disable-manual .cml_row .reason_pattern, .disable-manual .cml_row .${varsText}:focus {
-                height: 0;
-                width: 0;
-                overflow: auto;
-                border: 0px;
-                resize: none;
+            .cml_row .${varsText} {
+                height: 0 !important;
+                width: 0 !important;
+                overflow: auto !important;
+                border: 0px !important;
+                padding: 0px !important;
+                resize: none !important;
                 outline: none !important;
-                background: transparent;
-                color: transparent;
+                background: transparent !important;
+                color: transparent !important;
                 
-                box-shadow: none;
-                -webkit-box-shadow: none;
-                -moz-box-shadow: none;  
+                box-shadow: none !important;
+                -webkit-box-shadow: none !important;
+                -moz-box-shadow: none !important;  
             }
             `;
         }
