@@ -240,22 +240,22 @@ const renderDesign = (job) => {
             case 'input_dynamic_text': {
                 if (!elem.highlightable)
                     res.markup += `
-                        <h2>{{${elem.csvTitleVariable}}}</h2>
-                        <p>{{${elem.csvVariable}}}</p>`;
+                        <h2>{{${elem.csvTitleVariable.toLowerCase()}}}</h2>
+                        <p>{{${elem.csvVariable.toLowerCase()}}}</p>`;
                 else {
                     res.markup += `
-                    <div class="html-element-wrapper marker-target-${elem.highlightedCsvVariable}">
-                        <h2>{{${elem.csvTitleVariable}}}</h2>
-                        <p>{{${elem.csvVariable}}}</p>                  
+                    <div class="html-element-wrapper marker-target-${elem.highlightedCsvVariable.toLowerCase()}">
+                        <h2>{{${elem.csvTitleVariable.toLowerCase()}}}</h2>
+                        <p>{{${elem.csvVariable.toLowerCase()}}}</p>                  
                         <div>
-                            <button class="opt-clear-${elem.highlightedCsvVariable}">Clear highlights</button> 
+                            <button class="opt-clear-${elem.highlightedCsvVariable.toLowerCase()}">Clear highlights</button> 
                             <small class="small">Select from the text above to highlight the part that supports your decision.</small>
                         </div>
                     </div>
                     <!-- Hidden field -->
-                    <cml:textarea label="${elem.question}" validates="required" name="${elem.highlightedCsvVariable}"/>`;
+                    <cml:textarea label="${elem.question}" validates="required" name="${elem.highlightedCsvVariable.toLowerCase()}"/>`;
 
-                    highlightText.push(elem.highlightedCsvVariable);
+                    highlightText.push(elem.highlightedCsvVariable.toLowerCase());
                 }
                 break;
             }
@@ -265,11 +265,11 @@ const renderDesign = (job) => {
             }
             case 'input_dynamic_image': {
                 if (!elem.highlightable)
-                    res.markup += `<img src="{{${elem.csvVariable}}}"/>`;
+                    res.markup += `<img src="{{${elem.csvVariable.toLowerCase()}}}"/>`;
                 else
                     res.markup += `
                         <p>${elem.question}</p> 
-                        <cml:shapes type="['box']" image-url="{{${elem.csvVariable}}}" name="${elem.highlightedCsvVariable}" label="${elem.question}" validates="required" box-threshold="0.7" />`;
+                        <cml:shapes type="['box']" image-url="{{${elem.csvVariable.toLowerCase()}}}" name="${elem.highlightedCsvVariable.toLowerCase()}" label="${elem.question}" validates="required" box-threshold="0.7" />`;
                 break;
             }
             case 'output_open_question': {
@@ -278,7 +278,7 @@ const renderDesign = (job) => {
                     elem_tag = 'cml:textarea';
                 let required = elem.required ? 'validates="required"' : '';
 
-                res.markup += `<${elem_tag} label="${elem.question}" name="${elem.csvVariable}" ${required} />`;
+                res.markup += `<${elem_tag} label="${elem.question}" name="${elem.csvVariable.toLowerCase()}" ${required} />`;
                 break;
             }
             case 'output_choices': {
@@ -299,7 +299,7 @@ const renderDesign = (job) => {
                 }
                 let required = elem.required ? 'validates="required"' : '';
 
-                res.markup += `<${elem_tag} label="${elem.question}" name="${elem.csvVariable}" ${required}>`;
+                res.markup += `<${elem_tag} label="${elem.question}" name="${elem.csvVariable.toLowerCase()}" ${required}>`;
                 for (let item of elem.choices) {
                     res.markup += `<${item_tag} label="${item.label}" value="${item.value}" />`;
                 }
