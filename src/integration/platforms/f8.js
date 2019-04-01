@@ -2,6 +2,7 @@ const fetch = require('node-fetch');
 const querystring = require('querystring');
 
 const config = require(__base + 'config/index');
+const sleep = require(__base + 'utils/utils').sleep;
 
 /**
  * Publish the job parameter on the F8 platform as a new job.
@@ -10,21 +11,31 @@ const config = require(__base + 'config/index');
 const publish = async (job) => {
     job = await createNewJob(job);
 
+    await sleep(250);
+
     //add items
     job = await addCsvItems(job, job.data.items_csv);
 
+    await sleep(250);
+
     //add gold items
     job = await addCsvItems(job, job.data.items_gold_csv);
+    await sleep(250);
+
     //recognise gold items
     await convertGoldQuestions(job);
+    await sleep(250);
 
     //render the design of the job
     let design = renderDesign(job);
 
     //set the design of the job
     job = await updateJobMarkup(job, design);
+    await sleep(250);
     job = await updateJobJS(job, design);
+    await sleep(250);
     job = await updateJobCSS(job, design);
+    await sleep(250);
 
     //set the reward info of the job
     job = await updateJobSpec(job);
@@ -229,22 +240,22 @@ const renderDesign = (job) => {
             case 'input_dynamic_text': {
                 if (!elem.highlightable)
                     res.markup += `
-                        <h2>{{${elem.csvTitleVariable}}}</h2>
-                        <p>{{${elem.csvVariable}}}</p>`;
+                        <h2>{{${elem.csvTitleVariable.toLowerCase()}}}</h2>
+                        <p>{{${elem.csvVariable.toLowerCase()}}}</p>`;
                 else {
                     res.markup += `
-                    <div class="html-element-wrapper marker-target-${elem.highlightedCsvVariable}">
-                        <h2>{{${elem.csvTitleVariable}}}</h2>
-                        <p>{{${elem.csvVariable}}}</p>                  
+                    <div class="html-element-wrapper marker-target-${elem.highlightedCsvVariable.toLowerCase()}">
+                        <h2>{{${elem.csvTitleVariable.toLowerCase()}}}</h2>
+                        <p>{{${elem.csvVariable.toLowerCase()}}}</p>                  
                         <div>
-                            <button class="opt-clear-${elem.highlightedCsvVariable}">Clear highlights</button> 
+                            <button class="opt-clear-${elem.highlightedCsvVariable.toLowerCase()}">Clear highlights</button> 
                             <small class="small">Select from the text above to highlight the part that supports your decision.</small>
                         </div>
                     </div>
                     <!-- Hidden field -->
-                    <cml:textarea label="${elem.question}" validates="required" name="${elem.highlightedCsvVariable}"/>`;
+                    <cml:textarea label="${elem.question}" validates="required" name="${elem.highlightedCsvVariable.toLowerCase()}"/>`;
 
-                    highlightText.push(elem.highlightedCsvVariable);
+                    highlightText.push(elem.highlightedCsvVariable.toLowerCase());
                 }
                 break;
             }
@@ -254,9 +265,11 @@ const renderDesign = (job) => {
             }
             case 'input_dynamic_image': {
                 if (!elem.highlightable)
-                    res.markup += `dyn image TODO`;
+                    res.markup += `<img src="{{${elem.csvVariable.toLowerCase()}}}"/>`;
                 else
-                    res.markup += `dyn image highlight TODO`;
+                    res.markup += `
+                        <p>${elem.question}</p> 
+                        <cml:shapes type="['box']" image-url="{{${elem.csvVariable.toLowerCase()}}}" name="${elem.highlightedCsvVariable.toLowerCase()}" label="${elem.question}" validates="required" box-threshold="0.7" />`;
                 break;
             }
             case 'output_open_question': {
@@ -265,7 +278,7 @@ const renderDesign = (job) => {
                     elem_tag = 'cml:textarea';
                 let required = elem.required ? 'validates="required"' : '';
 
-                res.markup += `<${elem_tag} label="${elem.question}" name="${elem.csvVariable}" ${required} />`;
+                res.markup += `<${elem_tag} label="${elem.question}" name="${elem.csvVariable.toLowerCase()}" ${required} />`;
                 break;
             }
             case 'output_choices': {
@@ -286,7 +299,7 @@ const renderDesign = (job) => {
                 }
                 let required = elem.required ? 'validates="required"' : '';
 
-                res.markup += `<${elem_tag} label="${elem.question}" name="${elem.csvVariable}" ${required}>`;
+                res.markup += `<${elem_tag} label="${elem.question}" name="${elem.csvVariable.toLowerCase()}" ${required}>`;
                 for (let item of elem.choices) {
                     res.markup += `<${item_tag} label="${item.label}" value="${item.value}" />`;
                 }
@@ -396,19 +409,20 @@ const renderDesign = (job) => {
             .marker-target-${varsText} p {
                 cursor: copy;
             }
-            .disable-manual .cml_row .reason_pattern, .disable-manual .cml_row .${varsText}:focus {
-                height: 0;
-                width: 0;
-                overflow: auto;
-                border: 0px;
-                resize: none;
+            .cml_row .${varsText} {
+                height: 0 !important;
+                width: 0 !important;
+                overflow: auto !important;
+                border: 0px !important;
+                padding: 0px !important;
+                resize: none !important;
                 outline: none !important;
-                background: transparent;
-                color: transparent;
+                background: transparent !important;
+                color: transparent !important;
                 
-                box-shadow: none;
-                -webkit-box-shadow: none;
-                -moz-box-shadow: none;  
+                box-shadow: none !important;
+                -webkit-box-shadow: none !important;
+                -moz-box-shadow: none !important;  
             }
             `;
         }

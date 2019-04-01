@@ -68,7 +68,7 @@ const checkJobMarkup = (job) => {
                 if (typeof elem.csvVariable != "string")
                     throw errHandler.createBusinessError(`Job design validation: 'csvVariable' of element #${index} is not valid!`);
 
-                if (!elem.highlightable) {
+                if (elem.highlightable) {
                     if (typeof elem.question != "string")
                         throw errHandler.createBusinessError(`Job design validation: 'question' of element #${index} is not valid!`);
                     if (typeof elem.highlightedCsvVariable != "string")
