@@ -309,7 +309,7 @@ const renderDesign = (job) => {
             }
             case 'input_dynamic_image': {
                 if (!elem.highlightable)
-                    res.markup += `<img src="{{${elem.csvVariable}}}"/>`;
+                    res.markup += `<img src="{{${elem.csvVariable}}}" width="100%"/>`;
                 else {
                     res.markup += `
                         <p>${elem.question}</p> 
