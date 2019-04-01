@@ -3,6 +3,7 @@ global.__base = __dirname + '/';
 const express = require('express');
 const bodyParser = require('body-parser');
 const Boom = require('boom');
+const cors = require('cors');
 
 const errorsHelper = require('./utils/errors');
 const jobsController = require('./integration/controllers/jobs.controller');
@@ -11,6 +12,7 @@ const app = express();
 
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
+app.use(cors());
 
 // health check (public endpoint)
 app.get('/', (req, res) => {
