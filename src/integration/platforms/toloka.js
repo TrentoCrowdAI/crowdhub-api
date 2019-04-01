@@ -102,7 +102,7 @@ const createTaskPool = async (job) => {
         may_contain_adult_content: false,
         will_expire: '2022-03-11T12:00:00',         //TODO: change
         reward_per_assignment: job.data.reward,
-        assignment_max_duration_seconds: 60,
+        assignment_max_duration_seconds: 60 * 10,
         defaults: {
             default_overlap_for_new_task_suites: 1
         },
@@ -539,6 +539,7 @@ const renderDesign = (job) => {
         }
         .paper-text {
             cursor: copy;
+            position: relative;
         }
         textarea {
             width: 100%;
