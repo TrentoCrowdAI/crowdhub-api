@@ -5,22 +5,87 @@
 --	numVotes: <number>,  // votes per item
 --	maxVotes: <number>,  // max votes per worker
 --	reward: <number>,        // how much we pay per vote
---	items_csv: <string>,  // path to items file in the server
---	items_gold_csv: <string>,   //   path to gold items file in the server
---	design: {
---    markup: <string>,
---		javascript: <string>,
---		css: <string>
---  },
---	instructions,   // html/text content for the instructions of the task
---	platform: <> // to be defined better
 -- }
-CREATE TABLE job (
+CREATE TABLE project (
   id bigserial NOT NULL,
   created_at timestamp,
   updated_at timestamp,
   deleted_at timestamp,
-  id_requester bigint, -- to be NOT NULL
+  data JSONB,
+  CONSTRAINT pk_job PRIMARY KEY (id)
+);
+
+
+-- data: {
+--  name: <string>,
+--  blocks: [
+--    {
+--      id: <string>, //id of the block
+--      data: {
+--			  type: "Qrand", //the type of the block
+--			  toCache: <bbolean>, //if the block has to be cached or not
+--			  //other specific block params
+--		  },
+--		  children: [ <number> ] // the children blocks of this block
+--    }
+--  ]
+-- }
+CREATE TABLE workflow (
+  id bigserial NOT NULL,
+  created_at timestamp,
+  updated_at timestamp,
+  deleted_at timestamp,
+  id_project bigint NOT NULL,
+  data JSONB,
+  CONSTRAINT pk_job PRIMARY KEY (id)
+);
+
+
+-- data: {
+--  //data of the specific block cached
+--  input: {},
+--  output: {}
+-- }
+CREATE TABLE cache (
+  created_at timestamp,
+  updated_at timestamp,
+  deleted_at timestamp,
+  id_workflow bigint NOT NULL,
+  id_block bigint NOT NULL,
+  data JSONB,
+  CONSTRAINT pk_job PRIMARY KEY (id_workflow, id_block)
+);
+
+
+-- data: {
+--  prop: <string> //property-value in F8 standard
+-- }
+CREATE TABLE item (
+  id bigserial NOT NULL,
+  created_at timestamp,
+  updated_at timestamp,
+  deleted_at timestamp,
+  id_project bigint NOT NULL,
+  data JSONB,
+  CONSTRAINT pk_job PRIMARY KEY (id)
+);
+
+
+-- data: {
+--  name: <string>, //name of the template,
+--	instructions: <string>   // html/text content for the instructions of the task
+--  blocks: [
+--    {
+--      type: "input_dynamic_text",
+--      ...
+--    }
+--  ]
+-- }
+CREATE TABLE template (
+  id bigserial NOT NULL,
+  created_at timestamp,
+  updated_at timestamp,
+  deleted_at timestamp,
   data JSONB,
   CONSTRAINT pk_job PRIMARY KEY (id)
 );
