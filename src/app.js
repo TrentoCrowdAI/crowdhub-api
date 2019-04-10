@@ -6,7 +6,7 @@ const Boom = require('boom');
 const cors = require('cors');
 
 const errorsHelper = require('./utils/errors');
-const jobsController = require('./integration/controllers/jobs.controller');
+const projectsController = require('./integration/controllers/projects.controller');
 
 const app = express();
 
@@ -21,7 +21,7 @@ app.get('/', (req, res) => {
 
 
 // define routes here
-app.use(jobsController);
+app.use(projectsController);
 
 
 app.use((e, req, res, next) => {
