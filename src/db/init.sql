@@ -12,7 +12,7 @@ CREATE TABLE project (
   updated_at timestamp,
   deleted_at timestamp,
   data JSONB,
-  CONSTRAINT pk_job PRIMARY KEY (id)
+  CONSTRAINT pk_proj PRIMARY KEY (id)
 );
 
 
@@ -37,7 +37,7 @@ CREATE TABLE workflow (
   deleted_at timestamp,
   id_project bigint NOT NULL,
   data JSONB,
-  CONSTRAINT pk_job PRIMARY KEY (id)
+  CONSTRAINT pk_workflow PRIMARY KEY (id)
 );
 
 
@@ -53,7 +53,7 @@ CREATE TABLE cache (
   id_workflow bigint NOT NULL,
   id_block bigint NOT NULL,
   data JSONB,
-  CONSTRAINT pk_job PRIMARY KEY (id_workflow, id_block)
+  CONSTRAINT pk_cache PRIMARY KEY (id_workflow, id_block)
 );
 
 
@@ -67,7 +67,7 @@ CREATE TABLE item (
   deleted_at timestamp,
   id_project bigint NOT NULL,
   data JSONB,
-  CONSTRAINT pk_job PRIMARY KEY (id)
+  CONSTRAINT pk_item PRIMARY KEY (id)
 );
 
 
@@ -87,5 +87,5 @@ CREATE TABLE template_do (
   updated_at timestamp,
   deleted_at timestamp,
   data JSONB,
-  CONSTRAINT pk_job PRIMARY KEY (id)
+  CONSTRAINT pk_template_do PRIMARY KEY (id)
 );
