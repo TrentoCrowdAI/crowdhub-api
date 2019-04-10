@@ -81,7 +81,7 @@ CREATE TABLE item (
 --    }
 --  ]
 -- }
-CREATE TABLE template (
+CREATE TABLE template_do (
   id bigserial NOT NULL,
   created_at timestamp,
   updated_at timestamp,
