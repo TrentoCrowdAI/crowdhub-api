@@ -29,10 +29,11 @@ pool.on('error', (error, client) => {
 });
 
 const TABLES = Object.freeze({
-  Requester: 'requester',
-  Job: 'job',
+  Project: 'project',
+  Workflow: 'workflow',
   Item: 'item',
-  Predicate: 'predicate'
+  Cache: 'cache',
+  TemplateDo: 'template_do'
 });
 
 /**
