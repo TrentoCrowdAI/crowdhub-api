@@ -9,6 +9,7 @@ const errorsHelper = require('./utils/errors');
 
 const projectsController = require('./integration/controllers/projects.controller');
 const workflowsController = require('./integration/controllers/workflows.controller');
+const templateDoController = require('./integration/controllers/template-do.controller');
 
 const app = express();
 
@@ -25,6 +26,7 @@ app.get('/', (req, res) => {
 // define routes here
 app.use(projectsController);
 app.use(workflowsController);
+app.use(templateDoController);
 
 
 app.use((e, req, res, next) => {
