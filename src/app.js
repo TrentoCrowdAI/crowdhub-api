@@ -11,6 +11,7 @@ const projectsController = require('./integration/controllers/projects.controlle
 const workflowsController = require('./integration/controllers/workflows.controller');
 const templateDoController = require('./integration/controllers/template-do.controller');
 const cacheController = require('./integration/controllers/cache.controller');
+const itemsController = require('./integration/controllers/items.controller');
 
 const app = express();
 
@@ -29,6 +30,7 @@ app.use(projectsController);
 app.use(workflowsController);
 app.use(templateDoController);
 app.use(cacheController);
+app.use(itemsController);
 
 
 app.use((e, req, res, next) => {
