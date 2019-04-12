@@ -47,13 +47,15 @@ CREATE TABLE workflow (
 --  output: {}
 -- }
 CREATE TABLE cache (
+  id bigserial NOT NULL,
   created_at timestamp,
   updated_at timestamp,
   deleted_at timestamp,
   id_workflow bigint NOT NULL,
   id_block bigint NOT NULL,
   data JSONB,
-  CONSTRAINT pk_cache PRIMARY KEY (id_workflow, id_block)
+  CONSTRAINT pk_cache PRIMARY KEY (id),
+  CONSTRAINT unique_cache UNIQUE (id_workflow, id_block)
 );
 
 
