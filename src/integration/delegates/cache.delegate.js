@@ -50,8 +50,13 @@ const update = async (cache, cacheId) => {
     return cache;
 };
 
-const getAll = async () => {
-    return await cacheDao.getAll();
+const getAll = async (workflowId) => {
+    workflowId = parseInt(workflowId);
+    if (typeof cacheId != "number" || isNaN(cacheId)) {
+        workflowId = undefined;
+    }
+
+    return await cacheDao.getAll(workflowId);
 };
 
 module.exports = {

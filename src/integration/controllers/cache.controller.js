@@ -5,7 +5,8 @@ const router = express.Router();
 
 router.get('/cache', async (req, res, next) => {
     try {
-        let cache = await cacheDelegate.getAll();
+        let workflowId = req.query.workflowId;
+        let cache = await cacheDelegate.getAll(workflowId);
         res.json(cache);
     } catch (e) {
         // we delegate to the error-handling middleware

@@ -21,10 +21,18 @@ const get = async (cacheId) => {
 
     return res.rows[0];
 };
-const getAll = async () => {
+const getAll = async (workflowId) => {
+    let cond = "";
+    let params = [];
+    if (workflowId !== undefined) {
+        cond = `and id_workflow = $1`;
+        params = [workflowId];
+    }
+
     let res = await db.query(
         `select * from ${db.TABLES.Cache} 
-            where deleted_at is NULL`
+            where deleted_at is NULL ${cond}`,
+        params
     );
 
     return res.rows;
