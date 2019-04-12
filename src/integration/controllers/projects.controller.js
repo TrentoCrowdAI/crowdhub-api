@@ -58,7 +58,7 @@ router.delete('/projects/:id', async (req, res, next) => {
     try {
         let id = req.params.id;
 
-        proj = await projectsDelegate.deleteProject(id);
+        let proj = await projectsDelegate.deleteProject(id);
         res.json(proj);
     } catch (e) {
         // we delegate to the error-handling middleware

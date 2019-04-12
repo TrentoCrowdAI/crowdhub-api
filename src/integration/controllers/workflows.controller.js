@@ -52,7 +52,7 @@ router.delete('/workflows/:id', async (req, res, next) => {
     try {
         let id = req.params.id;
 
-        work = await workflowsDelegate.deleteWorkflow(id);
+        let work = await workflowsDelegate.deleteWorkflow(id);
         res.json(work);
     } catch (e) {
         // we delegate to the error-handling middleware
