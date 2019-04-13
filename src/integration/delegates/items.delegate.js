@@ -76,8 +76,8 @@ const update = async (item, itemId) => {
     return item;
 };
 
-const getAll = async () => {
-    return await itemsDao.getAll();
+const getAll = async (projectId) => {
+    return await itemsDao.getAll(projectId);
 };
 
 module.exports = {
