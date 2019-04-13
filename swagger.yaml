@@ -1,0 +1,140 @@
+swagger: '2.0'
+info:
+  title: servant-api
+  description: servant sits on top of major crowdsourcing platforms to intelligently assists customers in performing classification tasks.
+  version: "1"
+host: crowdai-servant-api.herokuapp.com
+schemes:
+  - https
+produces:
+  - application/json
+
+
+paths:
+  /projects:
+    get:
+      tags:
+      - "Projects"
+      description: Returns the list of the projects.
+      summary: Get projects
+      responses:
+        200:
+          description: The list of the projects.
+          schema:
+            type: array
+            items: 
+              $ref: '#/definitions/Project'
+        400:
+          description: Bad Request
+    post:
+      tags:
+      - "Projects"
+      description:  Create a new project.
+      summary: Create project
+      parameters:
+        - in: body
+          name: project
+          description: The project to create.
+          required: true
+          schema:
+            $ref: '#/definitions/Project_create'
+      responses:
+        201:
+          description: The created project.
+          schema:
+            $ref: '#/definitions/Project'
+        400:
+          description: Bad Request
+                
+  /projects/{projectID}:
+    parameters:
+      - in: path
+        name: projectID
+        required: true
+        type: integer
+    get:
+      tags:
+      - "Projects"
+      description: Returns a single project by ID
+      summary: Get project by ID
+      responses:
+        200:
+          description: The requested project.
+          schema:
+            $ref: '#/definitions/Project'
+        404:
+          description: Not Found
+    put:
+      tags:
+      - "Projects"
+      description:  Update the information related to a single project selected by ID.
+      summary: Update project
+      parameters:
+        - in: body
+          name: project
+          description: The project info
+          required: true
+          schema:
+            $ref: '#/definitions/Project'
+      responses:
+        200:
+          description: OK, updated.
+        schema:
+          $ref: '#/definitions/Project'
+    delete:
+      tags:
+      - "Projects"
+      summary: Delete a project by ID.
+      responses:
+        204:
+          description: OK, deleted.
+          schema:
+            $ref: '#/definitions/Project'
+        404:
+          description: Not Found
+                
+definitions:
+  Project:
+    type: object
+    properties:
+      id:
+        type: integer
+        description: The ID of the project
+      created_at:
+        type: string
+        description: The creation timestamp of the project
+      updated_at:
+        type: string
+        description: The update timestamp of the project
+      deleted_at:
+        type: string
+        description: The delete timestamp of the project
+      data:
+        type: object
+        description: The data related to the project
+        properties:
+          name:
+            type: string
+            description: The name of the project
+          description:
+            type: string
+            description: The description of the project
+    required:  
+      - id
+      - name
+      - surname
+      - username
+      - email
+
+  Project_create:
+    type: object
+    properties:
+      name:
+        type: string
+        description: The name of the project
+      description:
+        type: string
+        description: The description of the project
+    required:  
+      - name
+      - description
