@@ -1,13 +1,10 @@
-swagger: '2.0'
+openapi: '3.0.2'
 info:
   title: servant-api
   description: servant sits on top of major crowdsourcing platforms to intelligently assists customers in performing classification tasks.
   version: "1"
-host: crowdai-servant-api.herokuapp.com
-schemes:
-  - https
-produces:
-  - application/json
+servers:
+  - url: https://crowdai-servant-api.herokuapp.com
 
 
 paths:
@@ -20,10 +17,12 @@ paths:
       responses:
         200:
           description: The list of the projects.
-          schema:
-            type: array
-            items: 
-              $ref: '#/definitions/Project'
+          content:
+            application/json:
+              schema:
+                type: array
+                items: 
+                  $ref: '#/components/schemas/Project'
         400:
           description: Bad Request
     post:
@@ -37,12 +36,14 @@ paths:
           description: The project to create.
           required: true
           schema:
-            $ref: '#/definitions/Project_create'
+            $ref: '#/components/schemas/Project_create'
       responses:
         201:
           description: The created project.
-          schema:
-            $ref: '#/definitions/Project'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Project'
         400:
           description: Bad Request
                 
@@ -51,7 +52,8 @@ paths:
       - in: path
         name: projectID
         required: true
-        type: integer
+        schema:
+          type: integer
     get:
       tags:
       - "Projects"
@@ -60,8 +62,10 @@ paths:
       responses:
         200:
           description: The requested project.
-          schema:
-            $ref: '#/definitions/Project'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Project'
         404:
           description: Not Found
     put:
@@ -75,12 +79,14 @@ paths:
           description: The project info
           required: true
           schema:
-            $ref: '#/definitions/Project'
+            $ref: '#/components/schemas/Project'
       responses:
         200:
           description: OK, updated.
-        schema:
-          $ref: '#/definitions/Project'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Project'
     delete:
       tags:
       - "Projects"
@@ -88,53 +94,198 @@ paths:
       responses:
         204:
           description: OK, deleted.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Project'
+        404:
+          description: Not Found
+
+  /items:
+    get:
+      tags:
+      - "Items"
+      description: Returns the list of the items.
+      summary: Get items
+      responses:
+        200:
+          description: The list of the items.
+          content:
+            application/json:
+              schema:
+                type: array
+                items: 
+                  $ref: '#/components/schemas/Item'
+        400:
+          description: Bad Request
+    post:
+      tags:
+      - "Items"
+      description:  Create new items.
+      summary: Create items
+      parameters:
+        - in: body
+          name: items
+          description: The items to create.
+          required: true
           schema:
-            $ref: '#/definitions/Project'
+            oneOf:
+              - $ref: '#/components/schemas/Item_create'
+              - $ref: '#/components/schemas/Item_create_csv'
+      responses:
+        201:
+          description: The list of created items.
+          content:
+            application/json:
+              schema:
+                type: array
+                items: 
+                  $ref: '#/components/schemas/Item'
+        400:
+          description: Bad Request
+                
+  /items/{itemID}:
+    parameters:
+      - in: path
+        name: itemID
+        required: true
+        schema:
+          type: integer
+    get:
+      tags:
+      - "Items"
+      description: Returns a single item by ID
+      summary: Get item by ID
+      responses:
+        200:
+          description: The requested item.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Item'
+        404:
+          description: Not Found
+    put:
+      tags:
+      - "Items"
+      description:  Update the information related to a single item selected by ID.
+      summary: Update item
+      parameters:
+        - in: body
+          name: item
+          description: The item info
+          required: true
+          schema:
+            $ref: '#/components/schemas/Item'
+      responses:
+        200:
+          description: OK, updated.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Item'
+    delete:
+      tags:
+      - "Items"
+      summary: Delete an item by ID.
+      responses:
+        204:
+          description: OK, deleted.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Item'
         404:
           description: Not Found
                 
-definitions:
-  Project:
-    type: object
-    properties:
-      id:
-        type: integer
-        description: The ID of the project
-      created_at:
-        type: string
-        description: The creation timestamp of the project
-      updated_at:
-        type: string
-        description: The update timestamp of the project
-      deleted_at:
-        type: string
-        description: The delete timestamp of the project
-      data:
-        type: object
-        description: The data related to the project
-        properties:
-          name:
-            type: string
-            description: The name of the project
-          description:
-            type: string
-            description: The description of the project
-    required:  
-      - id
-      - name
-      - surname
-      - username
-      - email
+components:
+  schemas:
+    Project:
+      type: object
+      properties:
+        id:
+          type: integer
+          description: The ID of the project
+        created_at:
+          type: string
+          description: The creation timestamp of the project
+        updated_at:
+          type: string
+          description: The update timestamp of the project
+        deleted_at:
+          type: string
+          description: The delete timestamp of the project
+        data:
+          type: object
+          description: The data related to the project
+          properties:
+            name:
+              type: string
+              description: The name of the project
+            description:
+              type: string
+              description: The description of the project
 
-  Project_create:
-    type: object
-    properties:
-      name:
-        type: string
-        description: The name of the project
-      description:
-        type: string
-        description: The description of the project
-    required:  
-      - name
-      - description
+    Project_create:
+      type: object
+      properties:
+        name:
+          type: string
+          description: The name of the project
+        description:
+          type: string
+          description: The description of the project
+      required:  
+        - name
+        - description
+
+    Item:
+      type: object
+      properties:
+        id:
+          type: integer
+          description: The ID of the item
+        created_at:
+          type: string
+          description: The creation timestamp of the item
+        updated_at:
+          type: string
+          description: The update timestamp of the item
+        deleted_at:
+          type: string
+          description: The delete timestamp of the item
+        id_project:
+          type: integer
+          description: The ID of the project which the item belongs to
+        data:
+          type: object
+          description: The data related to the item
+
+    Item_create:
+      type: object
+      properties:
+        id_project:
+          type: integer
+          description: The ID of the project which the items belongs to
+        items:
+          type: array
+          description: The array of items
+          items:
+            type: object
+            description: The item
+      required:  
+        - id_project
+        - items
+
+    Item_create_csv:
+      type: object
+      properties:
+        id_project:
+          type: integer
+          description: The ID of the project which the items belongs to
+        csv_url:
+          type: string
+          description: The URL of the csv file
+      required:  
+        - id_project
+        - csv_url
