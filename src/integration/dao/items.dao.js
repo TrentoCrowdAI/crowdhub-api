@@ -21,10 +21,18 @@ const get = async (itemId) => {
 
     return res.rows[0];
 };
-const getAll = async () => {
+const getAll = async (projectId) => {
+    let cond = "";
+    let params = [];
+    if (projectId !== undefined) {
+        cond = `and id_project = $1`;
+        params = [projectId];
+    }
+
     let res = await db.query(
         `select * from ${db.TABLES.Item} 
-            where deleted_at is NULL`
+            where deleted_at is NULL ${cond}`,
+            params
     );
 
     return res.rows;

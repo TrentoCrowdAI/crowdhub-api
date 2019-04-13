@@ -5,7 +5,8 @@ const router = express.Router();
 
 router.get('/workflows', async (req, res, next) => {
     try {
-        let works = await workflowsDelegate.getAll();
+        let projectId = req.query.projectId;
+        let works = await workflowsDelegate.getAll(projectId);
         res.json(works);
     } catch (e) {
         // we delegate to the error-handling middleware

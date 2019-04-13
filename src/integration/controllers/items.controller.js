@@ -5,7 +5,8 @@ const router = express.Router();
 
 router.get('/items', async (req, res, next) => {
     try {
-        let items = await itemsDelegate.getAll();
+        let projectId = req.query.projectId;
+        let items = await itemsDelegate.getAll(projectId);
         res.json(items);
     } catch (e) {
         // we delegate to the error-handling middleware

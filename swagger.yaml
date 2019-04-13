@@ -1,0 +1,649 @@
+openapi: '3.0.2'
+info:
+  title: servant-api
+  description: servant sits on top of major crowdsourcing platforms to intelligently assists customers in performing classification tasks.
+  version: "1"
+servers:
+  - url: https://crowdai-servant-api.herokuapp.com
+
+
+paths:
+  /projects:
+    get:
+      tags:
+      - "Projects"
+      description: Returns the list of the projects.
+      summary: Get projects
+      responses:
+        200:
+          description: The list of the projects.
+          content:
+            application/json:
+              schema:
+                type: array
+                items: 
+                  $ref: '#/components/schemas/Project'
+        400:
+          description: Bad Request
+    post:
+      tags:
+      - "Projects"
+      description:  Create a new project.
+      summary: Create project
+      parameters:
+        - in: body
+          name: project
+          description: The project to create.
+          required: true
+          schema:
+            $ref: '#/components/schemas/Project_create'
+      responses:
+        201:
+          description: The created project.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Project'
+        400:
+          description: Bad Request
+                
+  /projects/{projectID}:
+    parameters:
+      - in: path
+        name: projectID
+        required: true
+        schema:
+          type: integer
+    get:
+      tags:
+      - "Projects"
+      description: Returns a single project by ID
+      summary: Get project by ID
+      responses:
+        200:
+          description: The requested project.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Project'
+        404:
+          description: Not Found
+    put:
+      tags:
+      - "Projects"
+      description:  Update the information related to a single project selected by ID.
+      summary: Update project
+      parameters:
+        - in: body
+          name: project
+          description: The project info
+          required: true
+          schema:
+            $ref: '#/components/schemas/Project'
+      responses:
+        200:
+          description: OK, updated.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Project'
+    delete:
+      tags:
+      - "Projects"
+      summary: Delete a project by ID.
+      responses:
+        204:
+          description: OK, deleted.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Project'
+        404:
+          description: Not Found
+
+  /items:
+    get:
+      parameters:
+        - in: query
+          name: projectId
+          schema:
+            type: integer
+          description: ID of the project related to the cache.
+      tags:
+      - "Items"
+      description: Returns the list of the items.
+      summary: Get items
+      responses:
+        200:
+          description: The list of the items.
+          content:
+            application/json:
+              schema:
+                type: array
+                items: 
+                  $ref: '#/components/schemas/Item'
+        400:
+          description: Bad Request
+    post:
+      tags:
+      - "Items"
+      description:  Create new items.
+      summary: Create items
+      parameters:
+        - in: body
+          name: items
+          description: The items to create.
+          required: true
+          schema:
+            oneOf:
+              - $ref: '#/components/schemas/Item_create'
+              - $ref: '#/components/schemas/Item_create_csv'
+      responses:
+        201:
+          description: The list of created items.
+          content:
+            application/json:
+              schema:
+                type: array
+                items: 
+                  $ref: '#/components/schemas/Item'
+        400:
+          description: Bad Request
+                
+  /items/{itemID}:
+    parameters:
+      - in: path
+        name: itemID
+        required: true
+        schema:
+          type: integer
+    get:
+      tags:
+      - "Items"
+      description: Returns a single item by ID
+      summary: Get item by ID
+      responses:
+        200:
+          description: The requested item.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Item'
+        404:
+          description: Not Found
+    put:
+      tags:
+      - "Items"
+      description:  Update the information related to a single item selected by ID.
+      summary: Update item
+      parameters:
+        - in: body
+          name: item
+          description: The item info
+          required: true
+          schema:
+            $ref: '#/components/schemas/Item'
+      responses:
+        200:
+          description: OK, updated.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Item'
+    delete:
+      tags:
+      - "Items"
+      summary: Delete an item by ID.
+      responses:
+        204:
+          description: OK, deleted.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Item'
+        404:
+          description: Not Found
+           
+  /template-do:
+    get:
+      tags:
+      - "Template-do"
+      description: Returns the list of the template-do.
+      summary: Get template-do
+      responses:
+        200:
+          description: The list of the template-do.
+          content:
+            application/json:
+              schema:
+                type: array
+                items: 
+                  $ref: '#/components/schemas/TemplateDo'
+        400:
+          description: Bad Request
+    post:
+      tags:
+      - "Template-do"
+      description:  Create a new template-do.
+      summary: Create template-do
+      parameters:
+        - in: body
+          name: template-do
+          description: The template-do to create.
+          required: true
+          schema:
+            $ref: '#/components/schemas/TemplateDo_create'
+      responses:
+        201:
+          description: The created template-do.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TemplateDo'
+        400:
+          description: Bad Request
+           
+                        
+  /template-do/{templateDoID}:
+    parameters:
+      - in: path
+        name: templateDoID
+        required: true
+        schema:
+          type: integer
+    get:
+      tags:
+      - "Template-do"
+      description: Returns a single template-do by ID
+      summary: Get template-do by ID
+      responses:
+        200:
+          description: The requested template-do.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TemplateDo'
+        404:
+          description: Not Found
+    put:
+      tags:
+      - "Template-do"
+      description:  Update the information related to a single template-do selected by ID.
+      summary: Update template-do
+      parameters:
+        - in: body
+          name: template-do
+          description: The template-do info
+          required: true
+          schema:
+            $ref: '#/components/schemas/TemplateDo'
+      responses:
+        200:
+          description: OK, updated.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TemplateDo'
+    delete:
+      tags:
+      - "Template-do"
+      summary: Delete an template-do by ID.
+      responses:
+        204:
+          description: OK, deleted.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TemplateDo'
+        404:
+          description: Not Found
+
+  /workflows:
+    get:
+      parameters:
+        - in: query
+          name: projectId
+          schema:
+            type: integer
+          description: ID of the project related to the workflow.
+      tags:
+      - "Workflows"
+      description: Returns the list of the workflows.
+      summary: Get workflows
+      responses:
+        200:
+          description: The list of the workflows.
+          content:
+            application/json:
+              schema:
+                type: array
+                items: 
+                  $ref: '#/components/schemas/Workflow'
+        400:
+          description: Bad Request
+    post:
+      tags:
+      - "Workflows"
+      description:  Create a new workflow.
+      summary: Create workflow
+      parameters:
+        - in: body
+          name: workflow
+          description: The workflow to create.
+          required: true
+          schema:
+            $ref: '#/components/schemas/Workflow_create'
+      responses:
+        201:
+          description: The created workflow.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Workflow'
+        400:
+          description: Bad Request   
+        
+  /workflows/{workflowID}:
+    parameters:
+      - in: path
+        name: workflowID
+        required: true
+        schema:
+          type: integer
+    get:
+      tags:
+      - "Workflows"
+      description: Returns a single workflow by ID
+      summary: Get workflow by ID
+      responses:
+        200:
+          description: The requested workflow.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Workflow'
+        404:
+          description: Not Found
+    put:
+      tags:
+      - "Workflows"
+      description:  Update the information related to a single workflow selected by ID.
+      summary: Update workflow
+      parameters:
+        - in: body
+          name: workflow
+          description: The workflow info
+          required: true
+          schema:
+            $ref: '#/components/schemas/Workflow'
+      responses:
+        200:
+          description: OK, updated.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Workflow'
+    delete:
+      tags:
+      - "Workflows"
+      summary: Delete a workflow by ID.
+      responses:
+        204:
+          description: OK, deleted.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Workflow'
+        404:
+          description: Not Found
+
+  /cache:
+    get:
+      parameters:
+        - in: query
+          name: workflowId
+          schema:
+            type: integer
+          description: ID of the workflow related to the cache.
+      tags:
+      - "Cache"
+      description: Returns the list of the cache.
+      summary: Get cache
+      responses:
+        200:
+          description: The list of the cache.
+          content:
+            application/json:
+              schema:
+                type: array
+                items: 
+                  $ref: '#/components/schemas/Cache'
+        400:
+          description: Bad Request
+        
+  /cache/{cacheID}:
+    parameters:
+      - in: path
+        name: cacheID
+        required: true
+        schema:
+          type: integer
+    get:
+      tags:
+      - "Cache"
+      description: Returns a single cache by ID
+      summary: Get cache by ID
+      responses:
+        200:
+          description: The requested cache.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Cache'
+        404:
+          description: Not Found
+    delete:
+      tags:
+      - "Cache"
+      summary: Delete a cache by ID.
+      responses:
+        204:
+          description: OK, deleted.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Cache'
+        404:
+          description: Not Found
+
+components:
+  schemas:
+    Project:
+      type: object
+      properties:
+        id:
+          type: integer
+          description: The ID of the project
+        created_at:
+          type: string
+          description: The creation timestamp of the project
+        updated_at:
+          type: string
+          description: The update timestamp of the project
+        deleted_at:
+          type: string
+          description: The delete timestamp of the project
+        data:
+          type: object
+          description: The data related to the project
+          properties:
+            name:
+              type: string
+              description: The name of the project
+            description:
+              type: string
+              description: The description of the project
+
+    Project_create:
+      type: object
+      properties:
+        name:
+          type: string
+          description: The name of the project
+        description:
+          type: string
+          description: The description of the project
+      required:  
+        - name
+        - description
+
+    Item:
+      type: object
+      properties:
+        id:
+          type: integer
+          description: The ID of the item
+        created_at:
+          type: string
+          description: The creation timestamp of the item
+        updated_at:
+          type: string
+          description: The update timestamp of the item
+        deleted_at:
+          type: string
+          description: The delete timestamp of the item
+        id_project:
+          type: integer
+          description: The ID of the project which the item belongs to
+        data:
+          type: object
+          description: The data related to the item
+
+    Item_create:
+      type: object
+      properties:
+        id_project:
+          type: integer
+          description: The ID of the project which the items belongs to
+        items:
+          type: array
+          description: The array of items
+          items:
+            type: object
+            description: The item
+      required:  
+        - id_project
+        - items
+
+    Item_create_csv:
+      type: object
+      properties:
+        id_project:
+          type: integer
+          description: The ID of the project which the items belongs to
+        csv_url:
+          type: string
+          description: The URL of the csv file
+      required:  
+        - id_project
+        - csv_url
+
+    TemplateDo:
+      type: object
+      properties:
+        id:
+          type: integer
+          description: The ID of the template-do
+        created_at:
+          type: string
+          description: The creation timestamp of the template-do
+        updated_at:
+          type: string
+          description: The update timestamp of the template-do
+        deleted_at:
+          type: string
+          description: The delete timestamp of the template-do
+        data:
+          type: object
+          description: The data related to the template-do
+
+    TemplateDo_create:
+      type: object
+      properties:
+        name:
+          type: string
+          description: The name of the template-do
+        instructions:
+          type: string
+          description: The instructions of the template-do
+        blocks:
+          type: array
+          description: The blocks of the template-do
+
+    Workflow:
+      type: object
+      properties:
+        id:
+          type: integer
+          description: The ID of the workflow
+        created_at:
+          type: string
+          description: The creation timestamp of the workflow
+        updated_at:
+          type: string
+          description: The update timestamp of the workflow
+        deleted_at:
+          type: string
+          description: The delete timestamp of the workflow
+        id_project:
+          type: integer
+          description: The ID of the project which the workflow belongs to
+        data:
+          type: object
+          description: The data related to the workflow
+      
+    Workflow_create:
+      type: object
+      properties:
+        id_project:
+          type: integer
+          description: The ID of the project which the workflow belongs to
+        data:
+          type: object
+          description: The data related to the workflow
+          properties:
+            name:
+              type: string
+              description: The name of the workflow
+            blocks:
+              type: array
+              description: The blocks which compose the workflow
+      required:
+        - id_project
+        - data
+
+    Cache:
+      type: object
+      properties:
+        id:
+          type: integer
+          description: The ID of the cache
+        created_at:
+          type: string
+          description: The creation timestamp of the cache
+        updated_at:
+          type: string
+          description: The update timestamp of the cache
+        deleted_at:
+          type: string
+          description: The delete timestamp of the cache
+        id_workflow:
+          type: integer
+          description: The ID of the workflow which the cache belongs to
+        id_block:
+          type: integer
+          description: The ID of the block which the cache belongs to
+        data:
+          type: object
+          description: The data related to the cache
+      
