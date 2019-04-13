@@ -103,6 +103,12 @@ paths:
 
   /items:
     get:
+      parameters:
+        - in: query
+          name: projectId
+          schema:
+            type: integer
+          description: ID of the project related to the cache.
       tags:
       - "Items"
       description: Returns the list of the items.
@@ -294,6 +300,12 @@ paths:
 
   /workflows:
     get:
+      parameters:
+        - in: query
+          name: projectId
+          schema:
+            type: integer
+          description: ID of the project related to the workflow.
       tags:
       - "Workflows"
       description: Returns the list of the workflows.
@@ -387,6 +399,12 @@ paths:
 
   /cache:
     get:
+      parameters:
+        - in: query
+          name: workflowId
+          schema:
+            type: integer
+          description: ID of the workflow related to the cache.
       tags:
       - "Cache"
       description: Returns the list of the cache.
