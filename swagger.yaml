@@ -291,8 +291,100 @@ paths:
                 $ref: '#/components/schemas/TemplateDo'
         404:
           description: Not Found
-           
+
+  /workflows:
+    get:
+      tags:
+      - "Workflows"
+      description: Returns the list of the workflows.
+      summary: Get workflows
+      responses:
+        200:
+          description: The list of the workflows.
+          content:
+            application/json:
+              schema:
+                type: array
+                items: 
+                  $ref: '#/components/schemas/Workflow'
+        400:
+          description: Bad Request
+    post:
+      tags:
+      - "Workflows"
+      description:  Create a new workflow.
+      summary: Create workflow
+      parameters:
+        - in: body
+          name: workflow
+          description: The workflow to create.
+          required: true
+          schema:
+            $ref: '#/components/schemas/Workflow_create'
+      responses:
+        201:
+          description: The created workflow.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Workflow'
+        400:
+          description: Bad Request   
         
+  /workflows/{workflowID}:
+    parameters:
+      - in: path
+        name: workflowID
+        required: true
+        schema:
+          type: integer
+    get:
+      tags:
+      - "Workflows"
+      description: Returns a single workflow by ID
+      summary: Get workflow by ID
+      responses:
+        200:
+          description: The requested workflow.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Workflow'
+        404:
+          description: Not Found
+    put:
+      tags:
+      - "Workflows"
+      description:  Update the information related to a single workflow selected by ID.
+      summary: Update workflow
+      parameters:
+        - in: body
+          name: workflow
+          description: The workflow info
+          required: true
+          schema:
+            $ref: '#/components/schemas/Workflow'
+      responses:
+        200:
+          description: OK, updated.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Workflow'
+    delete:
+      tags:
+      - "Workflows"
+      summary: Delete a workflow by ID.
+      responses:
+        204:
+          description: OK, deleted.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Workflow'
+        404:
+          description: Not Found
+
 components:
   schemas:
     Project:
@@ -416,3 +508,45 @@ components:
         blocks:
           type: array
           description: The blocks of the template-do
+
+    Workflow:
+      type: object
+      properties:
+        id:
+          type: integer
+          description: The ID of the workflow
+        created_at:
+          type: string
+          description: The creation timestamp of the workflow
+        updated_at:
+          type: string
+          description: The update timestamp of the workflow
+        deleted_at:
+          type: string
+          description: The delete timestamp of the workflow
+        id_project:
+          type: integer
+          description: The ID of the project which the workflow belongs to
+        data:
+          type: object
+          description: The data related to the workflow
+      
+    Workflow_create:
+      type: object
+      properties:
+        id_project:
+          type: integer
+          description: The ID of the project which the workflow belongs to
+        data:
+          type: object
+          description: The data related to the workflow
+          properties:
+            name:
+              type: string
+              description: The name of the workflow
+            blocks:
+              type: array
+              description: The blocks which compose the workflow
+      required:
+        - id_project
+        - data
