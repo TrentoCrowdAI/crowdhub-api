@@ -385,6 +385,59 @@ paths:
         404:
           description: Not Found
 
+  /cache:
+    get:
+      tags:
+      - "Cache"
+      description: Returns the list of the cache.
+      summary: Get cache
+      responses:
+        200:
+          description: The list of the cache.
+          content:
+            application/json:
+              schema:
+                type: array
+                items: 
+                  $ref: '#/components/schemas/Cache'
+        400:
+          description: Bad Request
+        
+  /cache/{cacheID}:
+    parameters:
+      - in: path
+        name: cacheID
+        required: true
+        schema:
+          type: integer
+    get:
+      tags:
+      - "Cache"
+      description: Returns a single cache by ID
+      summary: Get cache by ID
+      responses:
+        200:
+          description: The requested cache.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Cache'
+        404:
+          description: Not Found
+    delete:
+      tags:
+      - "Cache"
+      summary: Delete a cache by ID.
+      responses:
+        204:
+          description: OK, deleted.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Cache'
+        404:
+          description: Not Found
+
 components:
   schemas:
     Project:
@@ -550,3 +603,29 @@ components:
       required:
         - id_project
         - data
+
+    Cache:
+      type: object
+      properties:
+        id:
+          type: integer
+          description: The ID of the cache
+        created_at:
+          type: string
+          description: The creation timestamp of the cache
+        updated_at:
+          type: string
+          description: The update timestamp of the cache
+        deleted_at:
+          type: string
+          description: The delete timestamp of the cache
+        id_workflow:
+          type: integer
+          description: The ID of the workflow which the cache belongs to
+        id_block:
+          type: integer
+          description: The ID of the block which the cache belongs to
+        data:
+          type: object
+          description: The data related to the cache
+      
