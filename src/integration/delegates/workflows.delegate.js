@@ -50,8 +50,8 @@ const update = async (workflow, workId) => {
     return workflow;
 };
 
-const getAll = async () => {
-    return await workflowsDao.getAll();
+const getAll = async (projectId) => {
+    return await workflowsDao.getAll(projectId);
 };
 
 const start = async (workId) => {
