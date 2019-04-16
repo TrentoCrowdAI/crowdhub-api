@@ -1,7 +1,7 @@
 const fetch = require('node-fetch');
 const neatCsv = require('neat-csv');
 
-const itemsDao = require(__base + 'integration/dao/items.dao');
+const itemsDao = require(__base + 'dao/items.dao');
 const errHandler = require(__base + 'utils/errors');
 
 const create = async (item, idProj) => {

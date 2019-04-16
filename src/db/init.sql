@@ -91,3 +91,17 @@ CREATE TABLE template_do (
   data JSONB,
   CONSTRAINT pk_template_do PRIMARY KEY (id)
 );
+
+
+-- data: {
+--  name: <string>, //name of the block-type,
+--	parameters: [{name: <string>, builtIn: <boolean>, code: <string>, description: <string>, type: <string>, choices: []}]
+-- }
+CREATE TABLE block_type (
+  id bigserial NOT NULL,
+  created_at timestamp,
+  updated_at timestamp,
+  deleted_at timestamp,
+  data JSONB,
+  CONSTRAINT pk_block_type PRIMARY KEY (id)
+);

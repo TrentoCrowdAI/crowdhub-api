@@ -1,4 +1,4 @@
-const workflowsDao = require(__base + 'integration/dao/workflows.dao');
+const workflowsDao = require(__base + 'dao/workflows.dao');
 const errHandler = require(__base + 'utils/errors');
 
 const create = async (workflow) => {

@@ -1,7 +1,8 @@
 const f8 = require('./f8');
-//const jobsDelegate = require(__base + 'integration/delegates/jobs.delegate');
+//const jobsDelegate = require(__base + 'delegates/jobs.delegate');
 
-const rightJob = require(__base + 'example/job-example-text-highlighting.json');
+let example = __base + "../example/";
+const rightJob = require(example + 'job-example-text-highlighting.json');
 
 //set jest timeout to 20 seconds
 jest.setTimeout(20000);

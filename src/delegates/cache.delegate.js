@@ -1,4 +1,4 @@
-const cacheDao = require(__base + 'integration/dao/cache.dao');
+const cacheDao = require(__base + 'dao/cache.dao');
 const errHandler = require(__base + 'utils/errors');
 
 const create = async (cache) => {

@@ -1,5 +1,5 @@
 const express = require('express');
-const templateDelegate = require(__base + 'integration/delegates/template-do.delegate');
+const templateDelegate = require(__base + 'delegates/template-do.delegate');
 
 const router = express.Router();
 

@@ -1,5 +1,5 @@
 const express = require('express');
-const projectsDelegate = require(__base + 'integration/delegates/projects.delegate');
+const projectsDelegate = require(__base + 'delegates/projects.delegate');
 
 const router = express.Router();
 

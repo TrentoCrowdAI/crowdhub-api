@@ -1,5 +1,5 @@
 const express = require('express');
-const itemsDelegate = require(__base + 'integration/delegates/items.delegate');
+const itemsDelegate = require(__base + 'delegates/items.delegate');
 
 const router = express.Router();
 

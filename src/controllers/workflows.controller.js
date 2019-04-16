@@ -1,5 +1,5 @@
 const express = require('express');
-const workflowsDelegate = require(__base + 'integration/delegates/workflows.delegate');
+const workflowsDelegate = require(__base + 'delegates/workflows.delegate');
 
 const router = express.Router();
 

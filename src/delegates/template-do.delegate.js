@@ -1,4 +1,4 @@
-const templateDao = require(__base + 'integration/dao/template-do.dao');
+const templateDao = require(__base + 'dao/template-do.dao');
 const errHandler = require(__base + 'utils/errors');
 
 const create = async (template) => {
