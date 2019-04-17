@@ -7,11 +7,12 @@ const cors = require('cors');
 
 const errorsHelper = require('./utils/errors');
 
-const projectsController = require('./integration/controllers/projects.controller');
-const workflowsController = require('./integration/controllers/workflows.controller');
-const templateDoController = require('./integration/controllers/template-do.controller');
-const cacheController = require('./integration/controllers/cache.controller');
-const itemsController = require('./integration/controllers/items.controller');
+const projectsController = require('./controllers/projects.controller');
+const workflowsController = require('./controllers/workflows.controller');
+const templateDoController = require('./controllers/template-do.controller');
+const cacheController = require('./controllers/cache.controller');
+const itemsController = require('./controllers/items.controller');
+const blockTypesController = require('./controllers/block-types.controller');
 
 const app = express();
 
@@ -31,6 +32,7 @@ app.use(workflowsController);
 app.use(templateDoController);
 app.use(cacheController);
 app.use(itemsController);
+app.use(blockTypesController);
 
 
 app.use((e, req, res, next) => {
