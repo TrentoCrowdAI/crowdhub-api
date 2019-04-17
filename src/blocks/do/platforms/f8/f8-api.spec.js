@@ -1,4 +1,4 @@
-const f8 = require('./f8');
+const f8 = require('./f8-api');
 //const jobsDelegate = require(__base + 'delegates/jobs.delegate');
 
 let example = __base + "../example/";

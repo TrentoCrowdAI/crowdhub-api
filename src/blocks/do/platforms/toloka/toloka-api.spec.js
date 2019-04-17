@@ -1,4 +1,4 @@
-const toloka = require('./toloka');
+const toloka = require('./toloka-api');
 //const jobsDelegate = require(__base + 'delegates/jobs.delegate');
 
 let example = __base + "../example/";
