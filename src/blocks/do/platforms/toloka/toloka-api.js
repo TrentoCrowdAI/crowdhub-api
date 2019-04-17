@@ -1,5 +1,4 @@
 const fetch = require('node-fetch');
-const neatCsv = require('neat-csv');
 
 const config = require(__base + 'config/index');
 
@@ -144,4 +143,4 @@ const createTasks = async (job, tasks) => {
   return job;
 };
 
-module.exports = {createProject, createTaskPool, createTasks};
+module.exports = { createProject, createTaskPool, createTasks };

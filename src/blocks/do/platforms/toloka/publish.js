@@ -1,4 +1,4 @@
-const {createProject, createTaskPool, createTasks} = require('./toloka-api');
+const { createProject, createTaskPool, createTasks } = require('./toloka-api');
 const renderDesign = require('./render');
 
 /**
@@ -6,7 +6,6 @@ const renderDesign = require('./render');
  * @param {{}} job
  */
 const publish = async (job) => {
-  //let inOutParams = await markupToInOutParams(job);
   let param = renderDesign(job);
   job = await createProject(job, param);
 
@@ -53,7 +52,7 @@ const csvToTasks = async (job, csvFile, inOutParams) => {
         let fieldName = key.substring(0, pos);
         if (Object.keys(inOutParams.output_spec).indexOf(fieldName) != -1) {
           if (task.known_solutions === undefined)
-            task.known_solutions = [{output_values: {}, correctness_weight: 1}];
+            task.known_solutions = [{ output_values: {}, correctness_weight: 1 }];
 
           task.known_solutions[0].output_values[fieldName] = el[key];
         }
