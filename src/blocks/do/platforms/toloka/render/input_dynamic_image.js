@@ -1,4 +1,4 @@
-const render = (block, context) => {
+const renderBody = (block, context) => {
   const res = context.res;
 
   if (!block.highlightable) {
@@ -25,4 +25,6 @@ const renderHighlightableImage = (block, {res}) => {
   };
 };
 
-module.exports = render;
+module.exports = {
+  renderBody
+};

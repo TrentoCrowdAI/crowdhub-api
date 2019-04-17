@@ -7,7 +7,7 @@ const rightJob = require(example + 'job-example-text-highlighting.json');
 //set jest timeout to 20 seconds
 jest.setTimeout(20000);
 
-describe('Toloka tests', async () => {
+describe('Toloka API tests', async () => {
     test('Empty', () => {
         expect(true).toBe(true);
     });

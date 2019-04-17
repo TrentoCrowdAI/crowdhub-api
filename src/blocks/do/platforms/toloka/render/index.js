@@ -1,4 +1,4 @@
-const renderEngine = require('../../abstract-renderer');
+const abstractRenderer = require('../../../abstract-renderer');
 
 const renderers = {
   input_dynamic_text: require('./input_dynamic_text'),
@@ -16,4 +16,4 @@ const renderFooter = ({res}) => {
   res.markup += `</div>`;
 };
 
-module.exports = renderEngine(renderers, renderHeader, renderFooter);
+module.exports = abstractRenderer(renderers, renderHeader, renderFooter);

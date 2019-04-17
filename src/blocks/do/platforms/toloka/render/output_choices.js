@@ -1,4 +1,4 @@
-const render = (block, context) => {
+const renderBody = (block, context) => {
   const res = context.res;
 
   res.markup += `
@@ -41,4 +41,6 @@ const render = (block, context) => {
   };
 };
 
-module.exports = render;
+module.exports = {
+  renderBody
+};

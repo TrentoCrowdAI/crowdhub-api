@@ -1,5 +1,7 @@
-const render = (block, {res}) => {
+const renderBody = (block, {res}) => {
   res.markup += `<p>${block.text}</p>`;
 };
 
-module.exports = render;
+module.exports = {
+  renderBody
+};

@@ -1,4 +1,4 @@
-const render = (block, context) => {
+const renderBody = (block, context) => {
   if (!elem.highlightable) {
     renderText(block, context);
   } else {
@@ -215,6 +215,6 @@ const addHighlightScriptsAndStyles = ({res}) => {
 };
 
 module.exports = {
-  render,
+  renderBody,
   renderFooter
 };
