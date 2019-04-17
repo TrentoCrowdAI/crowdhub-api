@@ -456,6 +456,46 @@ paths:
         404:
           description: Not Found
 
+  /block-types:
+    get:
+      tags:
+      - "Block-types"
+      description: Returns the list of the block-types.
+      summary: Get block-types
+      responses:
+        200:
+          description: The list of the block-types.
+          content:
+            application/json:
+              schema:
+                type: array
+                items: 
+                  $ref: '#/components/schemas/BlockType'
+        400:
+          description: Bad Request
+        
+  /block-types/{blockTypeID}:
+    parameters:
+      - in: path
+        name: blockTypeID
+        required: true
+        schema:
+          type: integer
+    get:
+      tags:
+      - "Block-types"
+      description: Returns a single block-type by ID
+      summary: Get block-type by ID
+      responses:
+        200:
+          description: The requested block-type.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BlockType'
+        404:
+          description: Not Found
+
 components:
   schemas:
     Project:
@@ -646,4 +686,23 @@ components:
         data:
           type: object
           description: The data related to the cache
+      
+    BlockType:
+      type: object
+      properties:
+        id:
+          type: integer
+          description: The ID of the block-type
+        created_at:
+          type: string
+          description: The creation timestamp of the block-type
+        updated_at:
+          type: string
+          description: The update timestamp of the block-type
+        deleted_at:
+          type: string
+          description: The delete timestamp of the block-type
+        data:
+          type: object
+          description: The data related to the block-type
       
