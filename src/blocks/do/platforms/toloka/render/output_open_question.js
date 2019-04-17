@@ -1,19 +1,19 @@
 const renderBody = (block, context) => {
   const res = context.res;
 
-  let elem_type = 'input';
-  if (elem.size == 'big')
-    elem_type = 'textarea';
+  let block_type = 'input';
+  if (block.size == 'big')
+    block_type = 'textarea';
 
   res.markup += `
     <div>
-        <p>${elem.question}</p>
-        {{field type="${elem_type}" name="${elem.csvVariable}"}}
+        <p>${block.question}</p>
+        {{field type="${block_type}" name="${block.csvVariable}"}}
     </div>`;
 
-  res.output_spec[elem.csvVariable] = {
+  res.output_spec[block.csvVariable] = {
     type: "string",
-    required: elem.required
+    required: block.required
   };
 };
 

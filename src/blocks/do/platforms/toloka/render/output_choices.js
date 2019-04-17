@@ -3,28 +3,28 @@ const renderBody = (block, context) => {
 
   res.markup += `
     <div>
-        <p>${elem.question}</p>`;
+        <p>${block.question}</p>`;
 
-  switch (elem.choice_type) {
+  switch (block.choice_type) {
     case 'multiple_checkbox': {
       let i = 1;
-      for (let item of elem.choices) {
-        res.markup += `{{field type="checkbox" name="${elem.csvVariable}" label="${item.label}" value="${item.value}" hotkey="${i}"}}`;
+      for (let item of block.choices) {
+        res.markup += `{{field type="checkbox" name="${block.csvVariable}" label="${item.label}" value="${item.value}" hotkey="${i}"}}`;
         i++;
       }
       break;
     }
     case 'single_radio': {
       let i = 1;
-      for (let item of elem.choices) {
-        res.markup += `{{field type="radio" name="${elem.csvVariable}" label="${item.label}" value="${item.value}" hotkey="${i}"}}`;
+      for (let item of block.choices) {
+        res.markup += `{{field type="radio" name="${block.csvVariable}" label="${item.label}" value="${item.value}" hotkey="${i}"}}`;
         i++;
       }
       break;
     }
     case 'single_dropdown': {
-      res.markup += `{{#field type="select" name="${elem.csvVariable}"}}`;
-      for (let item of elem.choices) {
+      res.markup += `{{#field type="select" name="${block.csvVariable}"}}`;
+      for (let item of block.choices) {
         res.markup += `{{select_item value="${item.value}" text="${item.label}"}}`;
         i++;
       }
@@ -35,9 +35,9 @@ const renderBody = (block, context) => {
 
   res.markup += `</div>`;
 
-  res.output_spec[elem.csvVariable] = {
+  res.output_spec[block.csvVariable] = {
     type: "string",
-    required: elem.required
+    required: block.required
   };
 };
 
