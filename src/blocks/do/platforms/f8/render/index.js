@@ -8,12 +8,8 @@ const renderers = {
   output_choices: require('./output_choices')
 };
 
-const renderHeader = ({res}) => {
-  res.markup = '<div class="paper-task">';
-};
+const renderHeader = ({res}) => {};
 
-const renderFooter = ({res}) => {
-  res.markup += `</div>`;
-};
+const renderFooter = ({res}) => {};
 
 module.exports = abstractRenderer(renderers, renderHeader, renderFooter);
