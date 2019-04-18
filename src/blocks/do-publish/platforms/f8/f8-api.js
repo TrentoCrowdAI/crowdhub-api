@@ -4,15 +4,15 @@ const querystring = require('querystring');
 const config = require(__base + 'config/index');
 
 /**
- * Create a new job on F8
- * @param {{}} job
+ * Create a new job on F8 from a template-do object
+ * @param {{}} template_do
  */
-const createNewJob = async (job) => {
+const createNewJob = async (template_do) => {
     let url = config.f8.baseEndpoint + 'jobs.json?key=' + config.f8.apiKey;
 
     let newJob = {
-        'job[title]': job.data.name,
-        'job[instructions]': job.data.instructions
+        'job[title]': template_do.data.name,
+        'job[instructions]': template_do.data.instructions
     };
     let body = querystring.stringify(newJob);
 
@@ -26,49 +26,39 @@ const createNewJob = async (job) => {
         throw new Error('F8 Error: Not able to create a new Job!');
 
     let json = await res.json();
-
-    if (job.data.platform === undefined)
-        job.data.platform = {};
-
-    job.data.platform.f8 = json;
-
-    return job;
+    return json;
 };
 
 /**
- * Add some items to an existing F8 job using a CSV file
+ * Add some items to an existing F8 job
  * @param {{}} job 
- * @param {string} csvFile URL to the CSV file
+ * @param {[]} items
  */
-const addCsvItems = async (job, csvFile) => {
-    let url = config.f8.baseEndpoint + `jobs/${job.data.platform.f8.id}/upload.json?key=${config.f8.apiKey}&force=true`;
-
-    let csvReq = await fetch(csvFile);
-    let csvData = await csvReq.text();
+const addItems = async (job, items) => {
+    let url = config.f8.baseEndpoint + `jobs/${job.id}/upload.json?key=${config.f8.apiKey}&force=true`;
 
     let res = await fetch(url, {
         method: 'PUT',
         headers: {
-            'Content-Type': 'text/csv'
+            'Content-Type': 'application/json'
         },
-        body: csvData
+        body: items
     });
 
     if (res.status !== 200)
-        throw new Error('F8 Error: Not able to add CSV items to the Job!');
+        throw new Error('F8 Error: Not able to add items to the Job!');
 
     let json = await res.json();
-    job.data.platform.f8 = json;
-
-    return job;
+    return json;
 };
 
 /**
  * Update the Markup of an existing F8 job
  * @param {{}} job 
+ * @param {{}} design 
  */
 const updateJobMarkup = async (job, design) => {
-    let url = config.f8.baseEndpoint + `jobs/${job.data.platform.f8.id}.json?key=${config.f8.apiKey}`;
+    let url = config.f8.baseEndpoint + `jobs/${job.id}.json?key=${config.f8.apiKey}`;
 
     let data = {
         'job[cml]': design.markup
@@ -85,17 +75,16 @@ const updateJobMarkup = async (job, design) => {
         throw new Error('F8 Error: Not able to update the Markup of the Job!');
 
     let json = await res.json();
-    job.data.platform.f8 = json;
-
-    return job;
+    return json;
 };
 
 /**
  * Update the JS of an existing F8 job
  * @param {{}} job 
+ * @param {{}} design 
  */
 const updateJobJS = async (job, design) => {
-    let url = config.f8.baseEndpoint + `jobs/${job.data.platform.f8.id}.json?key=${config.f8.apiKey}`;
+    let url = config.f8.baseEndpoint + `jobs/${job.id}.json?key=${config.f8.apiKey}`;
 
     let data = {
         'job[js]': design.javascript
@@ -112,17 +101,16 @@ const updateJobJS = async (job, design) => {
         throw new Error('F8 Error: Not able to update the JS of the Job!');
 
     let json = await res.json();
-    job.data.platform.f8 = json;
-
-    return job;
+    return json;
 };
 
 /**
  * Update the CSS of an existing F8 job
  * @param {{}} job 
+ * @param {{}} design 
  */
 const updateJobCSS = async (job, design) => {
-    let url = config.f8.baseEndpoint + `jobs/${job.data.platform.f8.id}.json?key=${config.f8.apiKey}`;
+    let url = config.f8.baseEndpoint + `jobs/${job.id}.json?key=${config.f8.apiKey}`;
 
     let data = {
         'job[css]': design.css
@@ -139,22 +127,21 @@ const updateJobCSS = async (job, design) => {
         throw new Error('F8 Error: Not able to update the CSS of the Job!');
 
     let json = await res.json();
-    job.data.platform.f8 = json;
-
-    return job;
+    return json;
 };
 
 /**
  * Update the job reward, maxVotes and numVotes on an existing F8 job
  * @param {{}} job 
+ * @param {{}} blockData
  */
-const updateJobSpec = async (job) => {
-    let url = config.f8.baseEndpoint + `jobs/${job.data.platform.f8.id}.json?key=${config.f8.apiKey}`;
+const updateJobSpec = async (job, blockData) => {
+    let url = config.f8.baseEndpoint + `jobs/${job.id}.json?key=${config.f8.apiKey}`;
 
     let data = {
-        'job[payment_cents]': job.data.reward,
-        'job[max_judgments_per_worker]': job.data.maxVotes,
-        'job[judgments_per_unit]': job.data.numVotes
+        'job[payment_cents]': blockData.reward,
+        'job[max_judgments_per_worker]': blockData.maxVotes,
+        'job[judgments_per_unit]': blockData.numVotes
     };
     let body = querystring.stringify(data);
 
@@ -168,9 +155,7 @@ const updateJobSpec = async (job) => {
         throw new Error('F8 Error: Not able to update the payment specific of the Job!');
 
     let json = await res.json();
-    job.data.platform.f8 = json;
-
-    return job;
+    return json;
 };
 
 /**
@@ -178,7 +163,7 @@ const updateJobSpec = async (job) => {
  * @param {{}} job 
  */
 const convertGoldQuestions = async (job) => {
-    let url = config.f8.baseEndpoint + `jobs/${job.data.platform.f8.id}/gold.json?key=${config.f8.apiKey}`;
+    let url = config.f8.baseEndpoint + `jobs/${job.id}/gold.json?key=${config.f8.apiKey}`;
     let res = await fetch(url, {
         method: 'PUT'
     });
@@ -189,7 +174,7 @@ const convertGoldQuestions = async (job) => {
 
 module.exports = {
     createNewJob,
-    addCsvItems,
+    addItems,
     updateJobMarkup,
     updateJobJS,
     updateJobCSS,

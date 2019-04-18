@@ -1,24 +1,27 @@
-const { createNewJob, addCsvItems, updateJobMarkup, updateJobJS, updateJobCSS, updateJobSpec, convertGoldQuestions } = require('./toloka-api');
+const { createNewJob, addItems, updateJobMarkup, updateJobJS, updateJobCSS, updateJobSpec, convertGoldQuestions } = require('./f8-api');
 const renderDesign = require('./render');
-const sleep = require(__base + 'utils/utils').sleep;
+
+const templateDoDelegate = require(__base + 'delegates/template-do.delegate');
+
+const sleep = require(__base + 'utils/utils').sleep;name
 
 /**
  * Publish the job parameter on the F8 platform as a new job.
- * @param {{}} job 
+ * @param {{}} blockData The data of the block of the workflow 
+ * @param {[]} input The input items to publish
  */
-const publish = async (job) => {
+const publish = async (blockData, input) => {
     const timeSleep = 200;
-    job = await createNewJob(job);
+
+    let template_do = await templateDoDelegate.get(blockData.id_template_do);
+
+    let job = await createNewJob(template_do);
 
     await sleep(timeSleep);
 
-    //add items
-    job = await addCsvItems(job, job.data.items_csv);
+    //add all items (even gold)
+    job = await addItems(job, itemsToJsonLines(input));
 
-    await sleep(timeSleep);
-
-    //add gold items
-    job = await addCsvItems(job, job.data.items_gold_csv);
     await sleep(timeSleep);
 
     //recognise gold items
@@ -26,8 +29,7 @@ const publish = async (job) => {
     await sleep(timeSleep);
 
     //render the design of the job
-    let design = renderDesign(job);
-
+    let design = renderDesign(template_do.data.blocks);
     //set the design of the job
     job = await updateJobMarkup(job, design);
     await sleep(timeSleep);
@@ -37,9 +39,19 @@ const publish = async (job) => {
     await sleep(timeSleep);
 
     //set the reward info of the job
-    job = await updateJobSpec(job);
+    job = await updateJobSpec(job, blockData);
 
     return job;
+};
+
+const itemsToJsonLines = (items) => {
+    let result = "";
+
+    for(let item of items){
+        result += JSON.stringify(item) + "\r\n";
+    }
+
+    return result;
 };
 
 module.exports = publish;
