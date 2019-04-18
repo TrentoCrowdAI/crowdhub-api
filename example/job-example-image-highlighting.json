@@ -1,15 +1,22 @@
 {
-    "id_requester": 0,
-    "data": {
+    "blockData": {
+        "reward": 70,
+        "maxVotes": 1,
+        "numVotes": 1
+    },
+    "input": [
+        {
+            "image_url": "https://previews.123rf.com/images/pootsonnaja/pootsonnaja1610/pootsonnaja161000011/64182766-beautiful-young-woman-portrait-on-the-steet-.jpg"
+        },
+        {
+            "image_url": "https://static.photocdn.pt/images/articles/2017/04/28/iStock-593306910.jpg"
+        }
+    ],
+    "template_do": {
         "name": "My image highlighting job",
         "description": "This is my job.",
         "instructions": "Some intructions....",
-        "numVotes": 10,
-        "maxVotes": 2,
-        "reward": 17,
-        "items_csv": "https://raw.githubusercontent.com/TrentoCrowdAI/servant-api/develop/src/example/image-highlighting.csv",
-        "items_gold_csv": "https://raw.githubusercontent.com/TrentoCrowdAI/servant-api/develop/src/example/image-highlighting-gold.csv",
-        "design": [
+        "blocks": [
             {
                 "type": "input_dynamic_image",
                 "csvVariable": "image_url",
