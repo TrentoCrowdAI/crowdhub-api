@@ -28,8 +28,8 @@ const abstractRenderer = (renderers, renderHeader, renderFooter) => {
    */
   const renderBlocksFooter = (context) => {
     Object.keys(renderers).forEach(renderer => {
-      if (renderer.renderFooter) {
-        renderer.renderFooter(context);
+      if (renderers[renderer].renderFooter) {
+        renderers[renderer].renderFooter(context);
       }
     });
   };
