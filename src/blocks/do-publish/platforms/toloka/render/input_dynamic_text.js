@@ -1,15 +1,16 @@
 const renderBody = (block, context) => {
-    if (!elem.highlightable) {
+    const res = context.res;
+    if (!block.highlightable) {
         renderText(block, context);
     } else {
         renderHighlightableText(block, context);
     }
 
-    res.input_spec[elem.csvVariable] = {
+    res.input_spec[block.csvVariable] = {
         type: "string",
         required: true
     };
-    res.input_spec[elem.csvTitleVariable] = {
+    res.input_spec[block.csvTitleVariable] = {
         type: "string",
         required: true
     };
