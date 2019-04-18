@@ -12,7 +12,7 @@ const renderImage = (block, { res }) => res.markup += `<img src="{{${block.csvVa
 
 const renderHighlightableImage = (block, { res }) => {
   res.markup += `<p>${block.question}</p>`;
-  res.markup += `<cml:shapes type="['box']" image-url="{{${elem.csvVariable}}}" name="${elem.highlightedCsvVariable}" label="${elem.question}" validates="required" box-threshold="0.7" />`;
+  res.markup += `<cml:shapes type="['box']" image-url="{{${block.csvVariable}}}" name="${block.highlightedCsvVariable}" label="${block.question}" validates="required" box-threshold="0.7" />`;
 };
 
 module.exports = {
