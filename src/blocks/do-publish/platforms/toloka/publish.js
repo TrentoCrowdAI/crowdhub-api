@@ -1,56 +1,54 @@
 const { createProject, createTaskPool, createTasks } = require('./toloka-api');
+const templateDoDelegate = require(__base + 'delegates/template-do.delegate');
 const renderDesign = require('./render');
 
 /**
- * Publish the job parameter on the Toloka platform as a new job.
- * @param {{}} job
+ * Publish the workflow on the Toloka platform as a new project.
+ * @param {{}} blockData The data of the block of the workflow 
+ * @param {[]} input The input items to publish
  */
-const publish = async (job) => {
-  let param = renderDesign(job);
-  job = await createProject(job, param);
+const publish = async (blockData, input) => {
+  let template_do = await templateDoDelegate.get(blockData.id_template_do);
 
-  job = await createTaskPool(job);
+  let design = renderDesign(template_do.data.blocks);
+  let project = await createProject(template_do, design);
 
-  let tasks = await csvToTasks(job, job.data.items_csv, param);
-  let gold_tasks = await csvToTasks(job, job.data.items_gold_csv, param);
+  project.taskPool = await createTaskPool(blockData, project);
 
-  job = await createTasks(job, tasks, param);
-  job = await createTasks(job, gold_tasks, param);
+  let tasks = await itemsToTasks(project.taskPool, input, design);
+  
+  project.tasks = await createTasks(tasks);
 
-  return job;
+  return project;
 };
 
 /**
- * Convert a CSV file for F8 to an array of Toloka tasks
- * @param {{}} job
- * @param {String} csvFile URL to the CSV file
- * @param {{}} inOutParams input and output Toloka fields
+ * Convert the items to an array of Toloka tasks
+ * @param {{}} pool
+ * @param {String} items
+ * @param {{}} design
  */
-const csvToTasks = async (job, csvFile, inOutParams) => {
+const itemsToTasks = async (pool, items, design) => {
   let tasks = [];
 
-  let csvReq = await fetch(csvFile);
-  let csvData = await csvReq.text();
-  let data = await neatCsv(csvData);
-
-  for (let el of data) {
+  for (let el of items) {
     let headers = Object.keys(el);
 
     let task = {
-      pool_id: job.data.platform.toloka.pool.id,
+      pool_id: pool.id,
       input_values: {},
       overlap: 1
     };
 
     for (let key of headers) {
-      if (Object.keys(inOutParams.input_spec).indexOf(key) != -1) {
+      if (Object.keys(design.input_spec).indexOf(key) != -1) {
         task.input_values[key] = el[key];
       } else if (key.endsWith('_gold')) {
         //gold item
-        pos = key.indexOf('_gold');
+        let pos = key.indexOf('_gold');
 
         let fieldName = key.substring(0, pos);
-        if (Object.keys(inOutParams.output_spec).indexOf(fieldName) != -1) {
+        if (Object.keys(design.output_spec).indexOf(fieldName) != -1) {
           if (task.known_solutions === undefined)
             task.known_solutions = [{ output_values: {}, correctness_weight: 1 }];
 
@@ -61,7 +59,7 @@ const csvToTasks = async (job, csvFile, inOutParams) => {
 
     if (task.known_solutions !== undefined) {
       //fill with missing gold items in order to avoid errors
-      for (let gold of Object.keys(inOutParams.output_spec)) {
+      for (let gold of Object.keys(design.output_spec)) {
         if (task.known_solutions[0].output_values[gold] === undefined)
           task.known_solutions[0].output_values[gold] = '';
       }
