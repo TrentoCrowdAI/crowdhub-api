@@ -18,7 +18,7 @@ const renderBody = (block, context) => {
   }
   let required = block.required ? 'validates="required"' : '';
 
-  res.markup += `<${elem_tag} label="${block.question}" name="${block.csvVariable.toLowerCase()}" ${required}>`;
+  res.markup += `<${elem_tag} label="${block.question}" name="${block.csvVariable}" ${required}>`;
   for (let item of block.choices) {
     res.markup += `<${item_tag} label="${item.label}" value="${item.value}" />`;
   }

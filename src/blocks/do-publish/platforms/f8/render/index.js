@@ -1,4 +1,4 @@
-const abstractRenderer = require(__base + 'blocks/do/abstract-renderer');
+const abstractRenderer = require(__base + 'blocks/do-publish/abstract-renderer');
 
 const renderers = {
   input_dynamic_text: require('./input_dynamic_text'),

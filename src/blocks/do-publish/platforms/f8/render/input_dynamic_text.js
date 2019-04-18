@@ -1,5 +1,5 @@
 const renderBody = (block, context) => {
-    if (!elem.highlightable) {
+    if (!block.highlightable) {
         renderText(block, context);
     } else {
         renderHighlightableText(block, context);
@@ -8,24 +8,24 @@ const renderBody = (block, context) => {
 
 const renderText = (block, { res }) => {
     res.markup += `
-        <h2>{{${elem.csvTitleVariable.toLowerCase()}}}</h2>
-        <p>{{${elem.csvVariable.toLowerCase()}}}</p>`;
+        <h2>{{${block.csvTitleVariable}}}</h2>
+        <p>{{${block.csvVariable}}}</p>`;
 };
 
 const renderHighlightableText = (block, context) => {
     const res = context.res;
 
     res.markup += `
-    <div class="html-element-wrapper marker-target" data="${elem.highlightedCsvVariable.toLowerCase()}">
-        <h2>{{${elem.csvTitleVariable.toLowerCase()}}}</h2>
-        <p>{{${elem.csvVariable.toLowerCase()}}}</p>                  
+    <div class="html-element-wrapper marker-target" data="${block.highlightedCsvVariable}">
+        <h2>{{${block.csvTitleVariable}}}</h2>
+        <p>{{${block.csvVariable}}}</p>                  
         <div>
             <button class="opt-clear">Clear highlights</button> 
             <small class="small">Select from the text above to highlight the part that supports your decision.</small>
         </div>
     </div>
     <!-- Hidden field -->
-    <cml:textarea label="${elem.question}" validates="required" name="${elem.highlightedCsvVariable.toLowerCase()}"/>`;
+    <cml:textarea label="${block.question}" validates="required" name="${block.highlightedCsvVariable}"/>`;
 
     context.textHighlight = true;
 };
