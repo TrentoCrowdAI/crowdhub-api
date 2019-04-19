@@ -95,7 +95,8 @@ CREATE TABLE template_do (
 
 -- data: {
 --  name: <string>, //name of the block-type,
---	parameters: [{name: <string>, builtIn: <boolean>, code: <string>, description: <string>, type: <string>, choices: []}]
+--  builtIn: <boolean>,
+--	parameters: [{name: <string>, description: <string>, type: <string>, choices: []}]
 -- }
 CREATE TABLE block_type (
   id bigserial NOT NULL,

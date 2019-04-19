@@ -2,6 +2,7 @@ const blockTypesDao = require(__base + 'dao/block-types.dao');
 const errHandler = require(__base + 'utils/errors');
 
 const create = async (blockType) => {
+    check(blockType);
     let newBlockType = await blockTypesDao.create(blockType);
     return newBlockType;
 };
@@ -42,6 +43,8 @@ const update = async (blockType, blockTypeId) => {
 
     blockType.id = blockTypeId;
 
+    check(blockType.data);
+
     blockType = await blockTypesDao.update(blockType);
 
     if (!blockType)
@@ -50,9 +53,26 @@ const update = async (blockType, blockTypeId) => {
     return blockType;
 };
 
-
 const getAll = async () => {
     return await blockTypesDao.getAll();
+};
+
+const check = (blockType) => {
+    if (typeof blockType.name !== "string")
+        throw errHandler.createBusinessNotFoundError('Block-type: name is not valid!');
+    if (typeof blockType.builtIn !== "boolean")
+        throw errHandler.createBusinessNotFoundError('Block-type: builtIn is not valid!');
+    if (!(blockType.parameters instanceof Array))
+        throw errHandler.createBusinessNotFoundError('Block-type: parameters is not valid!');
+
+    blockType.parameters.forEach((param) => {
+        if (typeof param.name !== "string")
+            throw errHandler.createBusinessNotFoundError('Block-type: the name property of a parameter is not valid!');
+        if (typeof param.description !== "string")
+            throw errHandler.createBusinessNotFoundError('Block-type: the description property of a parameter is not valid!');
+        if (typeof param.type !== "string")
+            throw errHandler.createBusinessNotFoundError('Block-type: the type property of a parameter is not valid!');
+    });
 };
 
 module.exports = {
