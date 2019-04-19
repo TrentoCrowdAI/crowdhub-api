@@ -2,6 +2,7 @@ const projectsDao = require(__base + 'dao/projects.dao');
 const errHandler = require(__base + 'utils/errors');
 
 const create = async (project) => {
+  check(project);
   let newProj = await projectsDao.create(project);
   return newProj;
 };
@@ -42,6 +43,8 @@ const update = async (proj, projId) => {
 
   proj.id = projId;
 
+  check(proj.data);
+
   proj = await projectsDao.update(proj);
 
   if (!proj)
@@ -50,9 +53,15 @@ const update = async (proj, projId) => {
   return proj;
 };
 
-
 const getAll = async () => {
   return await projectsDao.getAll();
+};
+
+const check = (project) => {
+  if (typeof project.name !== "string")
+    throw errHandler.createBusinessNotFoundError('Project: name is not valid!');
+  if (typeof project.description !== "string")
+    throw errHandler.createBusinessNotFoundError('Project: description is not valid!');
 };
 
 module.exports = {
