@@ -2,6 +2,7 @@ const cacheDao = require(__base + 'dao/cache.dao');
 const errHandler = require(__base + 'utils/errors');
 
 const create = async (cache) => {
+    check(cache);
     let newCache = await cacheDao.create(cache);
     return newCache;
 };
@@ -42,6 +43,8 @@ const update = async (cache, cacheId) => {
 
     cache.id = cacheId;
 
+    check(cache);
+
     cache = await cacheDao.update(cache);
 
     if (!cache)
@@ -58,6 +61,15 @@ const getAll = async (workflowId) => {
 
     return await cacheDao.getAll(workflowId);
 };
+
+const check = (cache) => {
+    if (typeof cache.id_workflow !== "number")
+        throw errHandler.createBusinessNotFoundError('Cache: id_workflow is not valid!');
+    if (typeof cache.id_block !== "number")
+        throw errHandler.createBusinessNotFoundError('Cache: id_block is not valid!');
+    if (!(cache.data.constructor === Object))
+        throw errHandler.createBusinessNotFoundError('Cache: data is not valid!');
+}
 
 module.exports = {
     create,
