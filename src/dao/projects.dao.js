@@ -5,7 +5,7 @@ const db = require(__base + "db/index");
 const create = async (proj) => {
     let res = await db.query(
         `insert into ${db.TABLES.Project}(created_at, data) values($1, $2) returning *`,
-        [new Date(), proj.data]
+        [new Date(), proj]
     );
 
     return res.rows[0];

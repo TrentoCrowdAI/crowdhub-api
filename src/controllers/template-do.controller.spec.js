@@ -34,7 +34,7 @@ test('Right template-do insert, get, update, delete', async () => {
   expect(response.body).toBeDefined();
 
   //PUT /template-do/id should return 200
-  response = await request(app).put('/template-do/' + templRes.id).send(templ);
+  response = await request(app).put('/template-do/' + templRes.id).send(templRes);
   expect(response.status).toBe(200);
   expect(response.body).toBeDefined();
 
