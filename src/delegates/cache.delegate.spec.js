@@ -43,7 +43,6 @@ describe('Cache delegate', () => {
         await expect(cacheDelegate.create(cache)).rejects.toThrow();
     });
 
-
     test('Cache create should rise error because wrong data given', async () => {
         let cache = {
             id_workflow : 1,
@@ -52,5 +51,10 @@ describe('Cache delegate', () => {
         };
 
         await expect(cacheDelegate.create(cache)).rejects.toThrow();
+    });
+
+    test('Cache get should rise error because of wrong id params', async () => {
+        await expect(cacheDelegate.get({})).rejects.toThrow();
+        await expect(cacheDelegate.get('a')).rejects.toThrow();
     });
 });
