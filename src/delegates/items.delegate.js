@@ -5,6 +5,7 @@ const itemsDao = require(__base + 'dao/items.dao');
 const errHandler = require(__base + 'utils/errors');
 
 const create = async (item, idProj) => {
+    check(item);
     let newItem = await itemsDao.create(item, idProj);
     return newItem;
 };
@@ -68,6 +69,8 @@ const update = async (item, itemId) => {
 
     item.id = itemId;
 
+    check(item.data);
+
     item = await itemsDao.update(item);
 
     if (!item)
@@ -78,6 +81,11 @@ const update = async (item, itemId) => {
 
 const getAll = async (projectId) => {
     return await itemsDao.getAll(projectId);
+};
+
+const check = (item) => {
+    if (!(item.constructor === Object))
+        throw errHandler.createBusinessNotFoundError('Item: type is not valid!');
 };
 
 module.exports = {
