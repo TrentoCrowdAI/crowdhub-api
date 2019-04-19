@@ -4,19 +4,19 @@ const config = require(__base + 'config/index');
 
 /**
  * Create a new project on Toloka
- * @param {{}} job
- * @param {{}} inOutParams
+ * @param {{}} template_do
+ * @param {{}} design
  */
-const createProject = async (job, param) => {
+const createProject = async (template_do, design) => {
   let url = config.toloka.baseEndpoint + 'projects';
 
   let body = {
-    public_name: job.data.name,
-    public_description: job.data.description,
-    public_instructions: job.data.instructions,
+    public_name: template_do.data.name,
+    public_description: template_do.data.description,
+    public_instructions: template_do.data.instructions,
     task_spec: {
-      input_spec: param.input_spec,
-      output_spec: param.output_spec,
+      input_spec: design.input_spec,
+      output_spec: design.output_spec,
       view_spec: {
         assets: {
           script_urls: [
@@ -26,9 +26,9 @@ const createProject = async (job, param) => {
             "$TOLOKA_ASSETS/js/image-annotation.js"
           ]
         },
-        markup: param.markup,
-        script: param.javascript,
-        styles: param.css,
+        markup: design.markup,
+        script: design.javascript,
+        styles: design.css,
         settings: {
           showSkip: true,
           showTimer: true,
@@ -56,31 +56,23 @@ const createProject = async (job, param) => {
     throw new Error('Toloka Error: Not able to create a new Project!');
 
   let json = await res.json();
-
-  if (job.data.platform === undefined)
-    job.data.platform = {};
-
-  if (job.data.platform.toloka === undefined)
-    job.data.platform.toloka = {};
-
-  job.data.platform.toloka.project = json;
-
-  return job;
+  return json;
 };
 
 /**
  * Create a new task pool on Toloka
- * @param {{}} job
+ * @param {{}} blockData
+ * @param {{}} project
  */
-const createTaskPool = async (job) => {
+const createTaskPool = async (blockData, project) => {
   let url = config.toloka.baseEndpoint + 'pools';
 
   let body = {
-    project_id: job.data.platform.toloka.project.id,
+    project_id: project.id,
     private_name: 'pool',
     may_contain_adult_content: false,
     will_expire: '2022-03-11T12:00:00',         //TODO: change
-    reward_per_assignment: job.data.reward,
+    reward_per_assignment: blockData.reward,
     assignment_max_duration_seconds: 60 * 10,
     defaults: {
       default_overlap_for_new_task_suites: 1
@@ -105,25 +97,14 @@ const createTaskPool = async (job) => {
     throw new Error('Toloka Error: Not able to create a new Pool!');
 
   let json = await res.json();
-
-  if (job.data.platform === undefined)
-    job.data.platform = {};
-
-  if (job.data.platform.toloka === undefined)
-    job.data.platform.toloka = {};
-
-  job.data.platform.toloka.pool = json;
-
-  return job;
-
+  return json;
 };
 
 /**
  * Create new tasks on Toloka
- * @param {{}} job
  * @param {[]} tasks
  */
-const createTasks = async (job, tasks) => {
+const createTasks = async (tasks) => {
   let url = config.toloka.baseEndpoint + 'tasks';
 
   let res = await fetch(url, {
@@ -139,8 +120,7 @@ const createTasks = async (job, tasks) => {
     throw new Error('Toloka Error: Not able to create new Tasks!');
 
   let json = await res.json();
-
-  return job;
+  return json;
 };
 
 module.exports = { createProject, createTaskPool, createTasks };

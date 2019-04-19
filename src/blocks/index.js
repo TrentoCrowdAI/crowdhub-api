@@ -1,4 +1,4 @@
 module.exports = {
-    do: require('./do'),
+    doPublish: require('./do-publish'),
     lambda: require('./lambda')
 };
