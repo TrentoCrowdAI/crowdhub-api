@@ -2,6 +2,7 @@ const templateDao = require(__base + 'dao/template-do.dao');
 const errHandler = require(__base + 'utils/errors');
 
 const create = async (template) => {
+    check(template);
     let newTemplate = await templateDao.create(template);
     return newTemplate;
 };
@@ -42,6 +43,8 @@ const update = async (template, templId) => {
 
     template.id = templId;
 
+    check(template.data);
+
     template = await templateDao.update(template);
 
     if (!template)
@@ -52,6 +55,20 @@ const update = async (template, templId) => {
 
 const getAll = async () => {
     return await templateDao.getAll();
+};
+
+const check = (template) => {
+    if (typeof template.name !== "string")
+        throw errHandler.createBusinessNotFoundError('Template-do: name is not valid!');
+    if (typeof template.instructions !== "string")
+        throw errHandler.createBusinessNotFoundError('Template-do: instructions is not valid!');
+    if (!(template.blocks instanceof Array))
+        throw errHandler.createBusinessNotFoundError('Template-do: blocks is not valid!');
+
+    template.blocks.forEach((block) => {
+        if (typeof block.type !== "string")
+            throw errHandler.createBusinessNotFoundError('Template-do: the type property of a block is not valid!');            
+    });
 };
 
 module.exports = {
