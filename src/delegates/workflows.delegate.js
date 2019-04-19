@@ -2,6 +2,7 @@ const workflowsDao = require(__base + 'dao/workflows.dao');
 const errHandler = require(__base + 'utils/errors');
 
 const create = async (workflow) => {
+    check(workflow);
     let newWork = await workflowsDao.create(workflow);
     return newWork;
 };
@@ -42,6 +43,8 @@ const update = async (workflow, workId) => {
 
     workflow.id = workId;
 
+    check(workflow);
+
     workflow = await workflowsDao.update(workflow);
 
     if (!workflow)
@@ -57,6 +60,15 @@ const getAll = async (projectId) => {
 const start = async (workId) => {
     throw errHandler.createBusinessError('Workflow start function not implemented yet!');
 };
+
+const check = (workflow) => {
+    if (typeof workflow.id_project !== "number")
+        throw errHandler.createBusinessNotFoundError('Workflow: id_project is not valid!');
+    if (!(workflow.data.constructor === Object))
+        throw errHandler.createBusinessNotFoundError('Workflow: data is not valid!');
+    if (typeof workflow.data.name !== "string")
+        throw errHandler.createBusinessNotFoundError('Workflow: name is not valid!');
+}
 
 module.exports = {
     create,
