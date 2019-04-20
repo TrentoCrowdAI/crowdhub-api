@@ -1,13 +1,16 @@
 const fetch = require('node-fetch');
 const querystring = require('querystring');
+const retry = require('async-retry');
 
 const config = require(__base + 'config/index');
+
+const RetryRetries = 3;
 
 /**
  * Create a new job on F8 from a template-do object
  * @param {{}} template_do
  */
-const createNewJob = async (template_do) => {
+const createNewJob = async (template_do) => retry(async () => {
     let url = config.f8.baseEndpoint + 'jobs.json?key=' + config.f8.apiKey;
 
     let newJob = {
@@ -27,14 +30,14 @@ const createNewJob = async (template_do) => {
 
     let json = await res.json();
     return json;
-};
+}, { retries: RetryRetries });
 
 /**
  * Add some items to an existing F8 job
  * @param {{}} job 
  * @param {[]} items
  */
-const addItems = async (job, items) => {
+const addItems = async (job, items) => retry(async () => {
     let url = config.f8.baseEndpoint + `jobs/${job.id}/upload.json?key=${config.f8.apiKey}&force=true`;
 
     let res = await fetch(url, {
@@ -50,14 +53,14 @@ const addItems = async (job, items) => {
 
     let json = await res.json();
     return json;
-};
+}, { retries: RetryRetries });
 
 /**
  * Update the Markup of an existing F8 job
  * @param {{}} job 
  * @param {{}} design 
  */
-const updateJobMarkup = async (job, design) => {
+const updateJobMarkup = async (job, design) => retry(async () => {
     let url = config.f8.baseEndpoint + `jobs/${job.id}.json?key=${config.f8.apiKey}`;
 
     let data = {
@@ -76,14 +79,14 @@ const updateJobMarkup = async (job, design) => {
 
     let json = await res.json();
     return json;
-};
+}, { retries: RetryRetries });
 
 /**
  * Update the JS of an existing F8 job
  * @param {{}} job 
  * @param {{}} design 
  */
-const updateJobJS = async (job, design) => {
+const updateJobJS = async (job, design) => retry(async () => {
     let url = config.f8.baseEndpoint + `jobs/${job.id}.json?key=${config.f8.apiKey}`;
 
     let data = {
@@ -102,14 +105,14 @@ const updateJobJS = async (job, design) => {
 
     let json = await res.json();
     return json;
-};
+}, { retries: RetryRetries });
 
 /**
  * Update the CSS of an existing F8 job
  * @param {{}} job 
  * @param {{}} design 
  */
-const updateJobCSS = async (job, design) => {
+const updateJobCSS = async (job, design) => retry(async () => {
     let url = config.f8.baseEndpoint + `jobs/${job.id}.json?key=${config.f8.apiKey}`;
 
     let data = {
@@ -128,14 +131,14 @@ const updateJobCSS = async (job, design) => {
 
     let json = await res.json();
     return json;
-};
+}, { retries: RetryRetries });
 
 /**
  * Update the job reward, maxVotes and numVotes on an existing F8 job
  * @param {{}} job 
  * @param {{}} blockData
  */
-const updateJobSpec = async (job, blockData) => {
+const updateJobSpec = async (job, blockData) => retry(async () => {
     let url = config.f8.baseEndpoint + `jobs/${job.id}.json?key=${config.f8.apiKey}`;
 
     let data = {
@@ -156,13 +159,13 @@ const updateJobSpec = async (job, blockData) => {
 
     let json = await res.json();
     return json;
-};
+}, { retries: RetryRetries });
 
 /**
  * Convert the loaded Gold items of an existing job into test questions
  * @param {{}} job 
  */
-const convertGoldQuestions = async (job) => {
+const convertGoldQuestions = async (job) => retry(async () => {
     let url = config.f8.baseEndpoint + `jobs/${job.id}/gold.json?key=${config.f8.apiKey}`;
     let res = await fetch(url, {
         method: 'PUT'
@@ -170,7 +173,7 @@ const convertGoldQuestions = async (job) => {
 
     if (res.status !== 200)
         throw new Error('F8 Error: Not able to convert the Gold Questions of the Job!');
-};
+}, { retries: RetryRetries });
 
 module.exports = {
     createNewJob,
