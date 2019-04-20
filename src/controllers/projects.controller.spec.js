@@ -31,7 +31,7 @@ test('Right project insert, get, update, delete', async () => {
   response = await request(app).get('/projects/' + projRes.id);
   expect(response.status).toBe(200);
   expect(response.body).toBeDefined();
-console.log(projRes);
+  
   //PUT /projects/id should return 200
   response = await request(app).put('/projects/' + projRes.id).send(projRes);
   expect(response.status).toBe(200);
