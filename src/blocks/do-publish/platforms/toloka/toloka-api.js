@@ -1,13 +1,16 @@
 const fetch = require('node-fetch');
+const retry = require('async-retry');
 
 const config = require(__base + 'config/index');
+
+const RetryRetries = 3;
 
 /**
  * Create a new project on Toloka
  * @param {{}} template_do
  * @param {{}} design
  */
-const createProject = async (template_do, design) => {
+const createProject = async (template_do, design) => retry(async () => {
   let url = config.toloka.baseEndpoint + 'projects';
 
   let body = {
@@ -57,14 +60,14 @@ const createProject = async (template_do, design) => {
 
   let json = await res.json();
   return json;
-};
+}, { retries: RetryRetries });
 
 /**
  * Create a new task pool on Toloka
  * @param {{}} blockData
  * @param {{}} project
  */
-const createTaskPool = async (blockData, project) => {
+const createTaskPool = async (blockData, project) => retry(async () => {
   let url = config.toloka.baseEndpoint + 'pools';
 
   let body = {
@@ -98,13 +101,13 @@ const createTaskPool = async (blockData, project) => {
 
   let json = await res.json();
   return json;
-};
+}, { retries: RetryRetries });
 
 /**
  * Create new tasks on Toloka
  * @param {[]} tasks
  */
-const createTasks = async (tasks) => {
+const createTasks = async (tasks) => retry(async () => {
   let url = config.toloka.baseEndpoint + 'tasks';
 
   let res = await fetch(url, {
@@ -121,6 +124,6 @@ const createTasks = async (tasks) => {
 
   let json = await res.json();
   return json;
-};
+}, { retries: RetryRetries });
 
 module.exports = { createProject, createTaskPool, createTasks };
