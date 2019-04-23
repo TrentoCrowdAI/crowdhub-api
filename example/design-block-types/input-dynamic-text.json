@@ -1,0 +1,47 @@
+[
+  {
+    "type": "input_dynamic_text",
+    "parameters": [
+      {
+        "name": "csvVariable",
+        "displayName": "",
+        "description": "",
+        "default": "value",
+        "type": "text",
+
+      },
+      {
+        "name": "csvTitleVariable",
+        "displayName": "",
+        "description": "",
+        "default": "value",
+        "type": "text",
+
+      },
+      {
+        "name": "highlightable",
+        "displayName": "",
+        "description": "",
+        "default": false,
+        "type": "bool",
+
+      },
+      {
+        "name": "question",
+        "displayName": "",
+        "description": "",
+        "default": "value",
+        "type": "text",
+        "required": "highlightable"
+      },
+      {
+        "name": "highlightedCsvVariable",
+        "displayName": "",
+        "description": "",
+        "default": "value",
+        "type": "text",
+        "required": "highlightable"
+      }
+    ]
+  }
+]

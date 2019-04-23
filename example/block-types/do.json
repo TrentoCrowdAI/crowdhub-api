@@ -1,0 +1,84 @@
+{
+  "type": "do",
+  "nodeDefinition": {
+    "type": "blockNode",
+    "ports": [
+      {
+        "type": "default",
+        "name": "asp",
+        "in": true,
+        "label": "In"
+      },
+      {
+        "type": "default",
+        "name": "out",
+        "out": true,
+        "label": "Out"
+      }
+    ],
+    "name": "Do",
+    "color": "rgb(0,192,255)"
+  },
+  "parameters": [
+    {
+      "name": "toCache",
+      "displayName": "Cache result",
+      "description": "Should the result be cached?",
+      "value": true,
+      "required": true,
+      "type": "boolean"
+    },
+    {
+      "name": "platform",
+      "displayName": "Platform",
+      "description": "Specify the platform to which publish the job",
+      "value": "f8",
+      "required": true,
+      "type": "textFromDropdown",
+      "choices": [
+        {
+          "value": "f8",
+          "name": "F8"
+        },
+        {
+          "value": "toloka",
+          "name": "Toloka"
+        }
+      ]
+    },
+    {
+      "name": "reward",
+      "displayName": "Reward",
+      "description": "Cents of dollars",
+      "value": 3,
+      "required": true,
+      "type": "number"
+    },
+    {
+      "name": "maxVotes",
+      "displayName": "Max votes",
+      "description": "Max votes per performer",
+      "value": 3,
+      "required": true,
+      "type": "number"
+    },
+    {
+      "name": "numVotes",
+      "displayName": "Number of votes",
+      "description": "Number of votes per each job",
+      "value": 3,
+      "required": true,
+      "type": "number"
+    },
+    {
+      "name": "Job design",
+      "displayName": "Job design",
+      "description": "Design of the job that will be published on the platforms",
+      "value": {
+        "blocks": []
+      },
+      "required": true,
+      "type": "doDesign"
+    }
+  ]
+}
