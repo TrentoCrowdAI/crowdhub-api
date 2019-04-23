@@ -1,0 +1,167 @@
+{
+  "name": "Text highlight",
+  "description": "Show text to users and ask them questions about it. Users will be able to highlight the text to answer the questions.",
+  "blocks": [
+    {
+      "type": "input_dynamic_text",
+      "name": "Input dynamic text",
+      "parameters": [
+        {
+          "name": "csvVariable",
+          "displayName": "CSV variable",
+          "description": "CSV variable that contains the text",
+          "value": "text",
+          "type": "text",
+          "required": true
+        },
+        {
+          "name": "csvTitleVariable",
+          "displayName": "CSV title variable",
+          "description": "CSV variable that contains the title",
+          "value": "title",
+          "type": "text",
+          "required": true
+        },
+        {
+          "name": "highlightable",
+          "displayName": "Highlightable",
+          "description": "Allow the performer to highlight text",
+          "value": false,
+          "type": "boolean",
+          "required": true
+        },
+        {
+          "name": "question",
+          "displayName": "Highlight question",
+          "description": "Question that asks the performer to highlight the text",
+          "value": "Select which phrase best summarizes the abstract",
+          "type": "text",
+          "required": "highlightable"
+        },
+        {
+          "name": "highlightedCsvVariable",
+          "displayName": "Highlighted text CSV variable",
+          "description": "Name of the CSV variable where to store the highlighted text",
+          "value": "highlighted_text",
+          "type": "text",
+          "required": "highlightable"
+        }
+      ]
+    },
+    {
+      "type": "output_choices",
+      "name": "Output choices",
+      "parameters": [
+        {
+          "name": "question",
+          "displayName": "Question",
+          "description": "Does the paper describe a study that involves older adults?",
+          "value": "text",
+          "type": "text",
+          "required": true
+        },
+        {
+          "name": "csvVariable",
+          "displayName": "CSV variable",
+          "description": "CSV variable where to store the answer",
+          "value": "about_adults",
+          "type": "text",
+          "required": true
+        },
+        {
+          "name": "choices",
+          "displayName": "Choices",
+          "description": "Available choices",
+          "value": [
+            {
+              "value": "yes",
+              "label": "Yes"
+            },
+            {
+              "value": "no",
+              "label": "No"
+            },
+            {
+              "value": "maybe",
+              "label": "Maybe"
+            }
+          ],
+          "type": "choiceBuilder",
+          "required": true
+        },
+        {
+          "name": "required",
+          "displayName": "Required",
+          "description": "Is the user required to answer?",
+          "type": "boolean",
+          "value": true
+        },
+        {
+          "name": "choice_type",
+          "displayName": "Choice type",
+          "type": "textFromDropdown",
+          "value": "single_radio",
+          "choices": [
+            {
+              "value": "multiple_checkbox",
+              "label": "Multiple choice"
+            },
+            {
+              "value": "single_radio",
+              "label": "Single choice radio"
+            },
+            {
+              "value": "Single choice dropdown",
+              "label": "single_dropdown"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "type": "output_open_question",
+      "name": "Output open question",
+      "parameters": [
+        {
+          "name": "question",
+          "displayName": "Question",
+          "description": "Explain your decision",
+          "value": "Describe in few words ...",
+          "type": "text",
+          "required": true
+        },
+        {
+          "name": "csvVariable",
+          "displayName": "CSV Variable",
+          "description": "CSV variable where to store the answer of the performer",
+          "value": "answer",
+          "type": "text",
+          "required": true
+        },
+        {
+          "name": "required",
+          "displayName": "Required",
+          "description": "Is the user required to answer?",
+          "type": "boolean",
+          "value": false
+        },
+        {
+          "name": "size",
+          "displayName": "size",
+          "type": "textFromDropdown",
+          "value": "big",
+          "choices": [
+            {
+              "value": "slim",
+              "label": "Slim"
+            },
+            {
+              "value": "big",
+              "label": "Big"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
