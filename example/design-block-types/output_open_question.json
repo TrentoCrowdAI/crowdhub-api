@@ -1,0 +1,45 @@
+{
+  "type": "output_open_question",
+  "name": "Output open question",
+  "parameters": [
+    {
+      "name": "question",
+      "displayName": "Question",
+      "description": "Question to show to the performer",
+      "value": "Describe in few words ...",
+      "type": "text",
+      "required": true
+    },
+    {
+      "name": "csvVariable",
+      "displayName": "CSV Variable",
+      "description": "CSV variable where to store the answer of the performer",
+      "value": "answer",
+      "type": "text",
+      "required": true
+    },
+    {
+      "name": "required",
+      "displayName": "Required",
+      "description": "Is the user required to answer?",
+      "type": "boolean",
+      "value": true
+    },
+    {
+      "name": "size",
+      "displayName": "size",
+      "type": "textFromDropdown",
+      "value": "slim",
+      "choices": [
+        {
+          "value": "slim",
+          "label": "Slim"
+        },
+        {
+          "value": "big",
+          "label": "Big"
+        }
+      ]
+    }
+  ]
+}

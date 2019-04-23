@@ -1,0 +1,58 @@
+{
+  "type": "output_choices",
+  "name": "Output choices",
+  "parameters": [
+    {
+      "name": "question",
+      "displayName": "Question",
+      "description": "Question to show to the performer",
+      "value": "text",
+      "type": "text",
+      "required": true
+    },
+    {
+      "name": "choices",
+      "displayName": "Choices",
+      "description": "Available choices",
+      "value": [
+        {
+          "value": "yes",
+          "label": "Yes"
+        },
+        {
+          "value": "no",
+          "label": "No"
+        }
+      ],
+      "type": "choiceBuilder",
+      "required": true
+    },
+    {
+      "name": "required",
+      "displayName": "Required",
+      "description": "Is the user required to answer?",
+      "type": "boolean",
+      "value": true
+    },
+    {
+      "name": "choice_type",
+      "displayName": "Choice type",
+      "type": "textFromDropdown",
+      "value": "multiple_checkbox",
+      "choices": [
+        {
+          "value": "multiple_checkbox",
+          "label": "Multiple choice"
+        },
+        {
+          "value": "single_radio",
+          "label": "Single choice radio"
+        },
+        {
+          "value": "Single choice dropdown",
+          "label": "single_dropdown"
+        }
+      ]
+    }
+  ]
+}
