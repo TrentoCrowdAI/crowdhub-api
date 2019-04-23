@@ -38,11 +38,11 @@
       "choices": [
         {
           "value": "f8",
-          "name": "F8"
+          "label": "F8"
         },
         {
           "value": "toloka",
-          "name": "Toloka"
+          "label": "Toloka"
         }
       ]
     },

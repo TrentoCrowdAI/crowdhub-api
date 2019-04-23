@@ -1,0 +1,40 @@
+{
+  "type": "lambda",
+  "nodeDefinition": {
+    "type": "blockNode",
+    "ports": [
+      {
+        "type": "default",
+        "name": "In",
+        "in": true,
+        "label": "In"
+      },
+      {
+        "type": "default",
+        "name": "Out",
+        "out": true,
+        "label": "Out"
+      }
+    ],
+    "name": "λ",
+    "color": "rgb(0,192,255)"
+  },
+  "parameters": [
+    {
+      "name": "toCache",
+      "displayName": "Cache result",
+      "description": "Should the result be cached?",
+      "value": true,
+      "required": true,
+      "type": "boolean"
+    },
+    {
+      "name": "code",
+      "displayName": "Code",
+      "description": "Code to execute",
+      "value": "return input.length;",
+      "required": true,
+      "type": "code"
+    }
+  ]
+}
