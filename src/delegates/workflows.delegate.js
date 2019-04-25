@@ -1,5 +1,6 @@
 const workflowsDao = require(__base + 'dao/workflows.dao');
 const errHandler = require(__base + 'utils/errors');
+const workflowExecutor = require('./workflow-executor.delegate');
 
 const create = async (workflow) => {
     check(workflow);
@@ -58,7 +59,9 @@ const getAll = async (projectId) => {
 };
 
 const start = async (workId) => {
-    throw errHandler.createBusinessError('Workflow start function not implemented yet!');
+    let workflow = await get(workId);
+
+    return await workflowExecutor(workflow);
 };
 
 const check = (workflow) => {
