@@ -3,7 +3,7 @@ const renderDesign = require('./render');
 
 const templateDoDelegate = require(__base + 'delegates/template-do.delegate');
 
-const sleep = require(__base + 'utils/utils').sleep;name
+const sleep = require(__base + 'utils/utils').sleep;
 
 /**
  * Publish the job parameter on the F8 platform as a new job.
@@ -13,9 +13,7 @@ const sleep = require(__base + 'utils/utils').sleep;name
 const publish = async (blockData, input) => {
     const timeSleep = 200;
 
-    let template_do = await templateDoDelegate.get(blockData.id_template_do);
-
-    let job = await createNewJob(template_do);
+    let job = await createNewJob(blockData.jobDesign);
 
     await sleep(timeSleep);
 
@@ -29,7 +27,7 @@ const publish = async (blockData, input) => {
     await sleep(timeSleep);
 
     //render the design of the job
-    let design = renderDesign(template_do.data.blocks);
+    let design = renderDesign(blockData.jobDesign.blocks);
     //set the design of the job
     job = await updateJobMarkup(job, design);
     await sleep(timeSleep);

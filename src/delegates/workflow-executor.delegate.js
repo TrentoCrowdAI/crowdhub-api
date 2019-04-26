@@ -13,11 +13,11 @@ const start = async (workflow) => {
     splitDoBlocks(blocks);
 
     items = await itemsDelegate.getAll(workflow.id_project);
-    
+
     startBlocksWithoutParent(blocks);
 
     let results = await Promise.all(blockPromises);
-    console.log(results);
+    console.log(blocks);
 };
 
 const connectBlocks = (blocks, links) => {
@@ -38,12 +38,12 @@ const connectBlocks = (blocks, links) => {
 
 const splitDoBlocks = (blocks) => {
     blocks.forEach(block => {
-        if (block.blockType === 'do') {
-            block.blockType = 'doPublish';
+        if (block.nodeType === 'do') {
+            block.nodeType = 'doPublish';
 
             const waitBlock = {
                 id: `${block.id}_wait`,
-                blockType: 'doWait',
+                nodeType: 'doWait',
                 children: block.children,
                 parents: [block]
             };
@@ -54,7 +54,7 @@ const splitDoBlocks = (blocks) => {
     });
 };
 
-const startBlocksWithoutParent = (blocks, items) => {
+const startBlocksWithoutParent = (blocks) => {
     blocks.forEach(block => {
         if (block.parents.length == 0) {
             //start block without awaiting
@@ -76,7 +76,11 @@ const startBlock = async (block) => {
     if (inputs.length === 0)
         inputs = items;
 
-    block.result = await blockDefinitions[block.blockType](block.parameters, inputs);
+    //debug purpose
+    if(block.nodeType === 'doWait')
+        return inputs;
+
+    block.result = await blockDefinitions[block.nodeType](block.parameters, inputs);
 
     block.executed = true;
 
