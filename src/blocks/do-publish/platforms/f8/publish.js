@@ -13,7 +13,7 @@ const sleep = require(__base + 'utils/utils').sleep;
 const publish = async (blockData, input) => {
     const timeSleep = 200;
 
-    let job = await createNewJob(blockData.jobDesign);
+    let job = await createNewJob(blockData);
 
     await sleep(timeSleep);
 

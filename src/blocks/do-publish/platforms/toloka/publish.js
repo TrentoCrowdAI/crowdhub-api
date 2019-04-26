@@ -9,7 +9,7 @@ const renderDesign = require('./render');
  */
 const publish = async (blockData, input) => {
   let design = renderDesign(blockData.jobDesign.blocks);
-  let project = await createProject(blockData.jobDesign, design);
+  let project = await createProject(blockData, design);
 
   project.taskPool = await createTaskPool(blockData, project);
 

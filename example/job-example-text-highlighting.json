@@ -3,10 +3,10 @@
         "reward": 70,
         "maxVotes": 1,
         "numVotes": 1,
+        "name": "My text highlighting job",
+        "description": "This is my job.",
+        "instructions": "Some intructions....",
         "jobDesign": {
-            "name": "My text highlighting job",
-            "description": "This is my job.",
-            "instructions": "Some intructions....",
             "blocks": [
                 {
                     "type": "input_dynamic_text",
