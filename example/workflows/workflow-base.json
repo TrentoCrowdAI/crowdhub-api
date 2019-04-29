@@ -17,7 +17,7 @@
                 "zoom": 100,
                 "links": [
                     {
-                        "id": "29d1e953-1bd5-459d-bb06-0ffc82eabae9",
+                        "id": "84a2d072-d08f-42d4-9e56-da5946a2787f",
                         "type": "default",
                         "color": "rgba(255,255,255,0.5)",
                         "width": 3,
@@ -25,15 +25,15 @@
                         "labels": [],
                         "points": [
                             {
-                                "x": 304.09375,
-                                "y": 443.40625,
-                                "id": "84235db9-2b4f-49c1-8c82-a07e08c9f8f1",
+                                "x": 94.734375,
+                                "y": 428.40625,
+                                "id": "917c32bd-1592-408c-b386-430ea464c70f",
                                 "selected": false
                             },
                             {
-                                "x": 462.171875,
-                                "y": 319.40625,
-                                "id": "58c003ec-995a-43e7-8f40-87b13a6b1a8f",
+                                "x": 195.171875,
+                                "y": 453.40625,
+                                "id": "ded3ccd9-14a9-419d-a6d7-54c94f1c715c",
                                 "selected": true
                             }
                         ],
@@ -41,14 +41,14 @@
                         "target": "5e102960-790b-4d13-a58e-49573bd4e560",
                         "selected": false,
                         "curvyness": 50,
-                        "sourcePort": "ddd0995b-414d-4dc4-98e7-281f6e736394",
-                        "targetPort": "5fd1371d-c068-4946-864b-2b9f5aff6af1"
+                        "sourcePort": "8c6d1bc6-9073-4334-9f80-a28011e040ec",
+                        "targetPort": "ad4343f7-4f6d-4afe-a4c7-972d433e3022"
                     }
                 ],
                 "nodes": [
                     {
-                        "x": 329.671875,
-                        "y": 405.40625,
+                        "x": 46.671875,
+                        "y": 400.40625,
                         "id": "2124463d-0fe8-427a-a6b2-cdb1d0b125a4",
                         "name": "λ",
                         "color": "rgb(0,192,255)",
@@ -56,7 +56,7 @@
                             {
                                 "id": "7825c81d-dd0d-4246-bdb4-7ad795164660",
                                 "in": true,
-                                "name": "In",
+                                "name": "in",
                                 "type": "default",
                                 "label": "In",
                                 "links": [],
@@ -64,25 +64,25 @@
                             },
                             {
                                 "id": "8c6d1bc6-9073-4334-9f80-a28011e040ec",
-                                "name": "Out",
+                                "name": "out",
                                 "type": "default",
                                 "label": "Out",
                                 "links": [
-                                    "29d1e953-1bd5-459d-bb06-0ffc82eabae9"
+                                    "84a2d072-d08f-42d4-9e56-da5946a2787f"
                                 ],
                                 "parentNode": "2124463d-0fe8-427a-a6b2-cdb1d0b125a4"
                             }
                         ],
                         "nodeType": "lambda",
-                        "selected": true,
+                        "selected": false,
                         "parameters": {
                             "code": "return input;",
                             "toCache": false
                         }
                     },
                     {
-                        "x": 625.671875,
-                        "y": 461.40625,
+                        "x": 186.671875,
+                        "y": 425.40625,
                         "id": "5e102960-790b-4d13-a58e-49573bd4e560",
                         "name": "Do",
                         "color": "rgb(0,192,255)",
@@ -94,7 +94,7 @@
                                 "type": "default",
                                 "label": "In",
                                 "links": [
-                                    "29d1e953-1bd5-459d-bb06-0ffc82eabae9"
+                                    "84a2d072-d08f-42d4-9e56-da5946a2787f"
                                 ],
                                 "parentNode": "5e102960-790b-4d13-a58e-49573bd4e560"
                             },
@@ -148,7 +148,7 @@
                                                 }
                                             ],
                                             "question": "text",
-                                            "required": "boolean",
+                                            "required": true,
                                             "choice_type": "single_radio",
                                             "csvVariable": "about_adults"
                                         }
@@ -170,8 +170,8 @@
                         }
                     }
                 ],
-                "offsetX": 0,
-                "offsetY": 0,
+                "offsetX": 74,
+                "offsetY": 80,
                 "gridSize": 0
             },
             "description": "b"
