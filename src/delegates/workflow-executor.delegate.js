@@ -1,5 +1,6 @@
 const blockDefinitions = require(__base + 'blocks');
 const itemsDelegate = require('./items.delegate');
+const sleep = require(__base + 'utils/utils').sleep;
 
 let items = [];
 
@@ -97,6 +98,9 @@ const startBlock = async (block) => {
 const getResult = async (blocks) => {
     let results = [];
     for (let block of blocks) {
+        while (block.promise === undefined)
+            sleep(100);
+
         await block.promise;
         if (block.children.length === 0)
             results.push(block.result);
