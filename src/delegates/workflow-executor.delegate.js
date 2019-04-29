@@ -72,12 +72,18 @@ const startBlock = async (block) => {
             return;
         }
 
-        inputs.push(parent.result);
+        let myInput = parent.result;
+        if (parent.children.length > 1) { //take only my block's input
+            let myIndex = parent.children.indexOf(block);
+            myInput = parent.result[myIndex];
+        }
+
+        inputs.push(myInput);
     }
     if (inputs.length === 1)
         inputs = inputs[0];
 
-    if (inputs.length === 0)
+    if (inputs.length === 0) //first block
         inputs = items;
 
     //debug purpose
