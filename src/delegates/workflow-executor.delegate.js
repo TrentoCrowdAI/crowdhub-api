@@ -18,7 +18,7 @@ const start = async (workflow) => {
     startBlocksWithoutParent(blocks);
 
     let result = await getResult(blocks);
-    console.log(result);
+    
     return result;
 };
 
@@ -92,7 +92,7 @@ const getBlockInputs = (block) => {
 
         inputs.push(myInput);
     }
-    
+
     if (inputs.length === 1)
         inputs = inputs[0];
 

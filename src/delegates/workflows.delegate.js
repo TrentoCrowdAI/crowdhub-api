@@ -66,11 +66,11 @@ const start = async (workId) => {
 
 const check = (workflow) => {
     if (typeof workflow.id_project !== "number")
-        throw errHandler.createBusinessNotFoundError('Workflow: id_project is not valid!');
+        throw errHandler.createBusinessError('Workflow: id_project is not valid!');
     if (!(workflow.data.constructor === Object))
-        throw errHandler.createBusinessNotFoundError('Workflow: data is not valid!');
+        throw errHandler.createBusinessError('Workflow: data is not valid!');
     if (typeof workflow.data.name !== "string")
-        throw errHandler.createBusinessNotFoundError('Workflow: name is not valid!');
+        throw errHandler.createBusinessError('Workflow: name is not valid!');
 }
 
 module.exports = {
