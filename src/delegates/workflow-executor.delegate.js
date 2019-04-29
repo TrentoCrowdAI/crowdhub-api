@@ -66,6 +66,18 @@ const startBlocksWithoutParent = (blocks) => {
 };
 
 const startBlock = async (block) => {
+    let inputs = getBlockInputs(block);
+
+    block.result = await blockDefinitions[block.nodeType](block.parameters, inputs);
+
+    block.executed = true;
+
+    for (let child of block.children) {
+        child.promise = startBlock(child);
+    }
+};
+
+const getBlockInputs = (block) => {
     let inputs = [];
     for (let parent of block.parents) {
         if (!parent.executed) {
@@ -80,25 +92,14 @@ const startBlock = async (block) => {
 
         inputs.push(myInput);
     }
+    
     if (inputs.length === 1)
         inputs = inputs[0];
 
     if (inputs.length === 0) //first block
         inputs = items;
-
-    //debug purpose
-    if (block.nodeType === 'doWait') {
-        block.result = inputs;
-        return;
-    }
-
-    block.result = await blockDefinitions[block.nodeType](block.parameters, inputs);
-
-    block.executed = true;
-
-    for (let child of block.children) {
-        child.promise = startBlock(child);
-    }
+    
+    return inputs;
 };
 
 const getResult = async (blocks) => {
