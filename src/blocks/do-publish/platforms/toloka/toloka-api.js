@@ -14,9 +14,9 @@ const createProject = async (template_do, design) => retry(async () => {
   let url = config.toloka.baseEndpoint + 'projects';
 
   let body = {
-    public_name: template_do.data.name,
-    public_description: template_do.data.description,
-    public_instructions: template_do.data.instructions,
+    public_name: template_do.name,
+    public_description: template_do.description,
+    public_instructions: template_do.instructions,
     task_spec: {
       input_spec: design.input_spec,
       output_spec: design.output_spec,

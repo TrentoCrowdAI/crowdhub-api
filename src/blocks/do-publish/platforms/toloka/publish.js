@@ -8,10 +8,8 @@ const renderDesign = require('./render');
  * @param {[]} input The input items to publish
  */
 const publish = async (blockData, input) => {
-  let template_do = await templateDoDelegate.get(blockData.id_template_do);
-
-  let design = renderDesign(template_do.data.blocks);
-  let project = await createProject(template_do, design);
+  let design = renderDesign(blockData.jobDesign.blocks);
+  let project = await createProject(blockData, design);
 
   project.taskPool = await createTaskPool(blockData, project);
 

@@ -14,8 +14,8 @@ const createNewJob = async (template_do) => retry(async () => {
     let url = config.f8.baseEndpoint + 'jobs.json?key=' + config.f8.apiKey;
 
     let newJob = {
-        'job[title]': template_do.data.name,
-        'job[instructions]': template_do.data.instructions
+        'job[title]': template_do.name,
+        'job[instructions]': template_do.instructions
     };
     let body = querystring.stringify(newJob);
 

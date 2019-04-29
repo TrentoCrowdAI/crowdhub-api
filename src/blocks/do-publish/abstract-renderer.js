@@ -15,7 +15,7 @@ const abstractRenderer = (renderers, renderHeader, renderFooter) => {
 
   const renderBlockBody = (block, context) => {
     const renderer = getRendererByBlock(block);
-    renderer.renderBody(block, context);
+    renderer.renderBody(block.parameters, context);
   };
 
   /**

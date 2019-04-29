@@ -2,7 +2,40 @@
     "blockData": {
         "reward": 70,
         "maxVotes": 1,
-        "numVotes": 1
+        "numVotes": 1,
+        "name": "My image classification job",
+        "description": "This is my job.",
+        "instructions": "Some intructions....",
+        "jobDesign": {
+            "blocks": [
+                {
+                    "type": "input_dynamic_image",
+                    "parameters": {
+                        "csvVariable": "image_url",
+                        "highlightable": false
+                    }
+                },
+                {
+                    "type": "output_choices",
+                    "parameters": {
+                        "question": "Does this image contain a cat?",
+                        "choices": [
+                            {
+                                "label": "Yes",
+                                "value": "yes"
+                            },
+                            {
+                                "label": "No",
+                                "value": "no"
+                            }
+                        ],
+                        "csvVariable": "cat_radio",
+                        "required": true,
+                        "choice_type": "single_radio"
+                    }
+                }
+            ]
+        }
     },
     "input": [
         {
@@ -11,34 +44,5 @@
         {
             "image_url": "https://static.photocdn.pt/images/articles/2017/04/28/iStock-593306910.jpg"
         }
-    ],
-    "template_do": {
-        "name": "My image classification job",
-        "description": "This is my job.",
-        "instructions": "Some intructions....",
-        "blocks": [
-            {
-                "type": "input_dynamic_image",
-                "csvVariable": "image_url",
-                "highlightable": false
-            },
-            {
-                "type": "output_choices",
-                "question": "Does this image contain a cat?",
-                "choices": [
-                    {
-                        "label": "Yes",
-                        "value": "yes"
-                    },
-                    {
-                        "label": "No",
-                        "value": "no"
-                    }
-                ],
-                "csvVariable": "cat_radio",
-                "required": true,
-                "choice_type": "single_radio"
-            }
-        ]
-    }
+    ]
 }

@@ -1,0 +1,180 @@
+{
+    "project": {
+        "name": "My project used for testing the workflow",
+        "description": "Random description"
+    },
+    "items": [
+        {
+            "title": "Random text as the title of the paper",
+            "text": "Some text which should the abstract of the paper."
+        }
+    ],
+    "workflow": {
+        "data": {
+            "name": "b",
+            "graph": {
+                "id": "7f2d7403-6782-43ee-b672-ec50eb13ca60",
+                "zoom": 100,
+                "links": [
+                    {
+                        "id": "29d1e953-1bd5-459d-bb06-0ffc82eabae9",
+                        "type": "default",
+                        "color": "rgba(255,255,255,0.5)",
+                        "width": 3,
+                        "extras": {},
+                        "labels": [],
+                        "points": [
+                            {
+                                "x": 304.09375,
+                                "y": 443.40625,
+                                "id": "84235db9-2b4f-49c1-8c82-a07e08c9f8f1",
+                                "selected": false
+                            },
+                            {
+                                "x": 462.171875,
+                                "y": 319.40625,
+                                "id": "58c003ec-995a-43e7-8f40-87b13a6b1a8f",
+                                "selected": true
+                            }
+                        ],
+                        "source": "2124463d-0fe8-427a-a6b2-cdb1d0b125a4",
+                        "target": "5e102960-790b-4d13-a58e-49573bd4e560",
+                        "selected": false,
+                        "curvyness": 50,
+                        "sourcePort": "ddd0995b-414d-4dc4-98e7-281f6e736394",
+                        "targetPort": "5fd1371d-c068-4946-864b-2b9f5aff6af1"
+                    }
+                ],
+                "nodes": [
+                    {
+                        "x": 329.671875,
+                        "y": 405.40625,
+                        "id": "2124463d-0fe8-427a-a6b2-cdb1d0b125a4",
+                        "name": "λ",
+                        "color": "rgb(0,192,255)",
+                        "ports": [
+                            {
+                                "id": "7825c81d-dd0d-4246-bdb4-7ad795164660",
+                                "in": true,
+                                "name": "In",
+                                "type": "default",
+                                "label": "In",
+                                "links": [],
+                                "parentNode": "2124463d-0fe8-427a-a6b2-cdb1d0b125a4"
+                            },
+                            {
+                                "id": "8c6d1bc6-9073-4334-9f80-a28011e040ec",
+                                "name": "Out",
+                                "type": "default",
+                                "label": "Out",
+                                "links": [
+                                    "29d1e953-1bd5-459d-bb06-0ffc82eabae9"
+                                ],
+                                "parentNode": "2124463d-0fe8-427a-a6b2-cdb1d0b125a4"
+                            }
+                        ],
+                        "nodeType": "lambda",
+                        "selected": true,
+                        "parameters": {
+                            "code": "return input;",
+                            "toCache": false
+                        }
+                    },
+                    {
+                        "x": 625.671875,
+                        "y": 461.40625,
+                        "id": "5e102960-790b-4d13-a58e-49573bd4e560",
+                        "name": "Do",
+                        "color": "rgb(0,192,255)",
+                        "ports": [
+                            {
+                                "id": "ad4343f7-4f6d-4afe-a4c7-972d433e3022",
+                                "in": true,
+                                "name": "in",
+                                "type": "default",
+                                "label": "In",
+                                "links": [
+                                    "29d1e953-1bd5-459d-bb06-0ffc82eabae9"
+                                ],
+                                "parentNode": "5e102960-790b-4d13-a58e-49573bd4e560"
+                            },
+                            {
+                                "id": "ee1a2b27-c419-4be2-9946-f096be8614a3",
+                                "name": "out",
+                                "type": "default",
+                                "label": "Out",
+                                "links": [],
+                                "parentNode": "5e102960-790b-4d13-a58e-49573bd4e560"
+                            }
+                        ],
+                        "nodeType": "do",
+                        "selected": false,
+                        "parameters": {
+                            "name": "Job name",
+                            "reward": 3,
+                            "toCache": true,
+                            "maxVotes": 3,
+                            "numVotes": 3,
+                            "platform": "f8",
+                            "jobDesign": {
+                                "blocks": [
+                                    {
+                                        "id": "ab640cb4-742e-4c77-9f8d-668dfaed96f8",
+                                        "type": "input_dynamic_text",
+                                        "parameters": {
+                                            "question": "Select which phrase best summarizes the abstract",
+                                            "csvVariable": "text",
+                                            "highlightable": false,
+                                            "csvTitleVariable": "title",
+                                            "highlightedCsvVariable": "highlighted_text"
+                                        }
+                                    },
+                                    {
+                                        "id": "0b9140f8-f90e-4b54-a736-3772c6559544",
+                                        "type": "output_choices",
+                                        "parameters": {
+                                            "choices": [
+                                                {
+                                                    "label": "Yes",
+                                                    "value": "yes"
+                                                },
+                                                {
+                                                    "label": "No",
+                                                    "value": "no"
+                                                },
+                                                {
+                                                    "label": "Maybe",
+                                                    "value": "maybe"
+                                                }
+                                            ],
+                                            "question": "text",
+                                            "required": "boolean",
+                                            "choice_type": "single_radio",
+                                            "csvVariable": "about_adults"
+                                        }
+                                    },
+                                    {
+                                        "id": "4ce8ee39-7fcc-44aa-b7d0-363d25d50f40",
+                                        "type": "output_open_question",
+                                        "parameters": {
+                                            "size": "big",
+                                            "question": "Describe in few words ...",
+                                            "required": false,
+                                            "csvVariable": "answer"
+                                        }
+                                    }
+                                ]
+                            },
+                            "description": "Some description",
+                            "instructions": "Some instructions..."
+                        }
+                    }
+                ],
+                "offsetX": 0,
+                "offsetY": 0,
+                "gridSize": 0
+            },
+            "description": "b"
+        }
+    }
+}

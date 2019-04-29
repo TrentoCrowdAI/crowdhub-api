@@ -1,5 +1,4 @@
 const doPublish = require('./publish');
-const templateDoDelegate = require(__base + 'delegates/template-do.delegate');
 
 let example = __base + "../example/";
 const exampleTextHighlighting = require(example + 'job-example-text-highlighting.json');
@@ -10,17 +9,10 @@ const exampleImageHighlighting = require(example + 'job-example-image-highlighti
 jest.setTimeout(20000);
 
 describe('Toloka tests', async () => {
-  let templateDoIds = [];
-
   beforeAll(async () => {
   });
 
   test('Toloka publish test [text-highlighting]', async () => {
-    //create template-do
-    let templateDo = await templateDoDelegate.create(exampleTextHighlighting.template_do);
-    templateDoIds.push(templateDo.id);
-
-    exampleTextHighlighting.blockData.id_template_do = templateDo.id;
     let res = await doPublish(exampleTextHighlighting.blockData, exampleTextHighlighting.input);
     expect(res).toBeDefined();
     expect(res.id).toBeDefined();
@@ -33,11 +25,6 @@ describe('Toloka tests', async () => {
   });
 
   test('Toloka publish test [image-classification]', async () => {
-    //create template-do
-    let templateDo = await templateDoDelegate.create(exampleImageClassification.template_do);
-    templateDoIds.push(templateDo.id);
-
-    exampleImageClassification.blockData.id_template_do = templateDo.id;
     let res = await doPublish(exampleImageClassification.blockData, exampleImageClassification.input);
     expect(res).toBeDefined();
     expect(res.id).toBeDefined();
@@ -50,11 +37,6 @@ describe('Toloka tests', async () => {
   });
 
   test('Toloka publish test [image-highlighting]', async () => {
-    //create template-do
-    let templateDo = await templateDoDelegate.create(exampleImageHighlighting.template_do);
-    templateDoIds.push(templateDo.id);
-
-    exampleImageHighlighting.blockData.id_template_do = templateDo.id;
     let res = await doPublish(exampleImageHighlighting.blockData, exampleImageHighlighting.input);
     expect(res).toBeDefined();
     expect(res.id).toBeDefined();
@@ -67,7 +49,5 @@ describe('Toloka tests', async () => {
   });
 
   afterAll(async () => {
-    for (let id of templateDoIds)
-      await templateDoDelegate.deleteTemplateDo(id);
   });
 });

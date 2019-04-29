@@ -2,63 +2,71 @@
     "blockData": {
         "reward": 70,
         "maxVotes": 1,
-        "numVotes": 1
+        "numVotes": 1,
+        "name": "My text highlighting job",
+        "description": "This is my job.",
+        "instructions": "Some intructions....",
+        "jobDesign": {
+            "blocks": [
+                {
+                    "type": "input_dynamic_text",
+                    "parameters": {
+                        "question": "Select the first phrase from the text above.",
+                        "csvTitleVariable": "Title",
+                        "csvVariable": "Abstract",
+                        "highlightable": true,
+                        "highlightedCsvVariable": "highlighted_parts"
+                    }
+                },
+                {
+                    "type": "output_choices",
+                    "parameters": {
+                        "choices": [
+                            {
+                                "label": "Yes",
+                                "value": "Yes"
+                            },
+                            {
+                                "label": "No",
+                                "value": "No"
+                            },
+                            {
+                                "label": "Maybe",
+                                "value": "Maybe"
+                            }
+                        ],
+                        "question": "Does the paper describe a study that involves older adults?",
+                        "required": true,
+                        "choice_type": "single_radio",
+                        "csvVariable": "in_out_radio"
+                    }
+                },
+                {
+                    "type": "output_open_question",
+                    "parameters": {
+                        "size": "big",
+                        "question": "Explain your decision.",
+                        "required": false,
+                        "csvVariable": "decision_explaination"
+                    }
+                },
+                {
+                    "type": "input_dynamic_text",
+                    "parameters": {
+                        "question": "Select the first and the last phrases from the text above.",
+                        "csvTitleVariable": "Title",
+                        "csvVariable": "Abstract",
+                        "highlightable": true,
+                        "highlightedCsvVariable": "highlighted_parts2"
+                    }
+                }
+            ]
+        }
     },
     "input": [
         {
             "Abstract": "The abstract with some random text.",
             "Title": "A title for my text highlighting workflow"
         }
-    ],
-    "template_do": {
-        "name": "My text highlighting job",
-        "description": "This is my job.",
-        "instructions": "Some intructions....",
-        "blocks": [
-            {
-                "type": "input_dynamic_text",
-                "question": "Select the first phrase from the text above.",
-                "csvTitleVariable": "Title",
-                "csvVariable": "Abstract",
-                "highlightable": true,
-                "highlightedCsvVariable": "highlighted_parts"
-            },
-            {
-                "type": "output_choices",
-                "choices": [
-                    {
-                        "label": "Yes",
-                        "value": "Yes"
-                    },
-                    {
-                        "label": "No",
-                        "value": "No"
-                    },
-                    {
-                        "label": "Maybe",
-                        "value": "Maybe"
-                    }
-                ],
-                "question": "Does the paper describe a study that involves older adults?",
-                "required": true,
-                "choice_type": "single_radio",
-                "csvVariable": "in_out_radio"
-            },
-            {
-                "size": "big",
-                "type": "output_open_question",
-                "question": "Explain your decision.",
-                "required": false,
-                "csvVariable": "decision_explaination"
-            },
-            {
-                "type": "input_dynamic_text",
-                "question": "Select the first and the last phrases from the text above.",
-                "csvTitleVariable": "Title",
-                "csvVariable": "Abstract",
-                "highlightable": true,
-                "highlightedCsvVariable": "highlighted_parts2"
-            }
-        ]
-    }
+    ]
 }
