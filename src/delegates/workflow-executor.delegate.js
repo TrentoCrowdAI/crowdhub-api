@@ -40,12 +40,12 @@ const connectBlocks = (blocks, links) => {
 
 const splitDoBlocks = (blocks) => {
     blocks.forEach(block => {
-        if (block.nodeType === 'do') {
-            block.nodeType = 'doPublish';
+        if (block.type === 'do') {
+            block.type = 'doPublish';
 
             const waitBlock = {
                 id: `${block.id}_wait`,
-                nodeType: 'doWait',
+                type: 'doWait',
                 children: block.children,
                 parents: [block]
             };

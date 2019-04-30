@@ -73,7 +73,7 @@
                                 "parentNode": "2124463d-0fe8-427a-a6b2-cdb1d0b125a4"
                             }
                         ],
-                        "nodeType": "lambda",
+                        "type": "lambda",
                         "selected": false,
                         "parameters": {
                             "code": "return input;",
@@ -107,7 +107,7 @@
                                 "parentNode": "5e102960-790b-4d13-a58e-49573bd4e560"
                             }
                         ],
-                        "nodeType": "do",
+                        "type": "do",
                         "selected": false,
                         "parameters": {
                             "name": "Job name",
