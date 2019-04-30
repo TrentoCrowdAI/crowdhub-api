@@ -18,7 +18,7 @@ const start = async (workflow) => {
     startBlocksWithoutParent(blocks);
 
     let result = await getResult(blocks);
-    
+
     return result;
 };
 
@@ -68,7 +68,7 @@ const startBlocksWithoutParent = (blocks) => {
 const startBlock = async (block) => {
     let inputs = getBlockInputs(block);
 
-    block.result = await blockDefinitions[block.nodeType](block.parameters, inputs);
+    block.result = await blockDefinitions[block.type](block.parameters, inputs);
 
     block.executed = true;
 
@@ -78,7 +78,7 @@ const startBlock = async (block) => {
 };
 
 const getBlockInputs = (block) => {
-    let inputs = [];
+    let inputs = {};
     for (let parent of block.parents) {
         if (!parent.executed) {
             return;
@@ -90,15 +90,12 @@ const getBlockInputs = (block) => {
             myInput = parent.result[myIndex];
         }
 
-        inputs.push(myInput);
+        inputs[parent.id] = myInput;
     }
 
-    if (inputs.length === 1)
-        inputs = inputs[0];
+    if (Object.keys(inputs).length === 0) //first block
+        inputs['default'] = items;
 
-    if (inputs.length === 0) //first block
-        inputs = items;
-    
     return inputs;
 };
 

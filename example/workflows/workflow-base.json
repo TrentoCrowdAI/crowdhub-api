@@ -76,7 +76,7 @@
                         "type": "lambda",
                         "selected": false,
                         "parameters": {
-                            "code": "return input;",
+                            "code": "return input['default'];",
                             "toCache": false
                         }
                     },
