@@ -85,7 +85,7 @@ const getAll = async (projectId) => {
 
 const check = (item) => {
     if (!(item.constructor === Object))
-        throw errHandler.createBusinessNotFoundError('Item: type is not valid!');
+        throw errHandler.createBusinessError('Item: type is not valid!');
 };
 
 module.exports = {

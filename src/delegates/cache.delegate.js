@@ -64,9 +64,9 @@ const getAll = async (runId) => {
 
 const check = (cache) => {
     if (typeof cache.id_run !== "number")
-        throw errHandler.createBusinessNotFoundError('Cache: id_run is not valid!');
+        throw errHandler.createBusinessError('Cache: id_run is not valid!');
     if (!(cache.data.constructor === Object))
-        throw errHandler.createBusinessNotFoundError('Cache: data is not valid!');
+        throw errHandler.createBusinessError('Cache: data is not valid!');
 }
 
 module.exports = {
