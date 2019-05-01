@@ -32,6 +32,7 @@ const TABLES = Object.freeze({
   Project: 'project',
   Workflow: 'workflow',
   Item: 'item',
+  Run: 'run',
   Cache: 'cache',
   TemplateDo: 'template_do',
   BlockType: 'block_type'

@@ -401,10 +401,10 @@ paths:
     get:
       parameters:
         - in: query
-          name: workflowId
+          name: runId
           schema:
             type: integer
-          description: ID of the workflow related to the cache.
+          description: ID of the run related to the cache.
       tags:
       - "Cache"
       description: Returns the list of the cache.
@@ -677,12 +677,9 @@ components:
         deleted_at:
           type: string
           description: The delete timestamp of the cache
-        id_workflow:
+        id_run:
           type: integer
-          description: The ID of the workflow which the cache belongs to
-        id_block:
-          type: integer
-          description: The ID of the block which the cache belongs to
+          description: The ID of the run which the cache belongs to
         data:
           type: object
           description: The data related to the cache
