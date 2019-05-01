@@ -397,6 +397,28 @@ paths:
         404:
           description: Not Found
 
+  /workflows/{workflowID}/start:
+    parameters:
+      - in: path
+        name: workflowID
+        required: true
+        schema:
+          type: integer
+    get:
+      tags:
+      - "Workflows"
+      description: Start a workflow by ID
+      summary: Start workflow by ID
+      responses:
+        202:
+          description: The workflow is started.
+          content:
+            application/json:
+              schema:
+                type: integer
+        404:
+          description: Not Found
+          
   /runs:
     get:
       parameters:

@@ -24,9 +24,9 @@ const start = async (workflow) => {
 
     startBlocksWithoutParent(blocks);
 
-    let result = await getResult(blocks);
+    //let result = await getResult(blocks);
 
-    return result;
+    return run.id;
 };
 
 const createNewRun = async (workflow) => {
