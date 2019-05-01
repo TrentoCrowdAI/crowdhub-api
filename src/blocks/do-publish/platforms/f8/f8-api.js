@@ -4,7 +4,7 @@ const retry = require('async-retry');
 
 const config = require(__base + 'config/index');
 
-const RetryRetries = 3;
+const RetryRetries = 5;
 
 /**
  * Create a new job on F8 from a template-do object
@@ -134,7 +134,7 @@ const updateJobCSS = async (job, design) => retry(async () => {
 }, { retries: RetryRetries });
 
 /**
- * Update the job reward, maxVotes and numVotes on an existing F8 job
+ * Update the job reward, maxVotes, numVotes and units per assignment on an existing F8 job
  * @param {{}} job 
  * @param {{}} blockData
  */
@@ -144,7 +144,8 @@ const updateJobSpec = async (job, blockData) => retry(async () => {
     let data = {
         'job[payment_cents]': blockData.reward,
         'job[max_judgments_per_worker]': blockData.maxVotes,
-        'job[judgments_per_unit]': blockData.numVotes
+        'job[judgments_per_unit]': blockData.numVotes,
+        'job[units_per_assignment]': job.units_count
     };
     let body = querystring.stringify(data);
 
@@ -175,6 +176,38 @@ const convertGoldQuestions = async (job) => retry(async () => {
         throw new Error('F8 Error: Not able to convert the Gold Questions of the Job!');
 }, { retries: RetryRetries });
 
+/**
+ * Start an existing F8 job
+ * @param {{}} job 
+ * @param {boolean} internal
+ */
+const startJob = async (job, internal) => retry(async () => {
+    let url = config.f8.baseEndpoint + `jobs/${job.id}/orders.json?key=${config.f8.apiKey}`;
+
+    let channel = internal ? 'cf_internal' : 'on_demand';
+
+    let data = {
+        'channels[0]': channel,
+        'debit[units_count]': '100' //TODO: change
+    };
+    let body = querystring.stringify(data);
+
+    let res = await fetch(url, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+        body: body
+    });
+
+    if (res.status !== 200)
+        throw new Error('F8 Error: Not able to start the Job!');
+
+    let json = await res.json();
+
+    job.start = json;
+
+    return job;
+}, { retries: RetryRetries });
+
 module.exports = {
     createNewJob,
     addItems,
@@ -182,5 +215,6 @@ module.exports = {
     updateJobJS,
     updateJobCSS,
     updateJobSpec,
-    convertGoldQuestions
+    convertGoldQuestions,
+    startJob
 };

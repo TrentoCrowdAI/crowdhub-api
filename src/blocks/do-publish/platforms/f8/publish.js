@@ -1,7 +1,5 @@
-const { createNewJob, addItems, updateJobMarkup, updateJobJS, updateJobCSS, updateJobSpec, convertGoldQuestions } = require('./f8-api');
+const { createNewJob, addItems, updateJobMarkup, updateJobJS, updateJobCSS, updateJobSpec, convertGoldQuestions, startJob } = require('./f8-api');
 const renderDesign = require('./render');
-
-const templateDoDelegate = require(__base + 'delegates/template-do.delegate');
 
 const sleep = require(__base + 'utils/utils').sleep;
 
@@ -38,6 +36,8 @@ const publish = async (blockData, input) => {
 
     //set the reward info of the job
     job = await updateJobSpec(job, blockData);
+
+    job = await startJob(job, true);
 
     return job;
 };
