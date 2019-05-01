@@ -8,7 +8,7 @@ const create = async (proj) => {
         [new Date(), proj]
     );
 
-    return res.rows[0];
+    return parseIntFields(res.rows[0]);
 };
 
 // get
@@ -19,7 +19,7 @@ const get = async (projId) => {
         [projId]
     );
 
-    return res.rows[0];
+    return parseIntFields(res.rows[0]);
 };
 const getAll = async () => {
     let res = await db.query(
@@ -27,7 +27,7 @@ const getAll = async () => {
             where deleted_at is NULL`
     );
 
-    return res.rows;
+    return res.rows.map(x => parseIntFields(x));
 };
 
 // delete
@@ -39,7 +39,7 @@ const deleteProject = async (projId) => {
         [new Date(), projId]
     );
 
-    return res.rows[0];
+    return parseIntFields(res.rows[0]);
 };
 
 // update
@@ -51,7 +51,13 @@ const update = async (proj) => {
         [new Date(), proj.data, proj.id]
     );
 
-    return res.rows[0];
+    return parseIntFields(res.rows[0]);
+};
+
+const parseIntFields = (run) => {
+    run.id = parseInt(run.id);
+
+    return run;
 };
 
 module.exports = {

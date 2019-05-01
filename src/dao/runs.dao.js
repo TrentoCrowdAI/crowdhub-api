@@ -8,7 +8,7 @@ const create = async (run) => {
         [new Date(), run.id_workflow, run.data]
     );
 
-    return res.rows[0];
+    return parseIntFields(res.rows[0]);
 };
 
 // get
@@ -19,7 +19,7 @@ const get = async (runId) => {
         [runId]
     );
 
-    return res.rows[0];
+    return parseIntFields(res.rows[0]);
 };
 const getAll = async (workflowId) => {
     let cond = "";
@@ -35,7 +35,7 @@ const getAll = async (workflowId) => {
         params
     );
 
-    return res.rows;
+    return res.rows.map(x => parseIntFields(x));
 };
 
 // delete
@@ -47,7 +47,7 @@ const deleteRun = async (runId) => {
         [new Date(), runId]
     );
 
-    return res.rows[0];
+    return parseIntFields(res.rows[0]);
 };
 
 // update
@@ -59,7 +59,14 @@ const update = async (run) => {
         [new Date(), run.data, run.id]
     );
 
-    return res.rows[0];
+    return parseIntFields(res.rows[0]);
+};
+
+const parseIntFields = (run) => {
+    run.id = parseInt(run.id);
+    run.id_workflow = parseInt(run.id_workflow);
+
+    return run;
 };
 
 module.exports = {

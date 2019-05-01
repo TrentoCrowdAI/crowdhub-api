@@ -8,7 +8,7 @@ const create = async (cache) => {
         [new Date(), cache.id_run, cache.data]
     );
 
-    return res.rows[0];
+    return parseIntFields(res.rows[0]);
 };
 
 // get
@@ -19,7 +19,7 @@ const get = async (cacheId) => {
         [cacheId]
     );
 
-    return res.rows[0];
+    return parseIntFields(res.rows[0]);
 };
 const getAll = async (runId) => {
     let cond = "";
@@ -35,7 +35,7 @@ const getAll = async (runId) => {
         params
     );
 
-    return res.rows;
+    return res.rows.map(x => parseIntFields(x));
 };
 
 // delete
@@ -47,7 +47,7 @@ const deleteCache = async (cacheId) => {
         [new Date(), cacheId]
     );
 
-    return res.rows[0];
+    return parseIntFields(res.rows[0]);
 };
 
 // update
@@ -59,7 +59,14 @@ const update = async (cache) => {
         [new Date(), cache.data, cache.id]
     );
 
-    return res.rows[0];
+    return parseIntFields(res.rows[0]);
+};
+
+const parseIntFields = (item) => {
+    item.id = parseInt(item.id);
+    item.id_run = parseInt(item.id_run);
+
+    return item;
 };
 
 module.exports = {

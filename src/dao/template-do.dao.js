@@ -8,7 +8,7 @@ const create = async (template) => {
         [new Date(), template]
     );
 
-    return res.rows[0];
+    return parseIntFields(res.rows[0]);
 };
 
 // get
@@ -19,7 +19,7 @@ const get = async (templId) => {
         [templId]
     );
 
-    return res.rows[0];
+    return parseIntFields(res.rows[0]);
 };
 const getAll = async () => {
     let res = await db.query(
@@ -27,7 +27,7 @@ const getAll = async () => {
             where deleted_at is NULL`
     );
 
-    return res.rows;
+    return res.rows.map(x => parseIntFields(x));
 };
 
 // delete
@@ -39,7 +39,7 @@ const deleteTemplate = async (templId) => {
         [new Date(), templId]
     );
 
-    return res.rows[0];
+    return parseIntFields(res.rows[0]);
 };
 
 // update
@@ -51,7 +51,14 @@ const update = async (template) => {
         [new Date(), template.data, template.id]
     );
 
-    return res.rows[0];
+    return parseIntFields(res.rows[0]);
+};
+
+const parseIntFields = (run) => {
+    run.id = parseInt(run.id);
+    run.id_workflow = parseInt(run.id_workflow);
+
+    return run;
 };
 
 module.exports = {
