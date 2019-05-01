@@ -82,7 +82,7 @@ const createTaskPool = async (blockData, project) => retry(async () => {
     },
     mixer_config: {
       real_tasks_count: 1,                    //TODO: change
-      golden_tasks_count: 1,
+      golden_tasks_count: 0,                  //TODO: change
       training_tasks_count: 0
     }
   };
@@ -126,4 +126,29 @@ const createTasks = async (tasks) => retry(async () => {
   return json;
 }, { retries: RetryRetries });
 
-module.exports = { createProject, createTaskPool, createTasks };
+
+/**
+ * Start a pool on Toloka
+ * @param {[]} pool
+ */
+const startPool = async (pool) => retry(async () => {
+  let url = config.toloka.baseEndpoint + `pools/${pool.id}/open`;
+
+  let res = await fetch(url, {
+    method: 'post',
+    headers: {
+      'Authorization': 'OAuth ' + config.toloka.accessToken,
+      'Content-Type': 'application/JSON'
+    }
+  });
+
+  if (res.status !== 202)
+    throw new Error('Toloka Error: Not able to start the Pool!');
+
+  let json = await res.json();
+  
+  return json;
+}, { retries: RetryRetries });
+
+
+module.exports = { createProject, createTaskPool, createTasks, startPool };

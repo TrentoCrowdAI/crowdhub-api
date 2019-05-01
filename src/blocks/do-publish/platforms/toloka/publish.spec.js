@@ -22,6 +22,8 @@ describe('Toloka tests', async () => {
 
     expect(res.taskPool.id).toBeDefined();
     expect(res.tasks).toBeDefined();
+
+    expect(res.start.id).toBeDefined();
   });
 
   test('Toloka publish test [image-classification]', async () => {
@@ -34,6 +36,8 @@ describe('Toloka tests', async () => {
 
     expect(res.taskPool.id).toBeDefined();
     expect(res.tasks).toBeDefined();
+
+    expect(res.start.id).toBeDefined();
   });
 
   test('Toloka publish test [image-highlighting]', async () => {
@@ -46,6 +50,8 @@ describe('Toloka tests', async () => {
 
     expect(res.taskPool.id).toBeDefined();
     expect(res.tasks).toBeDefined();
+
+    expect(res.start.id).toBeDefined();
   });
 
   afterAll(async () => {
