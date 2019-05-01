@@ -54,10 +54,13 @@ const update = async (proj) => {
     return parseIntFields(res.rows[0]);
 };
 
-const parseIntFields = (run) => {
-    run.id = parseInt(run.id);
+const parseIntFields = (item) => {
+    if(item === undefined)
+        return undefined;
+        
+    item.id = parseInt(item.id);
 
-    return run;
+    return item;
 };
 
 module.exports = {

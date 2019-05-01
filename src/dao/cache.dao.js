@@ -63,6 +63,9 @@ const update = async (cache) => {
 };
 
 const parseIntFields = (item) => {
+    if(item === undefined)
+        return undefined;
+        
     item.id = parseInt(item.id);
     item.id_run = parseInt(item.id_run);
 

@@ -55,6 +55,9 @@ const update = async (blockType) => {
 };
 
 const parseIntFields = (item) => {
+    if(item === undefined)
+        return undefined;
+        
     item.id = parseInt(item.id);
 
     return item;

@@ -62,11 +62,14 @@ const update = async (workflow) => {
     return parseIntFields(res.rows[0]);
 };
 
-const parseIntFields = (run) => {
-    run.id = parseInt(run.id);
-    run.id_project = parseInt(run.id_project);
+const parseIntFields = (item) => {
+    if(item === undefined)
+        return undefined;
+        
+    item.id = parseInt(item.id);
+    item.id_project = parseInt(item.id_project);
 
-    return run;
+    return item;
 };
 
 module.exports = {
