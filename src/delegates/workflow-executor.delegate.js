@@ -33,7 +33,7 @@ const createNewRun = async (workflow) => {
     let tmprun = {
         id_workflow: workflow.id,
         data: {}
-    }; 
+    };
     let blocks = workflow.data.graph.nodes;
 
     blocks.forEach(block => {
@@ -69,6 +69,7 @@ const splitDoBlocks = (blocks) => {
             const waitBlock = {
                 id: `${block.id}_wait`,
                 type: 'doWait',
+                parameters: { platform: block.parameters.platform },
                 children: block.children,
                 parents: [block]
             };
@@ -128,7 +129,7 @@ const getBlockInputs = (block) => {
     return inputs;
 };
 
-const updateBlockState = async (blockId, state) =>{
+const updateBlockState = async (blockId, state) => {
     run.data[blockId].state = state;
 
     await runsDelegate.update(run, run.id);
