@@ -397,6 +397,52 @@ paths:
         404:
           description: Not Found
 
+  /runs:
+    get:
+      parameters:
+        - in: query
+          name: workflowId
+          schema:
+            type: integer
+          description: ID of the workflow related to the run.
+      tags:
+      - "Runs"
+      description: Returns the list of the runs.
+      summary: Get runs
+      responses:
+        200:
+          description: The list of the runs.
+          content:
+            application/json:
+              schema:
+                type: array
+                items: 
+                  $ref: '#/components/schemas/Run'
+        400:
+          description: Bad Request
+        
+  /runs/{runID}:
+    parameters:
+      - in: path
+        name: runID
+        required: true
+        schema:
+          type: integer
+    get:
+      tags:
+      - "Runs"
+      description: Returns a single run by ID
+      summary: Get run by ID
+      responses:
+        200:
+          description: The requested run.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Run'
+        404:
+          description: Not Found
+
   /cache:
     get:
       parameters:
@@ -661,6 +707,28 @@ components:
       required:
         - id_project
         - data
+
+    Run:
+      type: object
+      properties:
+        id:
+          type: integer
+          description: The ID of the run
+        created_at:
+          type: string
+          description: The creation timestamp of the run
+        updated_at:
+          type: string
+          description: The update timestamp of the run
+        deleted_at:
+          type: string
+          description: The delete timestamp of the run
+        id_workflow:
+          type: integer
+          description: The ID of the workflow which the run belongs to
+        data:
+          type: object
+          description: The data related to the run
 
     Cache:
       type: object

@@ -10,6 +10,7 @@ const errorsHelper = require('./utils/errors');
 const projectsController = require('./controllers/projects.controller');
 const workflowsController = require('./controllers/workflows.controller');
 const templateDoController = require('./controllers/template-do.controller');
+const runsController = require('./controllers/runs.controller');
 const cacheController = require('./controllers/cache.controller');
 const itemsController = require('./controllers/items.controller');
 const blockTypesController = require('./controllers/block-types.controller');
@@ -30,6 +31,7 @@ app.get('/', (req, res) => {
 app.use(projectsController);
 app.use(workflowsController);
 app.use(templateDoController);
+app.use(runsController);
 app.use(cacheController);
 app.use(itemsController);
 app.use(blockTypesController);
