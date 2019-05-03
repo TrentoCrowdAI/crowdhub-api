@@ -19,7 +19,7 @@ const wait = async (blockData, input) => {
                 await pauseJob(jobId);
             jPaused = true;
 
-            await sleep(5000); //in order to avoid downloading empty report
+            await sleep(2000); //in order to avoid downloading empty report
 
             result = await getCsvReport(jobId);
 
