@@ -464,6 +464,30 @@ paths:
                 $ref: '#/components/schemas/Run'
         404:
           description: Not Found
+        
+  /runs/{runID}/result:
+    parameters:
+      - in: path
+        name: runID
+        required: true
+        schema:
+          type: integer
+    get:
+      tags:
+      - "Runs"
+      description: Returns the result of a run by ID
+      summary: Get the result of the run by ID
+      responses:
+        200:
+          description: The requested result.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RunResult'
+        400:
+          description: Run not finished yet
+        404:
+          description: Not Found
 
   /cache:
     get:
@@ -751,6 +775,13 @@ components:
         data:
           type: object
           description: The data related to the run
+
+    RunResult:
+      type: object
+      properties:
+        label:
+          type: object
+          description: The label of the block
 
     Cache:
       type: object

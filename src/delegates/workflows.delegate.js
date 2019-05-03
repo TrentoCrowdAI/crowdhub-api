@@ -61,7 +61,13 @@ const getAll = async (projectId) => {
 const start = async (workId) => {
     let workflow = await get(workId);
 
-    return await workflowExecutor(workflow);
+    return await workflowExecutor.start(workflow);
+};
+
+const getLastBlocks = async (workId) => {
+    let workflow = await get(workId);
+
+    return workflowExecutor.getLastBlocks(workflow);
 };
 
 const check = (workflow) => {
@@ -79,5 +85,6 @@ module.exports = {
     getAll,
     deleteWorkflow,
     update,
-    start
+    start,
+    getLastBlocks
 };

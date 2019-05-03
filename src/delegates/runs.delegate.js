@@ -1,6 +1,9 @@
 const runsDao = require(__base + 'dao/runs.dao');
 const errHandler = require(__base + 'utils/errors');
 
+let workflowsDelegate = require('./workflows.delegate');
+const cacheDelegate = require('./cache.delegate');
+
 const create = async (run) => {
     check(run);
     let newRun = await runsDao.create(run);
@@ -62,6 +65,26 @@ const getAll = async (workflowId) => {
     return await runsDao.getAll(workflowId);
 };
 
+const getResult = async (runId) => {
+    let run = await get(runId);
+
+    //get graph's nodes without children
+    workflowsDelegate = require('./workflows.delegate'); //don't know why but node rewrites the object to an empty one
+    let lastBlocks = await workflowsDelegate.getLastBlocks(run.id_workflow);
+
+    //get results of them
+    let result = {};
+    for (let block of lastBlocks) {
+        console.log(run.data[block.id].state );
+        if (run.data[block.id].state != 'finished')
+            throw errHandler.createBusinessError('The run is still in execution!');
+        let cacheId = run.data[block.id].id_cache;
+        result[block.label] = (await cacheDelegate.get(cacheId)).data.result;
+    }
+
+    return result;
+};
+
 const check = (run) => {
     if (typeof run.id_workflow !== "number")
         throw errHandler.createBusinessError('Run: id_workflow is not valid!');
@@ -74,5 +97,6 @@ module.exports = {
     get,
     getAll,
     deleteRun,
-    update
+    update,
+    getResult
 };

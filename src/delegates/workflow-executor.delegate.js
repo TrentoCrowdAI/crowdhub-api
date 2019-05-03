@@ -165,4 +165,21 @@ const getResult = async (blocks) => {
     return results;
 };
 
-module.exports = start;
+const getLastBlocks = (workflow) => {
+    let blocks = workflow.data.graph.nodes;
+    let links = workflow.data.graph.links;
+
+    connectBlocks(blocks, links);
+    splitDoBlocks(blocks);
+
+    let nodes = [];
+    blocks.forEach(block => {
+        if (block.children.length == 0) {
+            nodes.push(block);
+        }
+    });
+
+    return nodes;
+};
+
+module.exports = { start, getLastBlocks };
