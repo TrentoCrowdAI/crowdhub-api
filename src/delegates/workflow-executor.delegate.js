@@ -68,6 +68,7 @@ const splitDoBlocks = (blocks) => {
 
             const waitBlock = {
                 id: `${block.id}_wait`,
+                label: block.label,
                 type: 'doWait',
                 parameters: { platform: block.parameters.platform },
                 children: block.children,
@@ -120,7 +121,7 @@ const getBlockInputs = (block) => {
             myInput = parent.result[myIndex];
         }
 
-        inputs[parent.id] = myInput;
+        inputs[parent.label] = myInput;
     }
 
     if (Object.keys(inputs).length === 0) //first block
