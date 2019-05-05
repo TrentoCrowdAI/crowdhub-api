@@ -60,6 +60,14 @@
       ]
     },
     {
+      "name": "sandbox",
+      "displayName": "Publish in sandbox mode",
+      "description": "Should the job be published on the sandbox/internal access pages of the platform?",
+      "default": false,
+      "required": true,
+      "type": "boolean"
+    },
+    {
       "name": "reward",
       "displayName": "Reward",
       "description": "Cents of dollars",
