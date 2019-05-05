@@ -18,6 +18,22 @@
   "color": "rgb(0,192,255)",
   "parameterDefinitions": [
     {
+      "name": "name",
+      "displayName": "Name",
+      "description": "Name of the job",
+      "default": "name",
+      "required": true,
+      "type": "text"
+    },
+    {
+      "name": "description",
+      "displayName": "Description",
+      "description": "Description of the job",
+      "default": "some description",
+      "required": true,
+      "type": "text"
+    },
+    {
       "name": "toCache",
       "displayName": "Cache result",
       "description": "Should the result be cached?",
@@ -68,6 +84,14 @@
       "type": "number"
     },
     {
+      "name": "instructions",
+      "displayName": "Instructions",
+      "description": "Some instructions to show to the performer",
+      "default": "<p><h2>Example</h2>Insert here an example</p>",
+      "required": true,
+      "type": "html"
+    },
+    {
       "name": "jobDesign",
       "displayName": "Job design",
       "description": "Design of the job that will be published on the platforms",
@@ -111,7 +135,8 @@
               "description": "Question that asks the performer to highlight the text",
               "default": "Select where the title appears",
               "type": "text",
-              "required": "highlightable"
+              "condition": "highlightable",
+              "required": true
             },
             {
               "name": "highlightedCsvVariable",
@@ -119,7 +144,8 @@
               "description": "Name of the CSV variable where to store the highlighted text",
               "default": "highlighted_text",
               "type": "text",
-              "required": "highlightable"
+              "condition": "highlightable",
+              "required": true
             }
           ]
         },
@@ -149,7 +175,8 @@
               "description": "Question that asks the performer to highlight the image",
               "default": "Highlight people in the image",
               "type": "text",
-              "required": "highlightable"
+              "condition": "highlightable",
+              "required": true
             },
             {
               "name": "highlightedCsvVariable",
@@ -157,7 +184,8 @@
               "description": "Name of the CSV variable where to store the highlighted coordinates",
               "default": "highlighted_image",
               "type": "text",
-              "required": "highlightable"
+              "condition": "highlightable",
+              "required": true
             }
           ]
         },

@@ -3,13 +3,13 @@
   "ports": [
     {
       "type": "default",
-      "name": "In",
+      "name": "in",
       "in": true,
       "label": "In"
     },
     {
       "type": "default",
-      "name": "Out",
+      "name": "out",
       "out": true,
       "label": "Out"
     }
