@@ -1,5 +1,4 @@
 const doPublish = require('./publish');
-const templateDoDelegate = require(__base + 'delegates/template-do.delegate');
 
 let example = __base + "../example/";
 const exampleTextHighlighting = require(example + 'job-example-text-highlighting.json');

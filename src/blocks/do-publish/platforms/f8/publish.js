@@ -36,6 +36,7 @@ const publish = async (blockData, input) => {
 
     //set the reward info of the job
     job = await updateJobSpec(job, blockData);
+    await sleep(timeSleep);
 
     job = await startJob(job, true);
 

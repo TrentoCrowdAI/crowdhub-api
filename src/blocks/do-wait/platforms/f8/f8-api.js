@@ -10,6 +10,25 @@ const RetryRetries = 2;
  * Ping an existing F8 job
  * @param {number} jobId 
  */
+const getJob = async (jobId) => retry(async () => {
+    let url = config.f8.baseEndpoint + `jobs/${jobId}.json?key=${config.f8.apiKey}`;
+
+    let res = await fetch(url, {
+        method: 'GET'
+    });
+
+    if (res.status !== 200)
+        throw new Error('F8 Error: Not able to get the Job!');
+
+    let json = await res.json();
+
+    return json;
+}, { retries: RetryRetries });
+
+/**
+ * Ping an existing F8 job
+ * @param {number} jobId 
+ */
 const pingJob = async (jobId) => retry(async () => {
     let url = config.f8.baseEndpoint + `jobs/${jobId}/ping.json?key=${config.f8.apiKey}`;
 
@@ -84,6 +103,7 @@ const getCsvReport = async (jobId) => retry(async () => {
 }, { retries: RetryRetries });
 
 module.exports = {
+    getJob,
     pingJob,
     pauseJob,
     getCsvReport,
