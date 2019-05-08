@@ -75,7 +75,6 @@ const getResult = async (runId) => {
     //get results of them
     let result = {};
     for (let block of lastBlocks) {
-        console.log(run.data[block.id].state );
         if (run.data[block.id].state != 'finished')
             throw errHandler.createBusinessError('The run is still in execution!');
         let cacheId = run.data[block.id].id_cache;
