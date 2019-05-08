@@ -70,7 +70,10 @@ const splitDoBlocks = (blocks) => {
                 id: `${block.id}_wait`,
                 label: block.label,
                 type: 'doWait',
-                parameters: { platform: block.parameters.platform },
+                parameters: {
+                    platform: block.parameters.platform,
+                    toCache: block.parameters.toCache
+                },
                 children: block.children,
                 parents: [block]
             };
@@ -95,7 +98,14 @@ const startBlock = async (block) => {
 
     await updateBlockState(block.id, 'running');
 
-    block.result = await blockDefinitions[block.type](block.parameters, inputs);
+    let cachedValue = await getLastCachedResult(block);
+
+    if (block.parameters.toCache && cachedValue !== undefined) { // check if a cached value is available
+        block.result = cachedValue;
+    }
+    else {
+        block.result = await blockDefinitions[block.type](block.parameters, inputs);
+    }
 
     block.executed = true;
     //cache result
@@ -105,6 +115,21 @@ const startBlock = async (block) => {
 
     for (let child of block.children) {
         child.promise = startBlock(child);
+    }
+};
+
+const getLastCachedResult = async (block) => {
+    let allRuns = await runsDelegate.getAll(run.id_workflow);
+
+    //sort runs to have the last created as first
+    allRuns = allRuns.sort((a, b) => b.id - a.id);
+
+    for (let r of allRuns) {
+        let runBlocks = Object.keys(r.data);
+        if (runBlocks.indexOf(block.id) != -1 && r.data[block.id].state === 'finished') {
+            let cacheId = r.data[block.id].id_cache;
+            return await cacheDelegate.get(cacheId);
+        }
     }
 };
 
