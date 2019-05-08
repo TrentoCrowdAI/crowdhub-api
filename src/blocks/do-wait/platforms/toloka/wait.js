@@ -1,11 +1,11 @@
-const { getPoolResponses, closePool } = require('./toloka-api');
+const { getPool, getPoolResponses, closePool } = require('./toloka-api');
 
 const sleep = require(__base + 'utils/utils').sleep;
 
 const wait = async (blockData, input) => {
     let result;
     let pool = input.taskPool;
-    let pEnded, pClosed, crashed = true;
+    let pEnded, crashed = true;
     while (crashed) {
         await sleep(1000 * 20);
         try {
@@ -13,16 +13,11 @@ const wait = async (blockData, input) => {
                 await checkFinished(pool);
             pEnded = true;
 
-            if (!pClosed)
-                await closePool(pool);
-            pClosed = true;
-
             result = (await getPoolResponses(pool)).items;
 
             crashed = false;
         }
         catch (err) {
-            console.log(err);
             crashed = true;
         }
     }
@@ -31,11 +26,9 @@ const wait = async (blockData, input) => {
 };
 
 const checkFinished = async (pool) => {
-    let results = await getPoolResponses(pool);
+    pool = await getPool(pool);
 
-    let num_answer = 1; //TODO: change
-
-    if (results.items.length < num_answer)
+    if (pool.status !== 'CLOSED' && pool.last_close_reason !== 'COMPLETED')
         throw Error("Pool not finished!");
 };
 

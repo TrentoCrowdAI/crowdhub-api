@@ -6,6 +6,27 @@ const config = require(__base + 'config/index');
 const RetryRetries = 3;
 
 /**
+ * Get a Pool on Toloka
+ * @param {{}} pool
+ */
+const getPool = async (pool) => retry(async () => {
+    let url = config.toloka.baseEndpoint + 'pools/' + pool.id;
+
+    let res = await fetch(url, {
+        method: 'get',
+        headers: {
+            'Authorization': 'OAuth ' + config.toloka.accessToken
+        }
+    });
+
+    if (res.status !== 200)
+        throw new Error('Toloka Error: Not able to get the Pool!');
+
+    let json = await res.json();
+    return json;
+}, { retries: RetryRetries });
+
+/**
  * Get the responses of a Pool on Toloka
  * @param {{}} pool
  */
@@ -45,4 +66,4 @@ const closePool = async (pool) => retry(async () => {
 }, { retries: RetryRetries });
 
 
-module.exports = { getPoolResponses, closePool };
+module.exports = { getPool, getPoolResponses, closePool };
