@@ -64,12 +64,12 @@ const connectBlocks = (blocks, links) => {
 const splitDoBlocks = (blocks) => {
     blocks.forEach(block => {
         if (block.type === 'do') {
-            block.type = 'doPublish';
+            block.type = 'do-publish';
 
             const waitBlock = {
                 id: `${block.id}_wait`,
                 label: block.label,
-                type: 'doWait',
+                type: 'do-wait',
                 parameters: {
                     platform: block.parameters.platform,
                     toCache: block.parameters.toCache
