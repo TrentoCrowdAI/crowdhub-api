@@ -78,7 +78,8 @@
                         "selected": false,
                         "parameters": {
                             "code": "return input['default'];",
-                            "toCache": false
+                            "toCache": false,
+                            "sandbox": true
                         }
                     },
                     {

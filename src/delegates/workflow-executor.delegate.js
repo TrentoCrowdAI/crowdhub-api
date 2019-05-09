@@ -72,7 +72,8 @@ const splitDoBlocks = (blocks) => {
                 type: 'do-wait',
                 parameters: {
                     platform: block.parameters.platform,
-                    toCache: block.parameters.toCache
+                    toCache: block.parameters.toCache,
+                    sandbox: block.parameters.sandbox
                 },
                 children: block.children,
                 parents: [block]

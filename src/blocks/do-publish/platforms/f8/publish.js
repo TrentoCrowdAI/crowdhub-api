@@ -38,7 +38,7 @@ const publish = async (blockData, input) => {
     job = await updateJobSpec(job, blockData);
     await sleep(timeSleep);
 
-    job = await startJob(job, true);
+    job = await startJob(job, blockData.sandbox);
 
     return job;
 };

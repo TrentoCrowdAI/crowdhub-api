@@ -10,10 +10,10 @@ const wait = async (blockData, input) => {
         await sleep(1000 * 20);
         try {
             if (!pEnded)
-                await checkFinished(pool);
+                await checkFinished(pool, blockData.sandbox);
             pEnded = true;
 
-            result = (await getPoolResponses(pool)).items;
+            result = (await getPoolResponses(pool, blockData.sandbox)).items;
 
             crashed = false;
         }
@@ -25,8 +25,8 @@ const wait = async (blockData, input) => {
     return result;
 };
 
-const checkFinished = async (pool) => {
-    pool = await getPool(pool);
+const checkFinished = async (pool, sandbox) => {
+    pool = await getPool(pool, sandbox);
 
     if (pool.status !== 'CLOSED' && pool.last_close_reason !== 'COMPLETED')
         throw Error("Pool not finished!");

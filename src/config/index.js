@@ -11,7 +11,8 @@ module.exports = {
   },
   toloka: {
     accessToken: process.env.TOLOKA_ACCESS_TOKEN,
-    baseEndpoint: process.env.TOLOKA_BASE_ENDPOINT
+    baseEndpoint: process.env.TOLOKA_BASE_ENDPOINT,
+    sandboxEndpoint: process.env.TOLOKA_SANDBOX_ENDPOINT
   },
   db: {
     user: process.env.PGUSER,

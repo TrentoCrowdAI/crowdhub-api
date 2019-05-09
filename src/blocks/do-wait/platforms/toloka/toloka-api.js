@@ -9,8 +9,9 @@ const RetryRetries = 3;
  * Get a Pool on Toloka
  * @param {{}} pool
  */
-const getPool = async (pool) => retry(async () => {
-    let url = config.toloka.baseEndpoint + 'pools/' + pool.id;
+const getPool = async (pool, sandbox) => retry(async () => {
+    let baseUrl = sandbox ? config.toloka.sandboxEndpoint: config.toloka.baseEndpoint;
+    let url = baseUrl + 'pools/' + pool.id;
 
     let res = await fetch(url, {
         method: 'get',
@@ -30,8 +31,9 @@ const getPool = async (pool) => retry(async () => {
  * Get the responses of a Pool on Toloka
  * @param {{}} pool
  */
-const getPoolResponses = async (pool) => retry(async () => {
-    let url = config.toloka.baseEndpoint + 'assignments?pool_id=' + pool.id;
+const getPoolResponses = async (pool, sandbox) => retry(async () => {
+    let baseUrl = sandbox ? config.toloka.sandboxEndpoint: config.toloka.baseEndpoint;
+    let url = baseUrl + 'assignments?pool_id=' + pool.id;
 
     let res = await fetch(url, {
         method: 'get',
@@ -51,8 +53,9 @@ const getPoolResponses = async (pool) => retry(async () => {
  * Close a Pool on Toloka
  * @param {{}} pool
  */
-const closePool = async (pool) => retry(async () => {
-    let url = config.toloka.baseEndpoint + `pools/${pool.id}/close`;
+const closePool = async (pool, sandbox) => retry(async () => {
+    let baseUrl = sandbox ? config.toloka.sandboxEndpoint: config.toloka.baseEndpoint;
+    let url = baseUrl + `pools/${pool.id}/close`;
 
     let res = await fetch(url, {
         method: 'post',
