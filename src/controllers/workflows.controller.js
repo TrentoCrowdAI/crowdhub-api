@@ -65,8 +65,8 @@ router.post('/workflows/:id/start', async (req, res, next) => {
     try {
         let id = req.params.id;
 
-        work = await workflowsDelegate.start(id);
-        res.json(work);
+        let runId = await workflowsDelegate.start(id);
+        res.status(202).json(runId); //accepted
     } catch (e) {
         // we delegate to the error-handling middleware
         next(e);

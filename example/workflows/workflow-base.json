@@ -50,6 +50,7 @@
                         "x": 46.671875,
                         "y": 400.40625,
                         "id": "2124463d-0fe8-427a-a6b2-cdb1d0b125a4",
+                        "label": "Custom lambda",
                         "name": "λ",
                         "color": "rgb(0,192,255)",
                         "ports": [
@@ -73,17 +74,19 @@
                                 "parentNode": "2124463d-0fe8-427a-a6b2-cdb1d0b125a4"
                             }
                         ],
-                        "nodeType": "lambda",
+                        "type": "lambda",
                         "selected": false,
                         "parameters": {
-                            "code": "return input;",
-                            "toCache": false
+                            "code": "return input['default'];",
+                            "toCache": false,
+                            "sandbox": true
                         }
                     },
                     {
                         "x": 186.671875,
                         "y": 425.40625,
                         "id": "5e102960-790b-4d13-a58e-49573bd4e560",
+                        "label": "do-F8",
                         "name": "Do",
                         "color": "rgb(0,192,255)",
                         "ports": [
@@ -107,7 +110,7 @@
                                 "parentNode": "5e102960-790b-4d13-a58e-49573bd4e560"
                             }
                         ],
-                        "nodeType": "do",
+                        "type": "do",
                         "selected": false,
                         "parameters": {
                             "name": "Job name",

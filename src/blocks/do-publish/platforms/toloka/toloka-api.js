@@ -10,8 +10,9 @@ const RetryRetries = 3;
  * @param {{}} template_do
  * @param {{}} design
  */
-const createProject = async (template_do, design) => retry(async () => {
-  let url = config.toloka.baseEndpoint + 'projects';
+const createProject = async (template_do, design, sandbox) => retry(async () => {
+  let baseUrl = sandbox ? config.toloka.sandboxEndpoint: config.toloka.baseEndpoint;
+  let url = baseUrl + 'projects';
 
   let body = {
     public_name: template_do.name,
@@ -67,8 +68,9 @@ const createProject = async (template_do, design) => retry(async () => {
  * @param {{}} blockData
  * @param {{}} project
  */
-const createTaskPool = async (blockData, project) => retry(async () => {
-  let url = config.toloka.baseEndpoint + 'pools';
+const createTaskPool = async (blockData, project, sandbox) => retry(async () => {
+  let baseUrl = sandbox ? config.toloka.sandboxEndpoint: config.toloka.baseEndpoint;
+  let url = baseUrl + 'pools';
 
   let body = {
     project_id: project.id,
@@ -82,7 +84,7 @@ const createTaskPool = async (blockData, project) => retry(async () => {
     },
     mixer_config: {
       real_tasks_count: 1,                    //TODO: change
-      golden_tasks_count: 1,
+      golden_tasks_count: 0,                  //TODO: change
       training_tasks_count: 0
     }
   };
@@ -107,8 +109,9 @@ const createTaskPool = async (blockData, project) => retry(async () => {
  * Create new tasks on Toloka
  * @param {[]} tasks
  */
-const createTasks = async (tasks) => retry(async () => {
-  let url = config.toloka.baseEndpoint + 'tasks';
+const createTasks = async (tasks, sandbox) => retry(async () => {
+  let baseUrl = sandbox ? config.toloka.sandboxEndpoint: config.toloka.baseEndpoint;
+  let url = baseUrl + 'tasks';
 
   let res = await fetch(url, {
     method: 'post',
@@ -126,4 +129,30 @@ const createTasks = async (tasks) => retry(async () => {
   return json;
 }, { retries: RetryRetries });
 
-module.exports = { createProject, createTaskPool, createTasks };
+
+/**
+ * Start a pool on Toloka
+ * @param {[]} pool
+ */
+const startPool = async (pool, sandbox) => retry(async () => {
+  let baseUrl = sandbox ? config.toloka.sandboxEndpoint: config.toloka.baseEndpoint;
+  let url = baseUrl + `pools/${pool.id}/open`;
+
+  let res = await fetch(url, {
+    method: 'post',
+    headers: {
+      'Authorization': 'OAuth ' + config.toloka.accessToken,
+      'Content-Type': 'application/JSON'
+    }
+  });
+
+  if (res.status !== 202)
+    throw new Error('Toloka Error: Not able to start the Pool!');
+
+  let json = await res.json();
+  
+  return json;
+}, { retries: RetryRetries });
+
+
+module.exports = { createProject, createTaskPool, createTasks, startPool };

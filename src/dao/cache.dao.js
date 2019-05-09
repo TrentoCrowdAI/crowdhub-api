@@ -4,11 +4,11 @@ const db = require(__base + "db/index");
 // create
 const create = async (cache) => {
     let res = await db.query(
-        `insert into ${db.TABLES.Cache}(created_at, id_workflow, id_block, data) values($1, $2, $3, $4) returning *`,
-        [new Date(), cache.id_workflow, cache.id_block, cache.data]
+        `insert into ${db.TABLES.Cache}(created_at, id_run, data) values($1, $2, $3) returning *`,
+        [new Date(), cache.id_run, cache.data]
     );
 
-    return res.rows[0];
+    return parseIntFields(res.rows[0]);
 };
 
 // get
@@ -19,14 +19,14 @@ const get = async (cacheId) => {
         [cacheId]
     );
 
-    return res.rows[0];
+    return parseIntFields(res.rows[0]);
 };
-const getAll = async (workflowId) => {
+const getAll = async (runId) => {
     let cond = "";
     let params = [];
-    if (workflowId !== undefined) {
-        cond = `and id_workflow = $1`;
-        params = [workflowId];
+    if (runId !== undefined) {
+        cond = `and id_run = $1`;
+        params = [runId];
     }
 
     let res = await db.query(
@@ -35,7 +35,7 @@ const getAll = async (workflowId) => {
         params
     );
 
-    return res.rows;
+    return res.rows.map(x => parseIntFields(x));
 };
 
 // delete
@@ -47,7 +47,7 @@ const deleteCache = async (cacheId) => {
         [new Date(), cacheId]
     );
 
-    return res.rows[0];
+    return parseIntFields(res.rows[0]);
 };
 
 // update
@@ -59,7 +59,17 @@ const update = async (cache) => {
         [new Date(), cache.data, cache.id]
     );
 
-    return res.rows[0];
+    return parseIntFields(res.rows[0]);
+};
+
+const parseIntFields = (item) => {
+    if(item === undefined)
+        return undefined;
+        
+    item.id = parseInt(item.id);
+    item.id_run = parseInt(item.id_run);
+
+    return item;
 };
 
 module.exports = {

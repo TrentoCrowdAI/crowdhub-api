@@ -42,6 +42,23 @@ CREATE TABLE workflow (
 
 
 -- data: {
+--  id_block: {
+--    id_cache: <number>,
+--    state: <string> //running, finished
+--  }
+-- }
+CREATE TABLE run (
+  id bigserial NOT NULL,
+  created_at timestamp,
+  updated_at timestamp,
+  deleted_at timestamp,
+  id_workflow bigint NOT NULL,
+  data JSONB,
+  CONSTRAINT pk_run PRIMARY KEY (id)
+);
+
+
+-- data: {
 --  //data of the specific block cached
 --  input: {},
 --  output: {}
@@ -51,11 +68,9 @@ CREATE TABLE cache (
   created_at timestamp,
   updated_at timestamp,
   deleted_at timestamp,
-  id_workflow bigint NOT NULL,
-  id_block bigint NOT NULL,
+  id_run bigint NOT NULL,
   data JSONB,
-  CONSTRAINT pk_cache PRIMARY KEY (id),
-  CONSTRAINT unique_cache UNIQUE (id_workflow, id_block)
+  CONSTRAINT pk_cache PRIMARY KEY (id)
 );
 
 

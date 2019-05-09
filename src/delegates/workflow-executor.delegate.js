@@ -1,8 +1,13 @@
 const blockDefinitions = require(__base + 'blocks');
 const itemsDelegate = require('./items.delegate');
+const runsDelegate = require('./runs.delegate');
+const cacheDelegate = require('./cache.delegate');
+
+
 const sleep = require(__base + 'utils/utils').sleep;
 
 let items = [];
+let run;
 
 const start = async (workflow) => {
     let blocks = workflow.data.graph.nodes;
@@ -12,14 +17,32 @@ const start = async (workflow) => {
 
     splitDoBlocks(blocks);
 
+    await createNewRun(workflow);
+
     items = await itemsDelegate.getAll(workflow.id_project);
     items = items.map(i => i.data);
 
     startBlocksWithoutParent(blocks);
 
-    let result = await getResult(blocks);
-    
-    return result;
+    //let result = await getResult(blocks);
+
+    return run.id;
+};
+
+const createNewRun = async (workflow) => {
+    let tmprun = {
+        id_workflow: workflow.id,
+        data: {}
+    };
+    let blocks = workflow.data.graph.nodes;
+
+    blocks.forEach(block => {
+        tmprun.data[block.id] = {
+            state: 'not started'
+        };
+    });
+
+    run = await runsDelegate.create(tmprun);
 };
 
 const connectBlocks = (blocks, links) => {
@@ -40,12 +63,18 @@ const connectBlocks = (blocks, links) => {
 
 const splitDoBlocks = (blocks) => {
     blocks.forEach(block => {
-        if (block.nodeType === 'do') {
-            block.nodeType = 'doPublish';
+        if (block.type === 'do') {
+            block.type = 'do-publish';
 
             const waitBlock = {
                 id: `${block.id}_wait`,
-                nodeType: 'doWait',
+                label: block.label,
+                type: 'do-wait',
+                parameters: {
+                    platform: block.parameters.platform,
+                    toCache: block.parameters.toCache,
+                    sandbox: block.parameters.sandbox
+                },
                 children: block.children,
                 parents: [block]
             };
@@ -68,17 +97,45 @@ const startBlocksWithoutParent = (blocks) => {
 const startBlock = async (block) => {
     let inputs = getBlockInputs(block);
 
-    block.result = await blockDefinitions[block.nodeType](block.parameters, inputs);
+    await updateBlockState(block.id, 'running');
+
+    let cachedValue = await getLastCachedResult(block);
+
+    if (block.parameters.toCache && cachedValue !== undefined) { // check if a cached value is available
+        block.result = cachedValue;
+    }
+    else {
+        block.result = await blockDefinitions[block.type](block.parameters, inputs);
+    }
 
     block.executed = true;
+    //cache result
+    await cacheBlockResult(block.id, block.result);
+
+    await updateBlockState(block.id, 'finished');
 
     for (let child of block.children) {
         child.promise = startBlock(child);
     }
 };
 
+const getLastCachedResult = async (block) => {
+    let allRuns = await runsDelegate.getAll(run.id_workflow);
+
+    //sort runs to have the last created as first
+    allRuns = allRuns.sort((a, b) => b.id - a.id);
+
+    for (let r of allRuns) {
+        let runBlocks = Object.keys(r.data);
+        if (runBlocks.indexOf(block.id) != -1 && r.data[block.id].state === 'finished') {
+            let cacheId = r.data[block.id].id_cache;
+            return await cacheDelegate.get(cacheId);
+        }
+    }
+};
+
 const getBlockInputs = (block) => {
-    let inputs = [];
+    let inputs = {};
     for (let parent of block.parents) {
         if (!parent.executed) {
             return;
@@ -90,16 +147,34 @@ const getBlockInputs = (block) => {
             myInput = parent.result[myIndex];
         }
 
-        inputs.push(myInput);
+        inputs[parent.label] = myInput;
     }
 
-    if (inputs.length === 1)
-        inputs = inputs[0];
+    if (Object.keys(inputs).length === 0) //first block
+        inputs['default'] = items;
 
-    if (inputs.length === 0) //first block
-        inputs = items;
-    
     return inputs;
+};
+
+const updateBlockState = async (blockId, state) => {
+    run.data[blockId].state = state;
+
+    await runsDelegate.update(run, run.id);
+};
+
+const cacheBlockResult = async (blockId, result) => {
+    let cache = {
+        id_run: run.id,
+        data: {
+            result: result
+        }
+    };
+
+    cache = await cacheDelegate.create(cache);
+
+    run.data[blockId].id_cache = cache.id;
+
+    await runsDelegate.update(run, run.id);
 };
 
 const getResult = async (blocks) => {
@@ -116,4 +191,21 @@ const getResult = async (blocks) => {
     return results;
 };
 
-module.exports = start;
+const getLastBlocks = (workflow) => {
+    let blocks = workflow.data.graph.nodes;
+    let links = workflow.data.graph.links;
+
+    connectBlocks(blocks, links);
+    splitDoBlocks(blocks);
+
+    let nodes = [];
+    blocks.forEach(block => {
+        if (block.children.length == 0) {
+            nodes.push(block);
+        }
+    });
+
+    return nodes;
+};
+
+module.exports = { start, getLastBlocks };

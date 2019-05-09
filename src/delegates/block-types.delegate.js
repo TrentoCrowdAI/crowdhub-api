@@ -59,19 +59,19 @@ const getAll = async () => {
 
 const check = (blockType) => {
     if (typeof blockType.name !== "string")
-        throw errHandler.createBusinessNotFoundError('Block-type: name is not valid!');
+        throw errHandler.createBusinessError('Block-type: name is not valid!');
     if (typeof blockType.builtIn !== "boolean")
-        throw errHandler.createBusinessNotFoundError('Block-type: builtIn is not valid!');
+        throw errHandler.createBusinessError('Block-type: builtIn is not valid!');
     if (!(blockType.parameters instanceof Array))
-        throw errHandler.createBusinessNotFoundError('Block-type: parameters is not valid!');
+        throw errHandler.createBusinessError('Block-type: parameters is not valid!');
 
     blockType.parameters.forEach((param) => {
         if (typeof param.name !== "string")
-            throw errHandler.createBusinessNotFoundError('Block-type: the name property of a parameter is not valid!');
+            throw errHandler.createBusinessError('Block-type: the name property of a parameter is not valid!');
         if (typeof param.description !== "string")
-            throw errHandler.createBusinessNotFoundError('Block-type: the description property of a parameter is not valid!');
+            throw errHandler.createBusinessError('Block-type: the description property of a parameter is not valid!');
         if (typeof param.type !== "string")
-            throw errHandler.createBusinessNotFoundError('Block-type: the type property of a parameter is not valid!');
+            throw errHandler.createBusinessError('Block-type: the type property of a parameter is not valid!');
     });
 };
 

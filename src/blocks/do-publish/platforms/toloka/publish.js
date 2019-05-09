@@ -1,5 +1,4 @@
-const { createProject, createTaskPool, createTasks } = require('./toloka-api');
-const templateDoDelegate = require(__base + 'delegates/template-do.delegate');
+const { createProject, createTaskPool, createTasks, startPool } = require('./toloka-api');
 const renderDesign = require('./render');
 
 /**
@@ -9,13 +8,15 @@ const renderDesign = require('./render');
  */
 const publish = async (blockData, input) => {
   let design = renderDesign(blockData.jobDesign.blocks);
-  let project = await createProject(blockData, design);
+  let project = await createProject(blockData, design, blockData.sandbox);
 
-  project.taskPool = await createTaskPool(blockData, project);
+  project.taskPool = await createTaskPool(blockData, project, blockData.sandbox);
 
-  let tasks = await itemsToTasks(project.taskPool, input, design);
+  let tasks = await itemsToTasks(project.taskPool, input, design, blockData.sandbox);
   
-  project.tasks = await createTasks(tasks);
+  project.tasks = await createTasks(tasks, blockData.sandbox);
+
+  project.start = await startPool(project.taskPool, blockData.sandbox);
 
   return project;
 };

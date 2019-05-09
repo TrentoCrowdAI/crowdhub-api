@@ -8,7 +8,7 @@ const create = async (workflow) => {
         [new Date(), workflow.id_project, workflow.data]
     );
 
-    return res.rows[0];
+    return parseIntFields(res.rows[0]);
 };
 
 // get
@@ -19,7 +19,7 @@ const get = async (workId) => {
         [workId]
     );
 
-    return res.rows[0];
+    return parseIntFields(res.rows[0]);
 };
 const getAll = async (projectId) => {
     let cond = "";
@@ -35,7 +35,7 @@ const getAll = async (projectId) => {
             params
     );
 
-    return res.rows;
+    return res.rows.map(x => parseIntFields(x));
 };
 
 // delete
@@ -47,7 +47,7 @@ const deleteWorkflow = async (workId) => {
         [new Date(), workId]
     );
 
-    return res.rows[0];
+    return parseIntFields(res.rows[0]);
 };
 
 // update
@@ -59,7 +59,17 @@ const update = async (workflow) => {
         [new Date(), workflow.data, workflow.id]
     );
 
-    return res.rows[0];
+    return parseIntFields(res.rows[0]);
+};
+
+const parseIntFields = (item) => {
+    if(item === undefined)
+        return undefined;
+        
+    item.id = parseInt(item.id);
+    item.id_project = parseInt(item.id_project);
+
+    return item;
 };
 
 module.exports = {

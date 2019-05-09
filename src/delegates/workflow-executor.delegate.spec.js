@@ -25,10 +25,8 @@ describe('Workflow execution tests', () => {
         let result = await workflowsDelegate.start(workflow.id);
 
         //test the result
-        expect(result).toBeInstanceOf(Array);
-        expect(result[0]).toBeDefined();
-        expect(result[0].id).toBeDefined();
-
+        expect(typeof result).toBe("number");
+        
         //delete the workflow
         await workflowsDelegate.deleteWorkflow(workflow.id);
 

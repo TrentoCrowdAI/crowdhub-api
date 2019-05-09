@@ -59,9 +59,9 @@ const getAll = async () => {
 
 const check = (project) => {
   if (typeof project.name !== "string")
-    throw errHandler.createBusinessNotFoundError('Project: name is not valid!');
+    throw errHandler.createBusinessError('Project: name is not valid!');
   if (typeof project.description !== "string")
-    throw errHandler.createBusinessNotFoundError('Project: description is not valid!');
+    throw errHandler.createBusinessError('Project: description is not valid!');
 };
 
 module.exports = {

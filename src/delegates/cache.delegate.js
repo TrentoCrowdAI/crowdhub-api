@@ -53,22 +53,20 @@ const update = async (cache, cacheId) => {
     return cache;
 };
 
-const getAll = async (workflowId) => {
-    workflowId = parseInt(workflowId);
-    if (typeof cacheId != "number" || isNaN(cacheId)) {
-        workflowId = undefined;
+const getAll = async (runId) => {
+    runId = parseInt(runId);
+    if (typeof runId != "number" || isNaN(runId)) {
+        runId = undefined;
     }
 
-    return await cacheDao.getAll(workflowId);
+    return await cacheDao.getAll(runId);
 };
 
 const check = (cache) => {
-    if (typeof cache.id_workflow !== "number")
-        throw errHandler.createBusinessNotFoundError('Cache: id_workflow is not valid!');
-    if (typeof cache.id_block !== "number")
-        throw errHandler.createBusinessNotFoundError('Cache: id_block is not valid!');
+    if (typeof cache.id_run !== "number")
+        throw errHandler.createBusinessError('Cache: id_run is not valid!');
     if (!(cache.data.constructor === Object))
-        throw errHandler.createBusinessNotFoundError('Cache: data is not valid!');
+        throw errHandler.createBusinessError('Cache: data is not valid!');
 }
 
 module.exports = {

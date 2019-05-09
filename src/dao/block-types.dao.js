@@ -8,7 +8,7 @@ const create = async (blockType) => {
         [new Date(), blockType.data]
     );
 
-    return res.rows[0];
+    return parseIntFields(res.rows[0]);
 };
 
 // get
@@ -19,7 +19,7 @@ const get = async (blockTypeId) => {
         [blockTypeId]
     );
 
-    return res.rows[0];
+    return parseIntFields(res.rows[0]);
 };
 const getAll = async () => {
     let res = await db.query(
@@ -27,7 +27,7 @@ const getAll = async () => {
             where deleted_at is NULL`
     );
 
-    return res.rows;
+    return res.rows.map(x => parseIntFields(x));
 };
 
 // delete
@@ -39,7 +39,7 @@ const deleteBlockType = async (blockTypeId) => {
         [new Date(), blockTypeId]
     );
 
-    return res.rows[0];
+    return parseIntFields(res.rows[0]);
 };
 
 // update
@@ -51,7 +51,16 @@ const update = async (blockType) => {
         [new Date(), blockType.data, blockType.id]
     );
 
-    return res.rows[0];
+    return parseIntFields(res.rows[0]);
+};
+
+const parseIntFields = (item) => {
+    if(item === undefined)
+        return undefined;
+        
+    item.id = parseInt(item.id);
+
+    return item;
 };
 
 module.exports = {

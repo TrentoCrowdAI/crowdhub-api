@@ -12,8 +12,7 @@ describe('Cache delegate', () => {
 
     test('Cache should call all CRUD functions', async () => {
         let cache = {
-            id_workflow : 1,
-            id_block: 1,
+            id_run : 1,
             data: {}
         };
 
@@ -33,10 +32,9 @@ describe('Cache delegate', () => {
         expect(cacheDao.deleteCache).toBeCalled();
     });
 
-    test('Cache create should rise error because wrong id_workflow given', async () => {
+    test('Cache create should rise error because wrong id_run given', async () => {
         let cache = {
-            id_workflow : 'a',
-            id_block: 1,
+            id_run : 'a',
             data: {}
         };
 
@@ -45,8 +43,7 @@ describe('Cache delegate', () => {
 
     test('Cache create should rise error because wrong data given', async () => {
         let cache = {
-            id_workflow : 1,
-            id_block: 1,
+            id_run : 1,
             data: []
         };
 
