@@ -1,4 +1,5 @@
 const doPublish = require('./publish');
+const f8Api = require('./f8-api');
 
 let example = __base + "../example/";
 const exampleTextHighlighting = require(example + 'job-example-text-highlighting.json');
@@ -9,6 +10,7 @@ const exampleImageHighlighting = require(example + 'job-example-image-highlighti
 jest.setTimeout(20000);
 
 describe('F8 tests', async () => {
+    let ids = [];
     beforeAll(async () => {
     });
 
@@ -19,6 +21,7 @@ describe('F8 tests', async () => {
         expect(typeof res.cml).toBe("string");
         expect(typeof res.js).toBe("string");
         expect(typeof res.css).toBe("string");
+        ids.push(res.id);
     });
 
     test('F8 publish test [image-classification]', async () => {
@@ -28,6 +31,7 @@ describe('F8 tests', async () => {
         expect(typeof res.cml).toBe("string");
         expect(typeof res.js).toBe("string");
         expect(typeof res.css).toBe("string");
+        ids.push(res.id);
     });
 
     test('F8 publish test [image-highlighting]', async () => {
@@ -37,8 +41,12 @@ describe('F8 tests', async () => {
         expect(typeof res.cml).toBe("string");
         expect(typeof res.js).toBe("string");
         expect(typeof res.css).toBe("string");
+        ids.push(res.id);
     });
 
     afterAll(async () => {
+        for (let id of ids) {
+            await f8Api.cancelJob(id);
+        }
     });
 });

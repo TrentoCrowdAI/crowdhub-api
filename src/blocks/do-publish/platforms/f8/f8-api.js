@@ -208,6 +208,21 @@ const startJob = async (job, internal) => retry(async () => {
     return job;
 }, { retries: RetryRetries });
 
+/**
+ * Cancel an existing F8 job
+ * @param {number} jobId 
+ */
+const cancelJob = async (jobId) => retry(async () => {
+    let url = config.f8.baseEndpoint + `jobs/${jobId}/cancel.json?key=${config.f8.apiKey}`;
+
+    let res = await fetch(url, {
+        method: 'GET'
+    });
+
+    if (res.status !== 200)
+        throw new Error('F8 Error: Not able to cancel the Job!');
+}, { retries: RetryRetries });
+
 module.exports = {
     createNewJob,
     addItems,
@@ -216,5 +231,6 @@ module.exports = {
     updateJobCSS,
     updateJobSpec,
     convertGoldQuestions,
-    startJob
+    startJob,
+    cancelJob
 };
