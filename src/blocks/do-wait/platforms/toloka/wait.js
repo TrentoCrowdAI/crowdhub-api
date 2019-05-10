@@ -28,7 +28,7 @@ const wait = async (blockData, input) => {
 const checkFinished = async (pool, sandbox) => {
     pool = await getPool(pool, sandbox);
 
-    if (pool.status !== 'CLOSED' && pool.last_close_reason !== 'COMPLETED')
+    if (pool.status !== 'CLOSED') // && pool.last_close_reason !== 'COMPLETED'
         throw Error("Pool not finished!");
 };
 
