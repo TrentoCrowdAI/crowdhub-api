@@ -116,8 +116,9 @@
                             "name": "Job name",
                             "reward": 3,
                             "toCache": true,
+                            "sandbox": true,
                             "maxVotes": 3,
-                            "numVotes": 3,
+                            "numVotes": 1,
                             "platform": "f8",
                             "jobDesign": {
                                 "blocks": [
