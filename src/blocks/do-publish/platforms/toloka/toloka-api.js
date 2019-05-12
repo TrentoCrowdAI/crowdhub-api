@@ -55,11 +55,11 @@ const createProject = async (template_do, design, sandbox) => retry(async () => 
       'Content-Type': 'application/JSON'
     }
   });
-
+  let json = await res.json();
   if (res.status !== 201)
     throw new Error('Toloka Error: Not able to create a new Project!');
 
-  let json = await res.json();
+
   return json;
 }, { retries: RetryRetries });
 
@@ -121,11 +121,12 @@ const createTasks = async (tasks, sandbox) => retry(async () => {
       'Content-Type': 'application/JSON'
     }
   });
-
+  let json = await res.json();
+  console.log(json)
   if (res.status !== 201)
     throw new Error('Toloka Error: Not able to create new Tasks!');
 
-  let json = await res.json();
+
   return json;
 }, { retries: RetryRetries });
 
@@ -150,7 +151,7 @@ const startPool = async (pool, sandbox) => retry(async () => {
     throw new Error('Toloka Error: Not able to start the Pool!');
 
   let json = await res.json();
-  
+
   return json;
 }, { retries: RetryRetries });
 

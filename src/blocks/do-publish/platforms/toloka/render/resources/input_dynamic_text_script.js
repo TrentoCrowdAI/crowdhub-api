@@ -6,23 +6,26 @@ enqueueOnRender(function (tolokaTask) {
     });
 });
 
-const highlighters = {};
+const highlightersByTaskIdAndVariableName = {};
 
 enqueueValidate(function (tolokaTask, solution) {
     // Copy the highlighted text on the solution object
     const id = tolokaTask.getTask().id;
-    for (let name_var of Object.keys(highlighters[id])) {
+    for (let name_var of Object.keys(highlightersByTaskIdAndVariableName[id])) {
         solution.output_values[name_var] = updateHiddenField(id, name_var, false);
     }
 });
 
 
 function initialize(taskId, DOMElement) {
-    if (highlighters[taskId]) {
+    if (highlightersByTaskIdAndVariableName[taskId]) {
         // Toloka updates the same page when the performer completes a HIT, so we need to clear
         // the last instance of the library
-        highlighters[taskId].destroy();
-        console.log('old highlighter destroyed');
+        const highlightersByVariableName = highlightersByTaskIdAndVariableName[taskId];
+        Object.keys(highlightersByVariableName).forEach(function(variableName) {
+            highlightersByVariableName[variableName].destroy();
+        });
+        console.log('[input_dynamic_text_script] old highlighters destroyed');
     }
 
     const paperContainer = $(DOMElement).find('.paper-task');
@@ -40,14 +43,14 @@ function setupHighlighter(id, container) {
     $container.attr('data-paper-id', id);
 
     const paperTexts = $container.find('.paper-text');
-    highlighters[id] = {};
+    highlightersByTaskIdAndVariableName[id] = {};
     for (var paper of paperTexts) {
         let name_var = $(paper).parent().attr('data');
         //hide input text
         const $hiddenField = $('div.paper-task[data-paper-id=' + id + '] textarea[name=' + name_var + ']');
         $($hiddenField).css("width", "0px").css("height", "0px").css("padding", "0px").css("border", "0px");
 
-        highlighters[id][name_var] = new TextHighlighter(paper, {
+        highlightersByTaskIdAndVariableName[id][name_var] = new TextHighlighter(paper, {
             onAfterHighlight: function (range) {
                 updateHiddenField(id, name_var, true, true);
             }
@@ -60,7 +63,7 @@ function updateHiddenField(id, name_var, hideValidationErrorPopup, emitChangeEve
         $('div.highlighted_parts_container .popup').removeClass('popup_visible');
     }
 
-    const highlithter = highlighters[id][name_var];
+    const highlithter = highlightersByTaskIdAndVariableName[id][name_var];
     const $hiddenField = $('div.paper-task[data-paper-id=' + id + '] textarea[name=' + name_var + ']');
 
     let json = "";
@@ -82,7 +85,7 @@ function setupClearAllHighlightsButton() {
         const id = $(e.currentTarget).parent().parent().parent().attr('data-paper-id');
         const name_var = $(e.currentTarget).parent().parent().attr('data');
 
-        highlighters[id][name_var].removeHighlights();
+        highlightersByTaskIdAndVariableName[id][name_var].removeHighlights();
 
         updateHiddenField(id, name_var, true);
     });
@@ -94,7 +97,7 @@ function setupClearSingleHighlight() {
         const id = $target.parent().parent().parent().attr('data-paper-id');
         const name_var = $target.parent().parent().attr('data');
         if (id !== undefined && name_var !== undefined) {
-            highlighters[id][name_var].removeHighlights($target[0]);
+            highlightersByTaskIdAndVariableName[id][name_var].removeHighlights($target[0]);
 
             updateHiddenField(id, name_var, true);
         }
