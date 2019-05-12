@@ -11,8 +11,11 @@ const renderers = {
 
 const renderHeader = ({res}) => {
   res.javascript += fs.readFileSync(__dirname + '/resources/header_script.js').toString();
+  res.markup += '<cml:hidden name="decision-time" />'
 };
 
-const renderFooter = ({res}) => {};
+const renderFooter = ({res}) => {
+    res.javascript += fs.readFileSync(__dirname + '/resources/footer_script.js').toString();
+};
 
 module.exports = abstractRenderer(renderers, renderHeader, renderFooter);

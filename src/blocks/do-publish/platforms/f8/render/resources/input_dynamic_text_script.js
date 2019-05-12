@@ -1,4 +1,3 @@
-
 enqueueOnLibrariesLoaded(function ($) {
     // Utility function used later to hide the validation error popup
     $.fn.focusWithoutScrolling = function () {
@@ -39,7 +38,7 @@ enqueueOnLibrariesLoaded(function ($) {
         var name_var = $(range.commonAncestorContainer).parent().attr('data');
         updateHiddenField(handlers[id_task][name_var], name_var);
         hideValidationError(range);
-    };
+    }
 
     // Add the listener to handle a click on an highlighted part (to remove it)
     function setupClearSingleHighlight() {
@@ -71,7 +70,8 @@ enqueueOnLibrariesLoaded(function ($) {
             pattern = marks.serializeHighlights();
         }
         $hiddenField.val(pattern);
-    };
+        $hiddenField.trigger('change');
+    }
 
     function hideValidationError(marks, name_var) {
         $els = $(marks.commonAncestorContainer).parents().filter(".cml").children();

@@ -14,7 +14,7 @@ const renderHeader = ({res}) => {
     res.javascript += fs.readFileSync(__dirname + '/resources/header_script.js').toString();
     res.markup =
       '<div class="paper-task">' +
-      ' <input type="text" hidden name="decision-time"/>';
+      ' <input type="text" hidden name="decision-time"/>'; // TODO: This should work also without the hidden text. Try to remove it
 };
 
 const renderFooter = ({res}) => {
