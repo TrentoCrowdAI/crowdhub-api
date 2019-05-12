@@ -1,3 +1,5 @@
+const fs = require('fs');
+
 const renderBody = (block, context) => {
     if (!block.highlightable) {
         renderText(block, context);

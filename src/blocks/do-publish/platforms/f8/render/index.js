@@ -1,3 +1,4 @@
+const fs = require('fs');
 const abstractRenderer = require(__base + 'blocks/do-publish/abstract-renderer');
 
 const renderers = {
@@ -8,7 +9,9 @@ const renderers = {
   output_choices: require('./output_choices')
 };
 
-const renderHeader = ({res}) => {};
+const renderHeader = ({res}) => {
+  res.javascript += fs.readFileSync(__dirname + '/resources/header_script.js').toString();
+};
 
 const renderFooter = ({res}) => {};
 

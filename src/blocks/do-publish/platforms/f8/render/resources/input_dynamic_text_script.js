@@ -1,24 +1,5 @@
-document.addEvent('domready', function () {
-    try {
-        require({
-            paths: {
-                "jquery-ui": "https://code.jquery.com/ui/1.11.3/jquery-ui.min",
-                "TextHighlighter": "https://cdnjs.cloudflare.com/ajax/libs/texthighlighter/1.2.0/TextHighlighter.min"
-            },
-            map: {
-                "*": {
-                    "jquery": "jquery-noconflict"
-                }
-            }
-        }, ["jquery-noconflict", "jquery-ui", "TextHighlighter"], function ($) {
-            onLibrariesLoaded($);
-        });
-    } catch (e) {
-        console.error(e);
-    }
-});
 
-function onLibrariesLoaded($) {
+enqueueOnLibrariesLoaded(function ($) {
     // Utility function used later to hide the validation error popup
     $.fn.focusWithoutScrolling = function () {
         var x = window.scrollX,
@@ -102,4 +83,4 @@ function onLibrariesLoaded($) {
             $els.filter(".cml").children().find(".excl_crit").focusWithoutScrolling();
         }
     }
-}
+});
