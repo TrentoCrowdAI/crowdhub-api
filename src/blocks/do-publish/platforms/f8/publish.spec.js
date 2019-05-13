@@ -1,5 +1,5 @@
 const doPublish = require('./publish');
-const f8Api = require('./f8-api');
+const { cancelJob } = require(__base + 'utils/f8-helper');
 
 let example = __base + "../example/";
 const exampleTextHighlighting = require(example + 'job-example-text-highlighting.json');
@@ -46,7 +46,7 @@ describe('F8 tests', async () => {
 
     afterAll(async () => {
         for (let id of ids) {
-            await f8Api.cancelJob(id);
+            await cancelJob(id);
         }
     });
 });
