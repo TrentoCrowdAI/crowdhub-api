@@ -38,3 +38,17 @@ exports.Task = extend(TolokaHandlebarsTask, function (options) {
     },
 
 });
+
+// utility function given by F8
+function extend(ParentClass, constructorFunction, prototypeHash) {
+    constructorFunction = constructorFunction || function () {
+    };
+    prototypeHash = prototypeHash || {};
+    if (ParentClass) {
+        constructorFunction.prototype = Object.create(ParentClass.prototype);
+    }
+    for (var i in prototypeHash) {
+        constructorFunction.prototype[i] = prototypeHash[i];
+    }
+    return constructorFunction;
+}
