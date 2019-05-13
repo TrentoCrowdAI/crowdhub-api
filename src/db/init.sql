@@ -121,3 +121,17 @@ CREATE TABLE block_type (
   data JSONB,
   CONSTRAINT pk_block_type PRIMARY KEY (id)
 );
+
+
+
+CREATE TABLE workers_of_workflow (
+  id bigserial NOT NULL,
+  created_at timestamp,
+  updated_at timestamp,
+  deleted_at timestamp,
+  id_workflow bigint,
+  id_worker varchar(100),
+  data JSONB,
+  CONSTRAINT pk_workers_of_worflow PRIMARY KEY (id),
+  CONSTRAINT unique_workers_of_worflow UNIQUE(id_workflow, id_worker)
+);
