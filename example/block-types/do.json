@@ -68,6 +68,14 @@
       "type": "boolean"
     },
     {
+      "name": "onlyNewWorkers",
+      "displayName": "Allow only new workers",
+      "description": "Should we block workers that previously performed a job in the current workflow? if falsem workers can participate in as many jobs of this workflow as they want.",
+      "default": false,
+      "required": true,
+      "type": "boolean"
+    },
+    {
       "name": "reward",
       "displayName": "Reward",
       "description": "Cents of dollars",
