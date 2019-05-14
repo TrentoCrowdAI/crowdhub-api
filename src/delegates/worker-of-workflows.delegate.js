@@ -1,4 +1,7 @@
 const workerOfWorkflowsDao = require(__base + 'dao/worker-of-workflows.dao');
+const cacheDao = require(__base + 'dao/cache.dao');
+const runsDelegate = require(__base + 'delegates/runs.delegate');
+const workflowsDelegate = require(__base + 'delegates/workflows.delegate');
 const errHandler = require(__base + 'utils/errors');
 
 const create = async (item) => {
@@ -35,22 +38,30 @@ const deleteWorker = async (itemId) => {
     return item;
 };
 
-const elaborateWorker = async (platform, task_id, worker_id) => {
-    //find the workflow from the task_id
-    let workflow_id;
+const elaborateWorker = async (platform, job_id, worker_id) => {
+    //find the cache from the job_id
+    let cache;
     if (platform === 'f8') {
-        workflow_id = await workerOfWorkflowsDao.getWorkflowFromTaskId(task_id);
+        cache = await cacheDao.getCacheFromJobIdF8(job_id);
     } else if (platform === 'toloka') {
-
+        cache = await cacheDao.getCacheFromPoolIdToloka(job_id);
     }
     else {
         throw errHandler.createBusinessError('The platform is not supported!');
     }
 
+    let run = await runsDelegate.get(cache.id_run);
+    let block = Object.keys(run.data).find(x => run.data[x].state === 'finished' && run.data[x].id_cache === cache.id);
+
+    let workflow = await workflowsDelegate.get(run.id_workflow);
+    let context = workflow.data.graph.blockingContexts.find(x => x.blocks.indexOf(block) !== -1);
+
     //try to store the data
     try {
-        let item = { id_workflow: workflow_id, id_worker: worker_id, data: { platform: platform } };
-        item = await create(item);
+        if (context !== undefined) { //block related to a context
+            let item = { id_context: context.id, id_worker: worker_id, id_workflow: workflow.id, data: { platform: platform } };
+            item = await create(item);
+        }
         return { response: "OK" };
     } catch (e) {
         //return error, block user from answering the task
@@ -59,6 +70,8 @@ const elaborateWorker = async (platform, task_id, worker_id) => {
 };
 
 const check = (item) => {
+    if (item.id_context === undefined)
+        throw errHandler.createBusinessError('Worker-of-workflow: id_context is not valid!');
     if (typeof item.id_workflow !== "number")
         throw errHandler.createBusinessError('Worker-of-workflow: id_workflow is not valid!');
     if (item.id_worker === undefined)

@@ -4,8 +4,8 @@ const db = require(__base + "db/index");
 // create
 const create = async (item) => {
     let res = await db.query(
-        `insert into ${db.TABLES.WorkersOfWorkflow}(created_at, id_workflow, id_worker, data) values($1, $2, $3, $4) returning *`,
-        [new Date(), item.id_workflow, item.id_worker, item.data]
+        `insert into ${db.TABLES.WorkersOfWorkflow}(created_at, id_context, id_worker, id_workflow, data) values($1, $2, $3, $4, $5) returning *`,
+        [new Date(), item.id_context, item.id_worker, item.id_workflow, item.data]
     );
 
     return parseIntFields(res.rows[0]);
@@ -20,15 +20,6 @@ const get = async (workId) => {
     );
 
     return parseIntFields(res.rows[0]);
-};
-
-const getWorkflowFromTaskId = async (task_id) => {
-    let res = await db.query(
-        `select id_workflow from ${db.TABLES.Cache} join ${db.TABLES.Run} on ${db.TABLES.Run}.id = id_run 
-        where ${db.TABLES.Cache}.data->'result'->'id' = $1`,
-        [task_id]
-    );
-    return parseInt(res.rows[0].id_workflow);
 };
 
 // delete
@@ -69,6 +60,5 @@ module.exports = {
     create,
     get,
     update,
-    deleteWorker,
-    getWorkflowFromTaskId
+    deleteWorker
 };

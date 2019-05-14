@@ -129,9 +129,10 @@ CREATE TABLE workers_of_workflow (
   created_at timestamp,
   updated_at timestamp,
   deleted_at timestamp,
-  id_workflow bigint,
+  id_context varchar(100),
   id_worker varchar(100),
+  id_workflow bigint,
   data JSONB,
   CONSTRAINT pk_workers_of_worflow PRIMARY KEY (id),
-  CONSTRAINT unique_workers_of_worflow UNIQUE(id_workflow, id_worker)
+  CONSTRAINT unique_workers_of_worflow UNIQUE(id_workflow, id_context, id_worker)
 );
