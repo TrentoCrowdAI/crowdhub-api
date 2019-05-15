@@ -588,6 +588,21 @@ paths:
         404:
           description: Not Found
 
+  /account-balance:
+    get:
+      tags:
+      - "Account-balance"
+      description: Returns the balance of the user on each platform
+      summary: Get user balance
+      responses:
+        200:
+          description: The user balance
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AccountBalance'
+  
+
 components:
   schemas:
     Project:
@@ -823,4 +838,18 @@ components:
         data:
           type: object
           description: The data related to the block-type
+      
+    AccountBalance:
+      type: object
+      properties:
+        tolokaSandbox:
+          type: integer
+          description: The Toloka sandbox balance of the user
+        tolokaNormal:
+          type: integer
+          description: The Toloka balance of the user
+        f8:
+          type: integer
+          description: The F8 balance of the user
+
       
