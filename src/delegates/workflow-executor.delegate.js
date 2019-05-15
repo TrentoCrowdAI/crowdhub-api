@@ -102,7 +102,7 @@ const startBlock = async (block) => {
     let cachedValue = await getLastCachedResult(block);
 
     if (block.parameters.toCache && cachedValue !== undefined) { // check if a cached value is available
-        block.result = cachedValue;
+        block.result = cachedValue.data.result;
     }
     else {
         block.result = await blockDefinitions[block.type](block.parameters, inputs);

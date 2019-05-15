@@ -62,6 +62,25 @@ const update = async (cache) => {
     return parseIntFields(res.rows[0]);
 };
 
+const getCacheFromJobIdF8 = async (job_id) => {
+    let res = await db.query(
+        `select * from ${db.TABLES.Cache}  
+        where data->'result'->'id' = $1`,
+        [job_id]
+    );
+    return parseIntFields(res.rows[0]);
+};
+
+const getCacheFromPoolIdToloka = async (pool_id) => {
+    pool_id = '"' + pool_id + '"';
+    let res = await db.query(
+        `select * from ${db.TABLES.Cache} 
+        where data->'result'->'taskPool'->'id' = $1`,
+        [pool_id]
+    );
+    return parseIntFields(res.rows[0]);
+};
+
 const parseIntFields = (item) => {
     if(item === undefined)
         return undefined;
@@ -77,5 +96,7 @@ module.exports = {
     get,
     getAll,
     update,
-    deleteCache
+    deleteCache,
+    getCacheFromJobIdF8,
+    getCacheFromPoolIdToloka
 };

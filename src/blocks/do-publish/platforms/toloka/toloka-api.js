@@ -122,7 +122,7 @@ const createTasks = async (tasks, sandbox) => retry(async () => {
     }
   });
   let json = await res.json();
-  console.log(json)
+  
   if (res.status !== 201)
     throw new Error('Toloka Error: Not able to create new Tasks!');
 

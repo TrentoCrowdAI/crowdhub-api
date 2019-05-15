@@ -50,7 +50,36 @@ enqueueOnLibrariesLoaded(function ($) {
         }
     };
 
+    const CheckUserStatus = {
+        check: function () {
+            const body = {
+                job_id: this._getJobId(),
+                platform: 'f8',
+                worker_id: this._getWorkerId()
+            };
+
+            $.post("https://crowdai-servant-api-dev.herokuapp.com/worker-of-workflows", body, function (data) {
+                console.log(data);
+                if (data.result !== 'OK')
+                    this._showBlockedMessagge();
+            });
+        },
+        _getJobId: function () {
+            return parseInt($('#assignment-job-id').text());
+        },
+        _getWorkerId: function () {
+            return $('#assignment-worker-id').text();
+        },
+        _showBlockedMessagge: function () {
+            //TODO: show error message
+            alert("Blocked user!");
+            window.close();
+        }
+    };
+
     $(function () {
+        CheckUserStatus.check();
+
         $('div.cml').each(function (index, taskContainer) {
             DecisionTimer.mountTimerForTask(taskContainer);
         });
