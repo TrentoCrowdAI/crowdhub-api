@@ -1,4 +1,4 @@
-const { createProject, createTaskPool, createTasks, startPool } = require('./toloka-api');
+const { createProject, createTaskPool, createTasks, startPool } = require(__base + 'platform-api/toloka');
 const renderDesign = require('./render');
 
 /**

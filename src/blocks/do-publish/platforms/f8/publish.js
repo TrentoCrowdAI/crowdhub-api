@@ -1,4 +1,4 @@
-const { createNewJob, addItems, updateJobMarkup, updateJobJS, updateJobCSS, updateJobSpec, convertGoldQuestions, startJob } = require('./f8-api');
+const { createNewJob, addItems, updateJobMarkup, updateJobJS, updateJobCSS, updateJobSpec, convertGoldQuestions, startJob } = require(__base + 'platform-api/f8');
 const renderDesign = require('./render');
 
 const sleep = require(__base + 'utils/utils').sleep;

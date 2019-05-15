@@ -70,6 +70,21 @@ const getLastBlocks = async (workId) => {
     return workflowExecutor.getLastBlocks(workflow);
 };
 
+const estimateDoBlockCost = async (workId, blockId) => {
+    //check if block is a do-block
+
+    //check the platform
+
+};
+
+const estimateF8Cost = (block) => {
+
+};
+
+const estimateTolokaCost = async (block) => {
+
+};
+
 const check = (workflow) => {
     if (typeof workflow.id_project !== "number")
         throw errHandler.createBusinessError('Workflow: id_project is not valid!');
@@ -86,5 +101,6 @@ module.exports = {
     deleteWorkflow,
     update,
     start,
-    getLastBlocks
+    getLastBlocks,
+    estimateDoBlockCost
 };
