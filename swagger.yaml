@@ -418,6 +418,33 @@ paths:
                 type: integer
         404:
           description: Not Found
+
+  /workflows/{workflowID}/{blockID}/estimated-cost:
+    parameters:
+      - in: path
+        name: workflowID
+        required: true
+        schema:
+          type: integer
+      - in: path
+        name: blockID
+        required: true
+        schema:
+          type: integer
+    get:
+      tags:
+      - "Workflows"
+      description: Get an estimated cost of the do-block of the workflow specified by ID
+      summary: Get an estimated cost
+      responses:
+        200:
+          description: The estimated cost.
+          content:
+            application/json:
+              schema:
+                type: integer
+        404:
+          description: Not Found
           
   /runs:
     get:
