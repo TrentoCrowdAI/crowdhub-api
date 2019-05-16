@@ -145,7 +145,7 @@ const updateJobSpec = async (job, blockData) => retry(async () => {
         'job[payment_cents]': blockData.reward,
         'job[max_judgments_per_worker]': blockData.maxVotes,
         'job[judgments_per_unit]': blockData.numVotes,
-        'job[units_per_assignment]': job.units_count
+        'job[units_per_assignment]': blockData.taskPerPage
     };
     let body = querystring.stringify(data);
 

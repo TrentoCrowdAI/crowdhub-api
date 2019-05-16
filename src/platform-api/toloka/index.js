@@ -83,7 +83,7 @@ const createTaskPool = async (blockData, project, sandbox) => retry(async () => 
       default_overlap_for_new_task_suites: 1
     },
     mixer_config: {
-      real_tasks_count: 1,                    //TODO: change
+      real_tasks_count: blockData.taskPerPage,
       golden_tasks_count: 0,                  //TODO: change
       training_tasks_count: 0
     }
@@ -98,10 +98,11 @@ const createTaskPool = async (blockData, project, sandbox) => retry(async () => 
     }
   });
 
+  let json = await res.json();
+
   if (res.status !== 201)
     throw new Error('Toloka Error: Not able to create a new Pool!');
 
-  let json = await res.json();
   return json;
 }, { retries: RetryRetries });
 
@@ -219,12 +220,82 @@ const closePool = async (pool, sandbox) => retry(async () => {
 }, { retries: RetryRetries });
 
 
+/**
+ * Convert the items to an array of Toloka tasks
+ * @param {{}} pool
+ * @param {String} items
+ * @param {{}} design
+ */
+const itemsToTasks = async (pool, items, design) => {
+  let tasks = [];
+
+  for (let el of items) {
+    let headers = Object.keys(el);
+
+    let task = {
+      pool_id: pool.id,
+      input_values: {},
+      overlap: 1
+    };
+
+    for (let key of headers) {
+      if (Object.keys(design.input_spec).indexOf(key) != -1) {
+        task.input_values[key] = el[key];
+      } else if (key.endsWith('_gold')) {
+        //gold item
+        let pos = key.indexOf('_gold');
+
+        let fieldName = key.substring(0, pos);
+        if (Object.keys(design.output_spec).indexOf(fieldName) != -1) {
+          if (task.known_solutions === undefined)
+            task.known_solutions = [{ output_values: {}, correctness_weight: 1 }];
+
+          task.known_solutions[0].output_values[fieldName] = el[key];
+        }
+      }
+    }
+
+    if (task.known_solutions !== undefined) {
+      //fill with missing gold items in order to avoid errors
+      for (let gold of Object.keys(design.output_spec)) {
+        if (task.known_solutions[0].output_values[gold] === undefined)
+          task.known_solutions[0].output_values[gold] = '';
+      }
+    }
+
+    tasks.push(task);
+  }
+
+  return tasks;
+};
+
+const estimatePoolCost = (poolId, sandbox) => retry(async () => {
+  let baseUrl = sandbox ? 'https://sandbox.toloka.yandex.ru/api/' : 'https://toloka.yandex.ru/api/';
+  let url = baseUrl + `new/requester/pools/${poolId}/analytics?fields=expectedBudget`;
+
+  let res = await fetch(url, {
+    method: 'get',
+    headers: {
+      'Authorization': 'OAuth ' + config.toloka.accessToken
+    }
+  });
+
+  if (res.status !== 200)
+    throw new Error('Toloka Error: Not able to get the estimation of the Pool cost!');
+
+  let json = await res.json();
+
+  return json.expectedBudget.value;
+}, { retries: RetryRetries });
+
 module.exports = {
   createProject,
   createTaskPool,
   createTasks,
+  itemsToTasks,
   startPool,
   getPool,
   getPoolResponses,
-  closePool
+  closePool,
+  estimatePoolCost
 };

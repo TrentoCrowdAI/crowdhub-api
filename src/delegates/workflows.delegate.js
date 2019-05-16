@@ -1,6 +1,9 @@
 const workflowsDao = require(__base + 'dao/workflows.dao');
 const errHandler = require(__base + 'utils/errors');
 const workflowExecutor = require('./workflow-executor.delegate');
+const itemsDelegate = require('./items.delegate');
+const tolokaApi = require(__base + 'platform-api/toloka');
+const tolokaRender = require(__base + 'blocks/do-publish/platforms/toloka/render');
 
 const create = async (workflow) => {
     check(workflow);
@@ -71,18 +74,44 @@ const getLastBlocks = async (workId) => {
 };
 
 const estimateDoBlockCost = async (workId, blockId) => {
+    //retrieve the block
+    let workflow = await get(workId);
+    let block = workflow.data.graph.nodes.find(b => b.id === blockId);
+
     //check if block is a do-block
+    if (block.type !== 'do')
+        throw errHandler.createBusinessError('The specified block is not a Do block!');
+
+    let items = await itemsDelegate.getAll(workflow.id_project);
 
     //check the platform
-
+    if (block.parameters.platform === 'f8')
+        return estimateF8Cost(block, items);
+    else if (block.parameters.platform === 'toloka')
+        return await estimateTolokaCost(block, items);
 };
 
-const estimateF8Cost = (block) => {
+const estimateF8Cost = (block, items) => {
+    let pricePerPage = 1.2 * block.parameters.reward;
+    let judgementsPerRow = block.parameters.numVotes;
+    let numPages = Math.ceil(items.length / block.parameters.taskPerPage);
 
+    return (judgementsPerRow * numPages * pricePerPage);
 };
 
-const estimateTolokaCost = async (block) => {
+const estimateTolokaCost = async (block, items) => {
+    let design = tolokaRender(block.parameters.jobDesign.blocks);
+    let project = await tolokaApi.createProject(block.parameters, design, block.parameters.sandbox);
 
+    project.taskPool = await tolokaApi.createTaskPool(block.parameters, project, block.parameters.sandbox);
+
+    //remap items
+    let input = items.map(x => x.data);
+    let tasks = await tolokaApi.itemsToTasks(project.taskPool, input, design, block.parameters.sandbox);
+
+    project.tasks = await tolokaApi.createTasks(tasks, block.parameters.sandbox);
+
+    return await tolokaApi.estimatePoolCost(project.taskPool.id, block.parameters.sandbox);
 };
 
 const check = (workflow) => {
