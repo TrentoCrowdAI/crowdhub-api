@@ -39,20 +39,10 @@ const deleteWorker = async (itemId) => {
 };
 
 const elaborateWorker = async (platform, job_id, worker_id) => {
-    //find the cache from the job_id
-    let cache;
-    if (platform === 'f8') {
-        cache = await cacheDao.getCacheFromJobIdF8(job_id);
-    } else if (platform === 'toloka') {
-        cache = await cacheDao.getCacheFromPoolIdToloka(job_id);
-    }
-    else {
-        throw errHandler.createBusinessError('The platform is not supported!');
-    }
+    let cache = await getCacheByPlatformAndJobId(platform, job_id);
 
     let run = await runsDelegate.get(cache.id_run);
-    let blockId = Object.keys(run.data)
-      .find(blockId => run.data[blockId].state === 'finished' && run.data[blockId].id_cache === cache.id);
+    let blockId = getBlockIdByCacheId(run, cache.id);
 
     let workflow = await workflowsDelegate.get(run.id_workflow);
     let block = workflow.data.graph.nodes.find(block => block.id === blockId);
@@ -71,6 +61,21 @@ const elaborateWorker = async (platform, job_id, worker_id) => {
     }
 };
 
+const async getCacheByPlatformAndJobId = (platform, job_id) => {
+    let cache;
+    if (platform === 'f8') {
+        cache = await cacheDao.getCacheFromJobIdF8(job_id);
+    } else if (platform === 'toloka') {
+        cache = await cacheDao.getCacheFromPoolIdToloka(job_id);
+    } else {
+        throw errHandler.createBusinessError('The platform is not supported!');
+    }
+    return cache;
+};
+
+const getBlockIdByCacheId = (run, cacheId) =>  Object.keys(run.data)
+  .find(blockId => run.data[blockId].state === 'finished' && run.data[blockId].id_cache === cacheId);
+
 const check = (item) => {
     if (item.id_context === undefined)
         throw errHandler.createBusinessError('Worker-of-workflow: id_context is not valid!');
@@ -80,7 +85,7 @@ const check = (item) => {
         throw errHandler.createBusinessError('Worker-of-workflow: id_worker is not valid!');
     if (!(item.data.constructor === Object))
         throw errHandler.createBusinessError('Worker-of-workflow: data is not valid!');
-}
+};
 
 module.exports = {
     create,
