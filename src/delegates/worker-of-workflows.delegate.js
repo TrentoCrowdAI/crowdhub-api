@@ -51,15 +51,17 @@ const elaborateWorker = async (platform, job_id, worker_id) => {
     }
 
     let run = await runsDelegate.get(cache.id_run);
-    let block = Object.keys(run.data).find(x => run.data[x].state === 'finished' && run.data[x].id_cache === cache.id);
+    let blockId = Object.keys(run.data)
+      .find(blockId => run.data[blockId].state === 'finished' && run.data[blockId].id_cache === cache.id);
 
     let workflow = await workflowsDelegate.get(run.id_workflow);
-    let context = workflow.data.graph.blockingContexts.find(x => x.blocks.indexOf(block) !== -1);
+    let block = workflow.data.graph.nodes.find(block => block.id === blockId);
+    let contextId = block.blockingContext;
 
     //try to store the data
     try {
-        if (context !== undefined) { //block related to a context
-            let item = { id_context: context.id, id_worker: worker_id, id_workflow: workflow.id, data: { platform: platform } };
+        if (contextId !== undefined) { //block related to a context
+            let item = { id_context: contextId, id_worker: worker_id, id_workflow: workflow.id, data: { platform: platform } };
             item = await create(item);
         }
         return { response: "OK" };

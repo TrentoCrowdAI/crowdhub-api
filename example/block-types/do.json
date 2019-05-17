@@ -68,12 +68,12 @@
       "type": "boolean"
     },
     {
-      "name": "onlyNewWorkers",
-      "displayName": "Allow only new workers",
-      "description": "Should we block workers that previously performed a job in the current workflow? if falsem workers can participate in as many jobs of this workflow as they want.",
-      "default": false,
-      "required": true,
-      "type": "boolean"
+      "name": "blockingContextId",
+      "displayName": "Blocking context",
+      "description": "If selected, worker belonging to the same blocking context will not be able to jump between jobs of the blocking context",
+      "default": null,
+      "required": false,
+      "type": "blockingContext"
     },
     {
       "name": "reward",
