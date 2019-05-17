@@ -120,6 +120,7 @@
                             "maxVotes": 3,
                             "numVotes": 1,
                             "platform": "f8",
+                            "blockingContext": "4b2d7963-6782-43ee-b672-ec50eb13ca60",
                             "jobDesign": {
                                 "blocks": [
                                     {
@@ -178,8 +179,7 @@
                     {
                         "id": "4b2d7963-6782-43ee-b672-ec50eb13ca60",
                         "name": "Prevent user from jumping",
-                        "color": "rgb(120,130,140)",
-                        "blocks": ["5e102960-790b-4d13-a58e-49573bd4e560"]
+                        "color": "rgb(120,130,140)"
                     }
                 ],
                 "offsetX": 74,
