@@ -61,7 +61,7 @@ const elaborateWorker = async (platform, job_id, worker_id) => {
     }
 };
 
-const async getCacheByPlatformAndJobId = (platform, job_id) => {
+const getCacheByPlatformAndJobId = async (platform, job_id) => {
     let cache;
     if (platform === 'f8') {
         cache = await cacheDao.getCacheFromJobIdF8(job_id);
