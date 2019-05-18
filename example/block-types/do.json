@@ -339,6 +339,13 @@
           ]
         }
       ]
+    },
+    {
+      "name": "cachedEstimatedCost",
+      "displayName": "Estimated cost",
+      "required": false,
+      "default": null,
+      "type": "doBlockCost"
     }
   ]
 }
