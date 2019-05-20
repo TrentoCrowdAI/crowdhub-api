@@ -1,0 +1,15 @@
+{
+  "name": "Image Highlighting",
+  "description": "Show images to users and ask them to highlight portion of the images to answer a question.",
+  "blocks": [
+    {
+      "type": "input_dynamic_image",
+      "parameters": {
+        "question": "Select the person in the photo.",
+        "csvVariable": "image_url",
+        "highlightable": true,
+        "highlightedCsvVariable": "annotation"
+      }
+    }
+  ]
+}

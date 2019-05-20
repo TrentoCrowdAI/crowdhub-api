@@ -1,0 +1,32 @@
+{
+  "name": "Image Classification",
+  "description": "Show images to users and ask them to answer to a multiple choice question.",
+  "blocks": [
+    {
+      "type": "input_dynamic_image",
+      "parameters": {
+        "csvVariable": "image_url",
+        "highlightable": false
+      }
+    },
+    {
+      "type": "output_choices",
+      "parameters": {
+        "question": "Does this image contain a cat?",
+        "required": true,
+        "choice_type": "single_radio",
+        "csvVariable": "cat_radio",
+        "choices": [
+          {
+            "label": "Yes",
+            "value": "yes"
+          },
+          {
+            "label": "No",
+            "value": "no"
+          }
+        ]
+      }
+    }
+  ]
+}
