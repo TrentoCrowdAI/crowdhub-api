@@ -113,7 +113,8 @@
       "description": "Some instructions to show to the performer",
       "default": "<p><h2>Example</h2>Insert here an example</p>",
       "required": true,
-      "type": "html"
+      "type": "html",
+      "editorInModal": true
     },
     {
       "name": "jobDesign",
