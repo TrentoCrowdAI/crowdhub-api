@@ -73,4 +73,17 @@ router.post('/workflows/:id/start', async (req, res, next) => {
     }
 });
 
+router.post('/workflows/:idWork/:idBlock/estimated-cost', async (req, res, next) => {
+    try {
+        let workId = req.params.idWork;
+        let blockId = req.params.idBlock;
+
+        let result = await workflowsDelegate.estimateDoBlockCost(workId, blockId);
+        res.json(result);
+    } catch (e) {
+        // we delegate to the error-handling middleware
+        next(e);
+    }
+});
+
 module.exports = router;

@@ -14,6 +14,8 @@ const workflowBase = require(example + 'workflows/workflow-base.json');
 jest.setTimeout(1000 * 60 * 15);
 
 describe('Workflow execution tests', () => {
+    const blockId = '5e102960-790b-4d13-a58e-49573bd4e560';
+
     test('Empty lambda block + F8 do block', async () => {
         //create the new project
         let proj = await projectsDelegate.create(workflowBase.project);
@@ -25,6 +27,10 @@ describe('Workflow execution tests', () => {
         //create the workflow
         workflowBase.workflow.id_project = parseInt(proj.id);
         let workflow = await workflowsDelegate.create(workflowBase.workflow);
+
+        //test the estimation cost functions
+        let cost = await workflowsDelegate.estimateDoBlockCost(workflow.id, blockId);
+        expect(typeof cost).toBe('number');
 
         //execute the workflow
         let result = await workflowsDelegate.start(workflow.id);
@@ -38,7 +44,6 @@ describe('Workflow execution tests', () => {
         while (wait) {
             sleep(300);
             let run = await runsDelegate.get(result);
-            let blockId = '5e102960-790b-4d13-a58e-49573bd4e560';
             if (run.data[blockId].state === 'finished') {
                 wait = false;
                 cacheId = run.data[blockId].id_cache;
@@ -57,10 +62,10 @@ describe('Workflow execution tests', () => {
         while (wait) {
             sleep(5000);
             let run = await runsDelegate.get(result);
-            let blockId = '5e102960-790b-4d13-a58e-49573bd4e560_wait';
-            if (run.data[blockId].state === 'finished') {
+            let blockWaitId = blockId + '_wait';
+            if (run.data[blockWaitId].state === 'finished') {
                 wait = false;
-                cacheId = run.data[blockId].id_cache;
+                cacheId = run.data[blockWaitId].id_cache;
             }
         }
 
@@ -96,6 +101,10 @@ describe('Workflow execution tests', () => {
         workflowBase.workflow.data.graph.nodes[1].parameters.platform = 'toloka';
         let workflow = await workflowsDelegate.create(workflowBase.workflow);
 
+        //test the estimation cost functions
+        let cost = await workflowsDelegate.estimateDoBlockCost(workflow.id, blockId);
+        expect(typeof cost).toBe('number');
+
         //execute the workflow
         let result = await workflowsDelegate.start(workflow.id);
 
@@ -108,7 +117,6 @@ describe('Workflow execution tests', () => {
         while (wait) {
             sleep(300);
             let run = await runsDelegate.get(result);
-            let blockId = '5e102960-790b-4d13-a58e-49573bd4e560';
             if (run.data[blockId].state === 'finished') {
                 wait = false;
                 cacheId = run.data[blockId].id_cache;
@@ -126,10 +134,10 @@ describe('Workflow execution tests', () => {
         while (wait) {
             sleep(5000);
             let run = await runsDelegate.get(result);
-            let blockId = '5e102960-790b-4d13-a58e-49573bd4e560_wait';
-            if (run.data[blockId].state === 'finished') {
+            let blockWaitId = blockId + '_wait';
+            if (run.data[blockWaitId].state === 'finished') {
                 wait = false;
-                cacheId = run.data[blockId].id_cache;
+                cacheId = run.data[blockWaitId].id_cache;
             }
         }
 

@@ -119,6 +119,7 @@
                             "sandbox": true,
                             "maxVotes": 3,
                             "numVotes": 1,
+                            "taskPerPage": 1,
                             "platform": "f8",
                             "blockingContext": "4b2d7963-6782-43ee-b672-ec50eb13ca60",
                             "jobDesign": {

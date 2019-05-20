@@ -100,6 +100,14 @@
       "type": "number"
     },
     {
+      "name": "taskPerPage",
+      "displayName": "Number tasks",
+      "description": "Number tasks per each page",
+      "default": 1,
+      "required": true,
+      "type": "number"
+    },
+    {
       "name": "instructions",
       "displayName": "Instructions",
       "description": "Some instructions to show to the performer",
@@ -331,6 +339,13 @@
           ]
         }
       ]
+    },
+    {
+      "name": "cachedEstimatedCost",
+      "displayName": "Estimated cost",
+      "required": false,
+      "default": null,
+      "type": "doBlockCost"
     }
   ]
 }

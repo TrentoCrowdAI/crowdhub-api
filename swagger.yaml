@@ -418,6 +418,33 @@ paths:
                 type: integer
         404:
           description: Not Found
+
+  /workflows/{workflowID}/{blockID}/estimated-cost:
+    parameters:
+      - in: path
+        name: workflowID
+        required: true
+        schema:
+          type: integer
+      - in: path
+        name: blockID
+        required: true
+        schema:
+          type: integer
+    get:
+      tags:
+      - "Workflows"
+      description: Get an estimated cost of the do-block of the workflow specified by ID
+      summary: Get an estimated cost
+      responses:
+        200:
+          description: The estimated cost.
+          content:
+            application/json:
+              schema:
+                type: integer
+        404:
+          description: Not Found
           
   /runs:
     get:
@@ -587,6 +614,21 @@ paths:
                 $ref: '#/components/schemas/BlockType'
         404:
           description: Not Found
+
+  /account-balance:
+    get:
+      tags:
+      - "Account-balance"
+      description: Returns the balance of the user on each platform
+      summary: Get user balance
+      responses:
+        200:
+          description: The user balance
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AccountBalance'
+  
 
 components:
   schemas:
@@ -823,4 +865,18 @@ components:
         data:
           type: object
           description: The data related to the block-type
+      
+    AccountBalance:
+      type: object
+      properties:
+        tolokaSandbox:
+          type: integer
+          description: The Toloka sandbox balance of the user
+        tolokaNormal:
+          type: integer
+          description: The Toloka balance of the user
+        f8:
+          type: integer
+          description: The F8 balance of the user
+
       

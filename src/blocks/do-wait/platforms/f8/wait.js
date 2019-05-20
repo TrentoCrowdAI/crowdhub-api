@@ -1,4 +1,4 @@
-const { getJob, pingJob, pauseJob, getCsvReport, getJobJudgments } = require('./f8-api');
+const { getJob, pingJob, pauseJob, getCsvReport, getJobJudgments } = require(__base + 'platform-api/f8');
 
 const admZip = require('adm-zip');
 const neatCsv = require('neat-csv');

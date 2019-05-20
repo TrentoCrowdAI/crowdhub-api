@@ -3,6 +3,7 @@
         "reward": 70,
         "maxVotes": 1,
         "numVotes": 1,
+        "taskPerPage": 1,
         "sandbox": true,
         "name": "My image highlighting job",
         "description": "This is my job.",

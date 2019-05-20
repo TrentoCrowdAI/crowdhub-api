@@ -1,4 +1,4 @@
-const { getPool, getPoolResponses, closePool } = require('./toloka-api');
+const { getPool, getPoolResponses, closePool } = require(__base + 'platform-api/toloka');
 
 const sleep = require(__base + 'utils/utils').sleep;
 
