@@ -17,10 +17,18 @@ const CheckUserStatus = {
             worker_id: this._getWorkerId()
         };
 
-        $.post("https://crowdai-servant-api-dev.herokuapp.com/worker-of-workflows", body, function (data) {
-            console.log(data);
-            if (data.result !== 'OK')
-                this._showBlockedMessagge();
+        const showMsg = this._showBlockedMessage;
+        $.ajax({
+            type: 'POST',
+            url: "https://crowdai-servant-api-dev.herokuapp.com/worker-of-workflows",
+            data: JSON.stringify(body),
+            success: function (data) {
+                console.log(data);
+                if (data.response !== 'OK')
+                    showMsg(data.message);
+            },
+            contentType: "application/json",
+            dataType: 'json'
         });
     },
     LS_KEY: 'crowd_ai_uuid',
@@ -35,10 +43,10 @@ const CheckUserStatus = {
         }
         return workerId;
     },
-    _showBlockedMessagge: function () {
-        //TODO: show error message
-        alert("Blocked user!");
-        window.close();
+    _showBlockedMessage: function (msg) {
+        console.log($('.task-page-content-wrapper'));
+
+        $(document.body).html(msg);
     },
     _guid: function () {
         function s4() {
