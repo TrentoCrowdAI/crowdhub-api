@@ -46,7 +46,7 @@ const elaborateWorker = async (platform, job_id, worker_id) => {
 
     let workflow = await workflowsDelegate.get(run.id_workflow);
     let block = workflow.data.graph.nodes.find(block => block.id === blockId);
-    let contextId = block.blockingContext;
+    let contextId = block.parameters.blockingContext;
 
     //try to store the data
     try {
