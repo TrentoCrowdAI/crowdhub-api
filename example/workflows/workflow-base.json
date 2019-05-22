@@ -180,7 +180,8 @@
                     {
                         "id": "4b2d7963-6782-43ee-b672-ec50eb13ca60",
                         "name": "Prevent user from jumping",
-                        "color": "rgb(120,130,140)"
+                        "color": "rgb(120,130,140)",
+                        "workerBlockedMessage": "<p><h1>Thank you</h1>You've already worked on another job related to this project</p>"
                     }
                 ],
                 "offsetX": 74,
