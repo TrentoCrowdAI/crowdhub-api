@@ -57,7 +57,9 @@ const elaborateWorker = async (platform, job_id, worker_id) => {
         return { response: "OK" };
     } catch (e) {
         //return error, block user from answering the task
-        return { response: "BLOCKED" };
+        //get the blockind message
+        let blockingContext = workflow.data.graph.blockingContexts.find(ctx => ctx.id === contextId);
+        return { response: "BLOCKED", message: blockingContext.workerBlockedMessage };
     }
 };
 
@@ -73,8 +75,8 @@ const getCacheByPlatformAndJobId = async (platform, job_id) => {
     return cache;
 };
 
-const getBlockIdByCacheId = (run, cacheId) =>  Object.keys(run.data)
-  .find(blockId => run.data[blockId].state === 'finished' && run.data[blockId].id_cache === cacheId);
+const getBlockIdByCacheId = (run, cacheId) => Object.keys(run.data)
+    .find(blockId => run.data[blockId].state === 'finished' && run.data[blockId].id_cache === cacheId);
 
 const check = (item) => {
     if (item.id_context === undefined)
