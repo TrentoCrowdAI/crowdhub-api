@@ -24,6 +24,20 @@ const get = async (itemId) => {
     return item;
 };
 
+const getByParams = async (id_context, id_worker, id_workflow) => {
+    id_workflow = parseInt(id_workflow);
+    if (typeof id_workflow != "number" || isNaN(id_workflow)) {
+        throw errHandler.createBusinessError('The id of the workflow is of an invalid type!');
+    }
+
+    let item = await workerOfWorkflowsDao.getByParams(id_context, id_worker, id_workflow);
+
+    if (!item)
+        throw errHandler.createBusinessNotFoundError('The element does not exist!');
+
+    return item;
+};
+
 const deleteWorker = async (itemId) => {
     itemId = parseInt(itemId);
     if (typeof itemId != "number" || isNaN(itemId)) {
@@ -48,19 +62,27 @@ const elaborateWorker = async (platform, job_id, worker_id) => {
     let block = workflow.data.graph.nodes.find(block => block.id === blockId);
     let contextId = block.parameters.blockingContext;
 
-    //try to store the data
-    try {
-        if (contextId !== undefined) { //block related to a context
-            let item = { id_context: contextId, id_worker: worker_id, id_workflow: workflow.id, data: { platform: platform } };
+    if (contextId !== undefined) { //block related to a context
+        try {
+            //try to select an item
+            let stored = await getByParams(contextId, worker_id, workflow.id);
+            if (stored.data.blockId === blockId) {
+                //user resuming task -> allow
+            }
+            else {
+                //return error, block user from answering the task
+                //get the blocking message
+                let blockingContext = workflow.data.graph.blockingContexts.find(ctx => ctx.id === contextId);
+                return { response: "BLOCKED", message: blockingContext.workerBlockedMessage };
+            }
+        }
+        catch (e) {
+            //try to store the data
+            let item = { id_context: contextId, id_worker: worker_id, id_workflow: workflow.id, data: { platform: platform, blockId: blockId } };
             item = await create(item);
         }
-        return { response: "OK" };
-    } catch (e) {
-        //return error, block user from answering the task
-        //get the blockind message
-        let blockingContext = workflow.data.graph.blockingContexts.find(ctx => ctx.id === contextId);
-        return { response: "BLOCKED", message: blockingContext.workerBlockedMessage };
     }
+    return { response: "OK" };
 };
 
 const getCacheByPlatformAndJobId = async (platform, job_id) => {

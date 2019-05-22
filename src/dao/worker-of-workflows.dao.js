@@ -21,6 +21,15 @@ const get = async (workId) => {
 
     return parseIntFields(res.rows[0]);
 };
+const getByParams = async (id_context, id_worker, id_workflow) => {
+    let res = await db.query(
+        `select * from ${db.TABLES.WorkersOfWorkflow} 
+            where id_context = $1 and id_worker= $2 and id_workflow = $3 and deleted_at is NULL`,
+        [id_context, id_worker, id_workflow]
+    );
+
+    return parseIntFields(res.rows[0]);
+};
 
 // delete
 const deleteWorker = async (workId) => {
@@ -59,6 +68,7 @@ const parseIntFields = (item) => {
 module.exports = {
     create,
     get,
+    getByParams,
     update,
     deleteWorker
 };
