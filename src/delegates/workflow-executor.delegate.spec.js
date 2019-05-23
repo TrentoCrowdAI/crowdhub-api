@@ -15,6 +15,7 @@ jest.setTimeout(1000 * 60 * 15);
 
 describe('Workflow execution tests', () => {
     const blockId = '5e102960-790b-4d13-a58e-49573bd4e560';
+    let delIds = [];
 
     test('Empty lambda block + F8 do block', async () => {
         //create the new project
@@ -76,15 +77,11 @@ describe('Workflow execution tests', () => {
         let runResult = await runsDelegate.getResult(result);
         expect(runResult).toBeDefined();
 
-        //delete the workflow
-        await workflowsDelegate.deleteWorkflow(workflow.id);
-
-        //delete the items
-        for (let item of items)
-            await itemsDelegate.deleteItem(item.id);
-
-        //delete project
-        await projectsDelegate.deleteProject(proj.id);
+        delIds.push({
+            workflowId: workflow.id,
+            itemsId: items.map(x => x.id),
+            projectId: proj.id
+        });
     });
 
     test('Empty lambda block + Toloka do block', async () => {
@@ -148,14 +145,24 @@ describe('Workflow execution tests', () => {
         let runResult = await runsDelegate.getResult(result);
         expect(runResult).toBeDefined();
 
-        //delete the workflow
-        await workflowsDelegate.deleteWorkflow(workflow.id);
+        delIds.push({
+            workflowId: workflow.id,
+            itemsId: items.map(x => x.id),
+            projectId: proj.id
+        });
+    });
 
-        //delete the items
-        for (let item of items)
-            await itemsDelegate.deleteItem(item.id);
+    afterAll(async () => {
+        for (let id of delIds) {
+            //delete the workflow
+            await workflowsDelegate.deleteWorkflow(id.workflowId);
 
-        //delete project
-        await projectsDelegate.deleteProject(proj.id);
+            //delete the items
+            for (let item of id.itemsId)
+                await itemsDelegate.deleteItem(item);
+
+            //delete project
+            await projectsDelegate.deleteProject(id.projectId);
+        }
     });
 });
