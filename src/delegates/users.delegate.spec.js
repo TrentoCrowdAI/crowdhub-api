@@ -8,7 +8,7 @@ describe('Users delegate', () => {
     usersDao.get.mockReturnValue(Promise.resolve({}));
     usersDao.getAll.mockReturnValue(Promise.resolve({}));
     usersDao.update.mockReturnValue(Promise.resolve({}));
-    usersDao.deleteBlockType.mockReturnValue(Promise.resolve({}));
+    usersDao.deleteUser.mockReturnValue(Promise.resolve({}));
 
     test('Users should call all CRUD functions', async () => {
         let user = {
