@@ -45,7 +45,7 @@ describe('Workflow execution tests', () => {
         let cacheId;
         while (wait) {
             sleep(300);
-            let run = await runsDelegate.get(result);
+            let run = await runsDelegate.get(result, userId);
             if (run.data[blockId].state === 'finished') {
                 wait = false;
                 cacheId = run.data[blockId].id_cache;
@@ -63,7 +63,7 @@ describe('Workflow execution tests', () => {
         wait = true;
         while (wait) {
             sleep(5000);
-            let run = await runsDelegate.get(result);
+            let run = await runsDelegate.get(result, userId);
             let blockWaitId = blockId + '_wait';
             if (run.data[blockWaitId].state === 'finished') {
                 wait = false;
@@ -75,7 +75,7 @@ describe('Workflow execution tests', () => {
         let doWaitCache = await cacheDelegate.get(cacheId);
         expect(doWaitCache).toBeDefined();
 
-        let runResult = await runsDelegate.getResult(result);
+        let runResult = await runsDelegate.getResult(result, userId);
         expect(runResult).toBeDefined();
 
         delIds.push({
@@ -114,7 +114,7 @@ describe('Workflow execution tests', () => {
         let cacheId;
         while (wait) {
             sleep(300);
-            let run = await runsDelegate.get(result);
+            let run = await runsDelegate.get(result, userId);
             if (run.data[blockId].state === 'finished') {
                 wait = false;
                 cacheId = run.data[blockId].id_cache;
@@ -131,7 +131,7 @@ describe('Workflow execution tests', () => {
         wait = true;
         while (wait) {
             sleep(5000);
-            let run = await runsDelegate.get(result);
+            let run = await runsDelegate.get(result, userId);
             let blockWaitId = blockId + '_wait';
             if (run.data[blockWaitId].state === 'finished') {
                 wait = false;
@@ -143,7 +143,7 @@ describe('Workflow execution tests', () => {
         let doWaitCache = await cacheDelegate.get(cacheId);
         expect(doWaitCache).toBeDefined();
 
-        let runResult = await runsDelegate.getResult(result);
+        let runResult = await runsDelegate.getResult(result, userId);
         expect(runResult).toBeDefined();
 
         delIds.push({

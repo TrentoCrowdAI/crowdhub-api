@@ -7,7 +7,7 @@ const router = express.Router();
 router.get('/runs', async (req, res, next) => {
     try {
         let workflowId = req.query.workflowId;
-        let runs = await runsDelegate.getAll(workflowId);
+        let runs = await runsDelegate.getAll(workflowId, req.user.id);
         res.json(runs);
     } catch (e) {
         // we delegate to the error-handling middleware
@@ -18,7 +18,7 @@ router.get('/runs', async (req, res, next) => {
 router.get('/runs/:id', async (req, res, next) => {
     try {
         let id = req.params.id;
-        let run = await runsDelegate.get(id);
+        let run = await runsDelegate.get(id, req.user.id);
 
         res.json(run);
     } catch (e) {
@@ -31,7 +31,7 @@ router.get('/runs/:id/result', async (req, res, next) => {
     try {
         let runId = req.params.id;
         let format = req.query.format;
-        let result = await runsDelegate.getResult(runId);
+        let result = await runsDelegate.getResult(runId, req.user.id);
         await sendRunResultAs(result, format, `run-#${runId}-result`, res);
     } catch (e) {
         // we delegate to the error-handling middleware

@@ -21,12 +21,23 @@ const get = async (runId) => {
 
     return parseIntFields(res.rows[0]);
 };
-const getAll = async (workflowId) => {
+const getAll = async (workflowId, userId) => {
     let cond = "";
     let params = [];
     if (workflowId !== undefined) {
         cond = `and id_workflow = $1`;
-        params = [workflowId];
+        params.push(workflowId);
+    }
+    if (userId !== undefined) { //used even in workflow execution when no userId is given
+        let paramsNum = (params.length + 1);
+        cond = `and id_workflow in (
+            select id from ${db.TABLES.Workflow} 
+                where id_project in (
+                    select id from ${db.TABLES.Project} 
+                    where id_user = $${paramsNum}
+                )
+        )`;
+        params.push(userId);
     }
 
     let res = await db.query(
@@ -63,9 +74,9 @@ const update = async (run) => {
 };
 
 const parseIntFields = (item) => {
-    if(item === undefined)
+    if (item === undefined)
         return undefined;
-        
+
     item.id = parseInt(item.id);
     item.id_workflow = parseInt(item.id_workflow);
 

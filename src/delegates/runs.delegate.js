@@ -10,11 +10,14 @@ const create = async (run) => {
     return newRun;
 };
 
-const get = async (runId) => {
+const get = async (runId, userId) => {
     runId = parseInt(runId);
     if (typeof runId != "number" || isNaN(runId)) {
         throw errHandler.createBusinessError('Run id is of an invalid type!');
     }
+
+    if(userId !== undefined)
+        await userHasAccess(userId, runId);
 
     let run = await runsDao.get(runId);
 
@@ -56,16 +59,17 @@ const update = async (run, runId) => {
     return run;
 };
 
-const getAll = async (workflowId) => {
+const getAll = async (workflowId, userId) => {
     workflowId = parseInt(workflowId);
     if (typeof workflowId != "number" || isNaN(workflowId)) {
         workflowId = undefined;
     }
 
-    return await runsDao.getAll(workflowId);
+    return await runsDao.getAll(workflowId, userId);
 };
 
-const getResult = async (runId) => {
+const getResult = async (runId, userId) => {
+    await userHasAccess(userId, runId);
     let run = await get(runId);
 
     //get graph's nodes without children
@@ -91,11 +95,18 @@ const check = (run) => {
         throw errHandler.createBusinessError('Run: data is not valid!');
 }
 
+const userHasAccess = async (userId, runId) => {
+    let run = await runsDao.get(runId);
+
+    await workflowsDelegate.userHasAccess(userId, run.id_workflow);
+};
+
 module.exports = {
     create,
     get,
     getAll,
     deleteRun,
     update,
-    getResult
+    getResult,
+    userHasAccess
 };
