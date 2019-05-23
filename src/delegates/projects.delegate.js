@@ -19,7 +19,8 @@ const get = async (projId, userId) => {
     throw errHandler.createBusinessError('Project id is of an invalid type!');
   }
 
-  let proj = await projectsDao.get(projId, userId);
+  await userHasAccess(userId, projId);
+  let proj = await projectsDao.get(projId);
 
   if (!proj)
     throw errHandler.createBusinessNotFoundError('Project id does not exist!');
@@ -36,7 +37,8 @@ const deleteProject = async (projId, userId) => {
     throw errHandler.createBusinessError('Project id is of an invalid type!');
   }
 
-  let proj = await projectsDao.deleteProject(projId, userId);
+  await userHasAccess(userId, projId);
+  let proj = await projectsDao.deleteProject(projId);
 
   if (!proj)
     throw errHandler.createBusinessNotFoundError('Project id does not exist!');
@@ -56,8 +58,9 @@ const update = async (proj, projId, userId) => {
   proj.id = projId;
 
   check(proj.data);
+  await userHasAccess(userId, projId);
 
-  proj = await projectsDao.update(proj, userId);
+  proj = await projectsDao.update(proj);
 
   if (!proj)
     throw errHandler.createBusinessNotFoundError('Project id does not exist!');
@@ -79,10 +82,18 @@ const check = (project) => {
     throw errHandler.createBusinessError('Project: description is not valid!');
 };
 
+const userHasAccess = async (userId, projectId) => {
+  let check = await projectsDao.userHasAccess(userId, projectId);
+
+  if(check === undefined)
+    throw errHandler.createBusinessUnauthorizedError('You are not authorized to access this resource!');
+};
+
 module.exports = {
   update,
   create,
   get,
   getAll,
-  deleteProject
+  deleteProject,
+  userHasAccess
 };

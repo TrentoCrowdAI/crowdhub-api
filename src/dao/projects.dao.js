@@ -12,11 +12,11 @@ const create = async (proj, userId) => {
 };
 
 // get
-const get = async (projId, userId) => {
+const get = async (projId) => {
     let res = await db.query(
         `select * from ${db.TABLES.Project} 
-            where id = $1 and id_user = $2 and deleted_at is NULL`,
-        [projId, userId]
+            where id = $1 and deleted_at is NULL`,
+        [projId]
     );
 
     return parseIntFields(res.rows[0]);
@@ -32,24 +32,34 @@ const getAll = async (userId) => {
 };
 
 // delete
-const deleteProject = async (projId, userId) => {
+const deleteProject = async (projId) => {
     let res = await db.query(
         `update ${db.TABLES.Project} 
             set deleted_at = $1
-            where id = $2 and id_user = $3 returning *`,
-        [new Date(), projId, userId]
+            where id = $2 returning *`,
+        [new Date(), projId]
     );
 
     return parseIntFields(res.rows[0]);
 };
 
 // update
-const update = async (proj, userId) => {
+const update = async (proj) => {
     let res = await db.query(
         `update ${db.TABLES.Project} 
             set updated_at = $1, data = $2
-            where id = $3 and id_user = $4 returning *`,
-        [new Date(), proj.data, proj.id, userId]
+            where id = $3 returning *`,
+        [new Date(), proj.data, proj.id]
+    );
+
+    return parseIntFields(res.rows[0]);
+};
+
+const userHasAccess = async (userId, projectId) => {
+    let res = await db.query(
+        `select * from ${db.TABLES.Project} 
+            where deleted_at is NULL and id_user = $1 and id = $2`,
+        [userId, projectId]
     );
 
     return parseIntFields(res.rows[0]);
@@ -69,5 +79,6 @@ module.exports = {
     get,
     getAll,
     update,
-    deleteProject
+    deleteProject,
+    userHasAccess
 };

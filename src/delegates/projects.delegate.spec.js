@@ -9,6 +9,7 @@ describe('Projects delegate', () => {
     projectsDao.getAll.mockReturnValue(Promise.resolve({}));
     projectsDao.update.mockReturnValue(Promise.resolve({}));
     projectsDao.deleteProject.mockReturnValue(Promise.resolve({}));
+    projectsDao.userHasAccess.mockReturnValue(Promise.resolve({}));
 
     test('Projects should call all CRUD functions', async () => {
         let project = {
