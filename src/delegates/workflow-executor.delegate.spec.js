@@ -28,14 +28,14 @@ describe('Workflow execution tests', () => {
 
         //create the workflow
         workflowBase.workflow.id_project = parseInt(proj.id);
-        let workflow = await workflowsDelegate.create(workflowBase.workflow);
+        let workflow = await workflowsDelegate.create(workflowBase.workflow, userId);
 
         //test the estimation cost functions
-        let cost = await workflowsDelegate.estimateDoBlockCost(workflow.id, blockId);
+        let cost = await workflowsDelegate.estimateDoBlockCost(workflow.id, blockId, userId);
         expect(typeof cost).toBe('number');
 
         //execute the workflow
-        let result = await workflowsDelegate.start(workflow.id);
+        let result = await workflowsDelegate.start(workflow.id, userId);
 
         //test the result
         expect(typeof result).toBe("number");
@@ -97,14 +97,14 @@ describe('Workflow execution tests', () => {
         workflowBase.workflow.id_project = parseInt(proj.id);
         //change platform to toloka
         workflowBase.workflow.data.graph.nodes[1].parameters.platform = 'toloka';
-        let workflow = await workflowsDelegate.create(workflowBase.workflow);
+        let workflow = await workflowsDelegate.create(workflowBase.workflow, userId);
 
         //test the estimation cost functions
-        let cost = await workflowsDelegate.estimateDoBlockCost(workflow.id, blockId);
+        let cost = await workflowsDelegate.estimateDoBlockCost(workflow.id, blockId, userId);
         expect(typeof cost).toBe('number');
 
         //execute the workflow
-        let result = await workflowsDelegate.start(workflow.id);
+        let result = await workflowsDelegate.start(workflow.id, userId);
 
         //test the result
         expect(typeof result).toBe("number");
@@ -156,7 +156,7 @@ describe('Workflow execution tests', () => {
     afterAll(async () => {
         for (let id of delIds) {
             //delete the workflow
-            await workflowsDelegate.deleteWorkflow(id.workflowId);
+            await workflowsDelegate.deleteWorkflow(id.workflowId, userId);
 
             //delete the items
             for (let item of id.itemsId)

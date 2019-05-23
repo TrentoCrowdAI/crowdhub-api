@@ -2,20 +2,25 @@ const workflowsDao = require(__base + 'dao/workflows.dao');
 const errHandler = require(__base + 'utils/errors');
 const workflowExecutor = require('./workflow-executor.delegate');
 const itemsDelegate = require('./items.delegate');
+const projectsDelegate = require('./projects.delegate');
 const tolokaApi = require(__base + 'platform-api/toloka');
 const tolokaRender = require(__base + 'blocks/do-publish/platforms/toloka/render');
 
-const create = async (workflow) => {
+const create = async (workflow, userId) => {
     check(workflow);
+    await projectsDelegate.userHasAccess(userId, workflow.id_project);
     let newWork = await workflowsDao.create(workflow);
     return newWork;
 };
 
-const get = async (workId) => {
+const get = async (workId, userId) => {
     workId = parseInt(workId);
     if (typeof workId != "number" || isNaN(workId)) {
         throw errHandler.createBusinessError('Workflow id is of an invalid type!');
     }
+
+    if (userId !== undefined) //let the method be accessible from other functions inside lib which haven't authentication
+        await userHasAccess(userId, workId);
 
     let workflow = await workflowsDao.get(workId);
 
@@ -25,12 +30,13 @@ const get = async (workId) => {
     return workflow;
 };
 
-const deleteWorkflow = async (workId) => {
+const deleteWorkflow = async (workId, userId) => {
     workId = parseInt(workId);
     if (typeof workId != "number" || isNaN(workId)) {
         throw errHandler.createBusinessError('Workflow id is of an invalid type!');
     }
 
+    await userHasAccess(userId, workId);
     let workflow = await workflowsDao.deleteWorkflow(workId);
 
     if (!workflow)
@@ -39,7 +45,7 @@ const deleteWorkflow = async (workId) => {
     return workflow;
 };
 
-const update = async (workflow, workId) => {
+const update = async (workflow, workId, userId) => {
     workId = parseInt(workId);
     if (typeof workId != "number" || isNaN(workId)) {
         throw errHandler.createBusinessError('Workflow id is of an invalid type!');
@@ -49,6 +55,7 @@ const update = async (workflow, workId) => {
 
     check(workflow);
 
+    await userHasAccess(userId, workId);
     workflow = await workflowsDao.update(workflow);
 
     if (!workflow)
@@ -57,11 +64,12 @@ const update = async (workflow, workId) => {
     return workflow;
 };
 
-const getAll = async (projectId) => {
-    return await workflowsDao.getAll(projectId);
+const getAll = async (projectId, userId) => {
+    return await workflowsDao.getAll(projectId, userId);
 };
 
-const start = async (workId) => {
+const start = async (workId, userId) => {
+    await userHasAccess(userId, workId);
     let workflow = await get(workId);
 
     return await workflowExecutor.start(workflow);
@@ -73,7 +81,8 @@ const getLastBlocks = async (workId) => {
     return workflowExecutor.getLastBlocks(workflow);
 };
 
-const estimateDoBlockCost = async (workId, blockId) => {
+const estimateDoBlockCost = async (workId, blockId, userId) => {
+    await userHasAccess(userId, workId);
     //retrieve the block
     let workflow = await get(workId);
     let block = workflow.data.graph.nodes.find(b => b.id === blockId);
@@ -123,6 +132,12 @@ const check = (workflow) => {
         throw errHandler.createBusinessError('Workflow: name is not valid!');
 }
 
+const userHasAccess = async (userId, workflowId) => {
+    let workflow = await workflowsDao.get(workflowId);
+
+    await projectsDelegate.userHasAccess(userId, workflow.id_project);
+};
+
 module.exports = {
     create,
     get,
@@ -131,5 +146,6 @@ module.exports = {
     update,
     start,
     getLastBlocks,
-    estimateDoBlockCost
+    estimateDoBlockCost,
+    userHasAccess
 };
