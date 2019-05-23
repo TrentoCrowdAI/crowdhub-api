@@ -17,6 +17,10 @@ const blockTypesController = require('./controllers/block-types.controller');
 const workerOfWorkflowsController = require('./controllers/worker-of-workflows.controller');
 const accountBalanceController = require('./controllers/account-balance.controller');
 
+
+
+const authentication = require('./authentication/authentication');
+
 const app = express();
 
 app.use(bodyParser.json());
@@ -28,8 +32,10 @@ app.get('/', (req, res) => {
   res.json({ msg: 'Hello world!' });
 });
 
+//define authentication middleware
+app.use(authentication);
 
-// define routes here
+// define authenticated routes here
 app.use(projectsController);
 app.use(workflowsController);
 app.use(templateDoController);

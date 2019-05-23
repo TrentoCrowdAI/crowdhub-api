@@ -27,6 +27,19 @@ const createBusinessNotFoundError = msg => {
 };
 
 /**
+ * Returns a business Not Found error. The name property
+ * of the error object is set to "businessNotFound".
+ *
+ * @param {String} msg
+ * @returns {Error}
+ */
+const createBusinessUnauthorizedError = msg => {
+  let e = new Error(msg);
+  e.name = 'businessUnauthorized';
+  return e;
+};
+
+/**
  * Creates an error that the service layer returns. It uses the boom library.
  *
  * @param {Error} e An error object. The property name should be set
@@ -39,11 +52,15 @@ const createServiceError = e => {
   else if (e.name == 'businessNotFound') {
     return Boom.notFound(e.message);
   }
+  else if (e.name == 'businessUnauthorized') {
+    return Boom.unauthorized(e.message);
+  }
   return Boom.badImplementation();
 };
 
 module.exports = {
   createBusinessError,
   createBusinessNotFoundError,
+  createBusinessUnauthorizedError,
   createServiceError
 };
