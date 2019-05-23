@@ -15,11 +15,12 @@ jest.setTimeout(1000 * 60 * 15);
 
 describe('Workflow execution tests', () => {
     const blockId = '5e102960-790b-4d13-a58e-49573bd4e560';
+    const userId = 'testUser';
     let delIds = [];
 
     test('Empty lambda block + F8 do block', async () => {
         //create the new project
-        let proj = await projectsDelegate.create(workflowBase.project);
+        let proj = await projectsDelegate.create(workflowBase.project, userId);
 
         //create the items
         let items = { id_project: proj.id, items: workflowBase.items };
@@ -86,7 +87,7 @@ describe('Workflow execution tests', () => {
 
     test('Empty lambda block + Toloka do block', async () => {
         //create the new project
-        let proj = await projectsDelegate.create(workflowBase.project);
+        let proj = await projectsDelegate.create(workflowBase.project, userId);
 
         //create the items
         let items = { id_project: proj.id, items: workflowBase.items };
@@ -162,7 +163,7 @@ describe('Workflow execution tests', () => {
                 await itemsDelegate.deleteItem(item);
 
             //delete project
-            await projectsDelegate.deleteProject(id.projectId);
+            await projectsDelegate.deleteProject(id.projectId, userId);
         }
     });
 });

@@ -6,7 +6,7 @@ const router = express.Router();
 // GET /projects
 router.get('/projects', async (req, res, next) => {
     try {
-        let projs = await projectsDelegate.getAll();
+        let projs = await projectsDelegate.getAll(req.user.id);
         res.json(projs);
     } catch (e) {
         // we delegate to the error-handling middleware
@@ -18,7 +18,7 @@ router.get('/projects', async (req, res, next) => {
 router.get('/projects/:id', async (req, res, next) => {
     try {
         let id = req.params.id;
-        let proj = await projectsDelegate.get(id);
+        let proj = await projectsDelegate.get(id, req.user.id);
 
         res.json(proj);
     } catch (e) {
@@ -31,7 +31,7 @@ router.get('/projects/:id', async (req, res, next) => {
 router.post('/projects', async (req, res, next) => {
     try {
         let proj = req.body;
-        let newProj = await projectsDelegate.create(proj);
+        let newProj = await projectsDelegate.create(proj, req.user.id);
         res.status(201).json(newProj);
     } catch (e) {
         // we delegate to the error-handling middleware
@@ -45,7 +45,7 @@ router.put('/projects/:id', async (req, res, next) => {
         let id = req.params.id;
         let proj = req.body;
 
-        proj = await projectsDelegate.update(proj, id);
+        proj = await projectsDelegate.update(proj, id, req.user.id);
         res.json(proj);
     } catch (e) {
         // we delegate to the error-handling middleware
@@ -58,7 +58,7 @@ router.delete('/projects/:id', async (req, res, next) => {
     try {
         let id = req.params.id;
 
-        let proj = await projectsDelegate.deleteProject(id);
+        let proj = await projectsDelegate.deleteProject(id, req.user.id);
         res.json(proj);
     } catch (e) {
         // we delegate to the error-handling middleware

@@ -11,6 +11,7 @@ CREATE TABLE project (
   created_at timestamp,
   updated_at timestamp,
   deleted_at timestamp,
+  id_user varchar(80) NOT NULL, -- google_id
   data JSONB,
   CONSTRAINT pk_proj PRIMARY KEY (id)
 );
