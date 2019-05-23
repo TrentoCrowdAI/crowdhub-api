@@ -2,6 +2,13 @@ const usersDao = require(__base + 'dao/users.dao');
 const errHandler = require(__base + 'utils/errors');
 
 const create = async (userId, userData) => {
+    if (userId === undefined) {
+        throw errHandler.createBusinessError('User id is not set!');
+    }
+    if (userData === undefined) {
+        throw errHandler.createBusinessError('User data is not set!');
+    }
+
     let newUser = await usersDao.create(userId, userData);
     return newUser;
 };
