@@ -1,5 +1,6 @@
 const cacheDao = require(__base + 'dao/cache.dao');
 const errHandler = require(__base + 'utils/errors');
+const runsDelegate = require('./runs.delegate');
 
 const create = async (cache) => {
     check(cache);
@@ -7,11 +8,14 @@ const create = async (cache) => {
     return newCache;
 };
 
-const get = async (cacheId) => {
+const get = async (cacheId, userId) => {
     cacheId = parseInt(cacheId);
     if (typeof cacheId != "number" || isNaN(cacheId)) {
         throw errHandler.createBusinessError('Cache id is of an invalid type!');
     }
+
+    if (userId !== undefined)
+        await userHasAccess(userId, cacheId);
 
     let cache = await cacheDao.get(cacheId);
 
@@ -21,11 +25,13 @@ const get = async (cacheId) => {
     return cache;
 };
 
-const deleteCache = async (cacheId) => {
+const deleteCache = async (cacheId, userId) => {
     cacheId = parseInt(cacheId);
     if (typeof cacheId != "number" || isNaN(cacheId)) {
         throw errHandler.createBusinessError('Cache id is of an invalid type!');
     }
+
+    await userHasAccess(userId, cacheId);
 
     let cache = await cacheDao.deleteCache(cacheId);
 
@@ -53,13 +59,13 @@ const update = async (cache, cacheId) => {
     return cache;
 };
 
-const getAll = async (runId) => {
+const getAll = async (runId, userId) => {
     runId = parseInt(runId);
     if (typeof runId != "number" || isNaN(runId)) {
         runId = undefined;
     }
 
-    return await cacheDao.getAll(runId);
+    return await cacheDao.getAll(runId, userId);
 };
 
 const check = (cache) => {
@@ -69,10 +75,17 @@ const check = (cache) => {
         throw errHandler.createBusinessError('Cache: data is not valid!');
 }
 
+const userHasAccess = async (userId, cacheId) => {
+    let cache = await cacheDao.get(cacheId);
+
+    await runsDelegate.userHasAccess(userId, cache.id_run);
+};
+
 module.exports = {
     create,
     get,
     getAll,
     deleteCache,
-    update
+    update,
+    userHasAccess
 };
