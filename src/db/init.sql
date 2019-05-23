@@ -136,3 +136,20 @@ CREATE TABLE workers_of_workflow (
   CONSTRAINT pk_workers_of_worflow PRIMARY KEY (id),
   CONSTRAINT unique_workers_of_worflow UNIQUE(id_workflow, id_context, id_worker)
 );
+
+-- data: {
+--  email: <string>,
+--  fullName: <string>,
+--  picture: <string>, //url
+--  name: <string>,
+--  surname: <string>,
+--  locale: <string> //like 'it'
+-- }
+CREATE TABLE users (
+  id varchar(80) NOT NULL, -- google_id
+  created_at timestamp,
+  updated_at timestamp,
+  deleted_at timestamp,
+  data JSONB,
+  CONSTRAINT pk_user PRIMARY KEY (id)
+);
