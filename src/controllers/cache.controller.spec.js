@@ -1,14 +1,5 @@
-jest.mock(__base + 'authentication/authentication');
-const authentication = require(__base + 'authentication/authentication');
-authentication.mockImplementation((req, res, next) => {
-  req.user = {
-    id: 'testId',
-    data: {
-      name: 'Mario'
-    }
-  };
-  next();
-});
+require(__base + 'delegates/user-access.delegate.mocked');
+
 const request = require('supertest');
 
 const app = require(__base + 'app');

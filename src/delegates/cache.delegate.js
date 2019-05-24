@@ -1,6 +1,7 @@
 const cacheDao = require(__base + 'dao/cache.dao');
 const errHandler = require(__base + 'utils/errors');
-const runsDelegate = require('./runs.delegate');
+
+const { userHasAccessCache } = require('./user-access.delegate');
 
 const create = async (cache) => {
     check(cache);
@@ -15,7 +16,7 @@ const get = async (cacheId, userId) => {
     }
 
     if (userId !== undefined)
-        await userHasAccess(userId, cacheId);
+        await userHasAccessCache(userId, cacheId);
 
     let cache = await cacheDao.get(cacheId);
 
@@ -31,7 +32,7 @@ const deleteCache = async (cacheId, userId) => {
         throw errHandler.createBusinessError('Cache id is of an invalid type!');
     }
 
-    await userHasAccess(userId, cacheId);
+    await userHasAccessCache(userId, cacheId);
 
     let cache = await cacheDao.deleteCache(cacheId);
 
@@ -75,17 +76,10 @@ const check = (cache) => {
         throw errHandler.createBusinessError('Cache: data is not valid!');
 }
 
-const userHasAccess = async (userId, cacheId) => {
-    let cache = await cacheDao.get(cacheId);
-
-    await runsDelegate.userHasAccess(userId, cache.id_run);
-};
-
 module.exports = {
     create,
     get,
     getAll,
     deleteCache,
-    update,
-    userHasAccess
+    update
 };

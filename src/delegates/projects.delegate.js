@@ -1,5 +1,6 @@
 const projectsDao = require(__base + 'dao/projects.dao');
 const errHandler = require(__base + 'utils/errors');
+const { userHasAccessProject } = require('./user-access.delegate');
 
 const create = async (project, userId) => {
   if (userId === undefined) {
@@ -19,7 +20,7 @@ const get = async (projId, userId) => {
     throw errHandler.createBusinessError('Project id is of an invalid type!');
   }
 
-  await userHasAccess(userId, projId);
+  await userHasAccessProject(userId, projId);
   let proj = await projectsDao.get(projId);
 
   if (!proj)
@@ -37,7 +38,7 @@ const deleteProject = async (projId, userId) => {
     throw errHandler.createBusinessError('Project id is of an invalid type!');
   }
 
-  await userHasAccess(userId, projId);
+  await userHasAccessProject(userId, projId);
   let proj = await projectsDao.deleteProject(projId);
 
   if (!proj)
@@ -58,7 +59,7 @@ const update = async (proj, projId, userId) => {
   proj.id = projId;
 
   check(proj.data);
-  await userHasAccess(userId, projId);
+  await userHasAccessProject(userId, projId);
 
   proj = await projectsDao.update(proj);
 
@@ -82,18 +83,11 @@ const check = (project) => {
     throw errHandler.createBusinessError('Project: description is not valid!');
 };
 
-const userHasAccess = async (userId, projectId) => {
-  let check = await projectsDao.userHasAccess(userId, projectId);
-
-  if(check === undefined)
-    throw errHandler.createBusinessUnauthorizedError('You are not authorized to access this resource!');
-};
 
 module.exports = {
   update,
   create,
   get,
   getAll,
-  deleteProject,
-  userHasAccess
+  deleteProject
 };

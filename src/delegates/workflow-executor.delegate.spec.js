@@ -24,7 +24,7 @@ describe('Workflow execution tests', () => {
 
         //create the items
         let items = { id_project: proj.id, items: workflowBase.items };
-        items = await itemsDelegate.createItems(items);
+        items = await itemsDelegate.createItems(items, userId);
 
         //create the workflow
         workflowBase.workflow.id_project = parseInt(proj.id);
@@ -53,7 +53,7 @@ describe('Workflow execution tests', () => {
         }
 
         //block do-publish is finished
-        let doCache = await cacheDelegate.get(cacheId);
+        let doCache = await cacheDelegate.get(cacheId, userId);
 
         //change the state of the rows to finished
         await f8Helper.finalizeAllRows(doCache.data.result.id);
@@ -72,7 +72,7 @@ describe('Workflow execution tests', () => {
         }
 
         //check the result
-        let doWaitCache = await cacheDelegate.get(cacheId);
+        let doWaitCache = await cacheDelegate.get(cacheId, userId);
         expect(doWaitCache).toBeDefined();
 
         let runResult = await runsDelegate.getResult(result, userId);
@@ -91,7 +91,7 @@ describe('Workflow execution tests', () => {
 
         //create the items
         let items = { id_project: proj.id, items: workflowBase.items };
-        items = await itemsDelegate.createItems(items);
+        items = await itemsDelegate.createItems(items, userId);
 
         //create the workflow
         workflowBase.workflow.id_project = parseInt(proj.id);
@@ -122,7 +122,7 @@ describe('Workflow execution tests', () => {
         }
 
         //block do-publish is finished
-        let doCache = await cacheDelegate.get(cacheId);
+        let doCache = await cacheDelegate.get(cacheId, userId);
 
         //change the state of the rows to finished
         await tolokaHelper.closePool(doCache.data.result.taskPool.id, true);
@@ -140,7 +140,7 @@ describe('Workflow execution tests', () => {
         }
 
         //check the result
-        let doWaitCache = await cacheDelegate.get(cacheId);
+        let doWaitCache = await cacheDelegate.get(cacheId, userId);
         expect(doWaitCache).toBeDefined();
 
         let runResult = await runsDelegate.getResult(result, userId);

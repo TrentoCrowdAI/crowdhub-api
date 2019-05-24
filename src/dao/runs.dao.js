@@ -30,7 +30,7 @@ const getAll = async (workflowId, userId) => {
     }
     if (userId !== undefined) { //used even in workflow execution when no userId is given
         let paramsNum = (params.length + 1);
-        cond = `and id_workflow in (
+        cond += `and id_workflow in (
             select id from ${db.TABLES.Workflow} 
                 where id_project in (
                     select id from ${db.TABLES.Project} 

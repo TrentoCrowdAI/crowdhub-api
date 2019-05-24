@@ -1,4 +1,5 @@
 jest.mock(__base + 'dao/items.dao');
+require(__base + 'delegates/user-access.delegate.mocked');
 
 const itemsDao = require(__base + 'dao/items.dao');
 const itemsDelegate = require('./items.delegate');
@@ -24,7 +25,7 @@ describe('Items delegate', () => {
 
         await itemsDelegate.update(newitem, newitem.id);
         expect(itemsDao.update).toBeCalled();
-        
+
         await itemsDelegate.deleteItem(newitem.id);
         expect(itemsDao.deleteItem).toBeCalled();
     });

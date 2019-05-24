@@ -1,8 +1,10 @@
 const runsDao = require(__base + 'dao/runs.dao');
 const errHandler = require(__base + 'utils/errors');
 
-let workflowsDelegate = require('./workflows.delegate');
 const cacheDelegate = require('./cache.delegate');
+const workflowsDelegate = require('./workflows.delegate');
+
+const { userHasAccessRun } = require('./user-access.delegate');
 
 const create = async (run) => {
     check(run);
@@ -16,8 +18,8 @@ const get = async (runId, userId) => {
         throw errHandler.createBusinessError('Run id is of an invalid type!');
     }
 
-    if(userId !== undefined)
-        await userHasAccess(userId, runId);
+    if (userId !== undefined)
+        await userHasAccessRun(userId, runId);
 
     let run = await runsDao.get(runId);
 
@@ -69,11 +71,10 @@ const getAll = async (workflowId, userId) => {
 };
 
 const getResult = async (runId, userId) => {
-    await userHasAccess(userId, runId);
+    await userHasAccessRun(userId, runId);
     let run = await get(runId);
 
     //get graph's nodes without children
-    workflowsDelegate = require('./workflows.delegate'); //don't know why but node rewrites the object to an empty one
     let lastBlocks = await workflowsDelegate.getLastBlocks(run.id_workflow);
 
     //get results of them
@@ -95,18 +96,11 @@ const check = (run) => {
         throw errHandler.createBusinessError('Run: data is not valid!');
 }
 
-const userHasAccess = async (userId, runId) => {
-    let run = await runsDao.get(runId);
-
-    await workflowsDelegate.userHasAccess(userId, run.id_workflow);
-};
-
 module.exports = {
     create,
     get,
     getAll,
     deleteRun,
     update,
-    getResult,
-    userHasAccess
+    getResult
 };

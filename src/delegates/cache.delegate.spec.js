@@ -1,10 +1,8 @@
 jest.mock(__base + 'dao/cache.dao');
-jest.mock('./runs.delegate');
+require(__base + 'delegates/user-access.delegate.mocked');
 
 const cacheDao = require(__base + 'dao/cache.dao');
 const cacheDelegate = require('./cache.delegate');
-
-const runsDelegate = require('./runs.delegate');
 
 describe('Cache delegate', () => {
     cacheDao.create.mockImplementation((cache) => Promise.resolve({ id: 1, ...cache }));
@@ -12,8 +10,6 @@ describe('Cache delegate', () => {
     cacheDao.getAll.mockReturnValue(Promise.resolve({}));
     cacheDao.update.mockReturnValue(Promise.resolve({}));
     cacheDao.deleteCache.mockReturnValue(Promise.resolve({}));
-
-    runsDelegate.userHasAccess.mockReturnValue(Promise.resolve({}));
 
     test('Cache should call all CRUD functions', async () => {
         let cache = {

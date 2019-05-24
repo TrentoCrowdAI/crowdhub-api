@@ -1,16 +1,4 @@
-jest.mock(__base + 'authentication/authentication');
-const authentication = require(__base + 'authentication/authentication');
-authentication.mockImplementation((req, res, next) => {
-  req.user = {
-    id: 'testId',
-    data: {
-      name: 'Mario'
-    }
-  };
-  next();
-});
-jest.mock(__base + 'delegates/projects.delegate');
-const projectsDelegate = require(__base + 'delegates/projects.delegate');
+require(__base + 'delegates/user-access.delegate.mocked');
 
 const request = require('supertest');
 
@@ -20,8 +8,6 @@ const app = require(__base + 'app');
 jest.setTimeout(20000);
 
 describe('Workflows controller', async () => {
-  projectsDelegate.userHasAccess.mockReturnValue(Promise.resolve({}));
-
   test('GET /workflows/aaa should return 400', async () => {
     let response = await request(app).get('/workflows/aaa');
     expect(response.status).toBe(400);

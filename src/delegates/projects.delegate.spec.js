@@ -1,4 +1,5 @@
 jest.mock(__base + 'dao/projects.dao');
+require(__base + 'delegates/user-access.delegate.mocked');
 
 const projectsDao = require(__base + 'dao/projects.dao');
 const projectsDelegate = require('./projects.delegate');
@@ -9,7 +10,6 @@ describe('Projects delegate', () => {
     projectsDao.getAll.mockReturnValue(Promise.resolve({}));
     projectsDao.update.mockReturnValue(Promise.resolve({}));
     projectsDao.deleteProject.mockReturnValue(Promise.resolve({}));
-    projectsDao.userHasAccess.mockReturnValue(Promise.resolve({}));
 
     test('Projects should call all CRUD functions', async () => {
         let project = {
