@@ -5,7 +5,8 @@ info:
   version: "1"
 servers:
   - url: https://crowdai-servant-api.herokuapp.com
-
+security:
+  - bearerAuth: []
 
 paths:
   /projects:
@@ -631,6 +632,10 @@ paths:
   
 
 components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
   schemas:
     Project:
       type: object
