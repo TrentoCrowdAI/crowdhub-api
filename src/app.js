@@ -32,7 +32,10 @@ app.get('/', (req, res) => {
   res.json({ msg: 'Hello world!' });
 });
 
-//define authentication middleware
+// define routes without authentication
+app.use(workerOfWorkflowsController);
+
+// define authentication middleware
 app.use(authentication);
 
 // define authenticated routes here
@@ -43,7 +46,6 @@ app.use(runsController);
 app.use(cacheController);
 app.use(itemsController);
 app.use(blockTypesController);
-app.use(workerOfWorkflowsController);
 app.use(accountBalanceController);
 
 
