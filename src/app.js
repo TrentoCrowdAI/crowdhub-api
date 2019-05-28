@@ -18,6 +18,7 @@ const workerOfWorkflowsController = require('./controllers/worker-of-workflows.c
 const accountBalanceController = require('./controllers/account-balance.controller');
 const projectCollaborationsController = require('./controllers/project-collaborations.controller');
 const usersController = require('./controllers/users.controller');
+const publicWorkflowsController = require('./controllers/public-workflows.controller');
 
 
 
@@ -36,6 +37,7 @@ app.get('/', (req, res) => {
 
 // define routes without authentication
 app.use(workerOfWorkflowsController);
+app.use(publicWorkflowsController);
 
 // define authentication middleware
 app.use(authentication);

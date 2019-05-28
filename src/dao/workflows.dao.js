@@ -41,6 +41,27 @@ const getAll = async (projectId, userId) => {
     return res.rows.map(x => parseIntFields(x));
 };
 
+//get public
+const getPublic = async (workId) => {
+    let res = await db.query(
+        `select * from ${db.TABLES.Workflow} 
+            where id = $1 and deleted_at is NULL
+            and data->'shared' = 'true'`,
+        [workId]
+    );
+
+    return parseIntFields(res.rows[0]);
+};
+const getAllPublic = async () => {
+    let res = await db.query(
+        `select * from ${db.TABLES.Workflow} 
+            where deleted_at is NULL 
+            and data->'shared' = 'true'`,
+    );
+
+    return res.rows.map(x => parseIntFields(x));
+};
+
 // delete
 const deleteWorkflow = async (workId) => {
     let res = await db.query(
@@ -80,5 +101,7 @@ module.exports = {
     get,
     getAll,
     update,
-    deleteWorkflow
+    deleteWorkflow,
+    getPublic,
+    getAllPublic
 };

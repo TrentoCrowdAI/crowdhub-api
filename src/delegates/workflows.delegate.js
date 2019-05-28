@@ -31,6 +31,20 @@ const get = async (workId, userId) => {
     return workflow;
 };
 
+const getPublic = async (workId) => {
+    workId = parseInt(workId);
+    if (typeof workId != "number" || isNaN(workId)) {
+        throw errHandler.createBusinessError('Workflow id is of an invalid type!');
+    }
+
+    let workflow = await workflowsDao.getPublic(workId);
+
+    if (!workflow)
+        throw errHandler.createBusinessNotFoundError('Workflow id does not exist!');
+
+    return workflow;
+};
+
 const deleteWorkflow = async (workId, userId) => {
     workId = parseInt(workId);
     if (typeof workId != "number" || isNaN(workId)) {
@@ -67,6 +81,10 @@ const update = async (workflow, workId, userId) => {
 
 const getAll = async (projectId, userId) => {
     return await workflowsDao.getAll(projectId, userId);
+};
+
+const getAllPublic = async () => {
+    return await workflowsDao.getAllPublic();
 };
 
 const start = async (workId, userId) => {
@@ -142,5 +160,7 @@ module.exports = {
     update,
     start,
     getLastBlocks,
-    estimateDoBlockCost
+    estimateDoBlockCost,
+    getAllPublic,
+    getPublic
 };
