@@ -16,6 +16,7 @@ const itemsController = require('./controllers/items.controller');
 const blockTypesController = require('./controllers/block-types.controller');
 const workerOfWorkflowsController = require('./controllers/worker-of-workflows.controller');
 const accountBalanceController = require('./controllers/account-balance.controller');
+const projectCollaborationsController = require('./controllers/project-collaborations.controller');
 
 
 
@@ -47,6 +48,7 @@ app.use(cacheController);
 app.use(itemsController);
 app.use(blockTypesController);
 app.use(accountBalanceController);
+app.use(projectCollaborationsController);
 
 
 app.use((e, req, res, next) => {

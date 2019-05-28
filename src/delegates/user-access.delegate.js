@@ -3,6 +3,7 @@ const itemsDao = require(__base + 'dao/items.dao');
 const workflowsDao = require(__base + 'dao/workflows.dao');
 const runsDao = require(__base + 'dao/runs.dao');
 const cacheDao = require(__base + 'dao/cache.dao');
+const collaborationsDao = require(__base + 'dao/project-collaborations.dao');
 
 const userHasAccessProject = async (userId, projectId) => {
     let check = await projectsDao.userHasAccess(userId, projectId);
@@ -35,10 +36,17 @@ const userHasAccessCache = async (userId, cacheId) => {
     await userHasAccessRun(userId, cache.id_run);
 };
 
+const userHasAccessCollaboration = async (userId, collabId) => {
+    let collab = await collaborationsDao.get(collabId);
+
+    await userHasAccessProject(userId, collab.id_project);
+};
+
 module.exports = {
     userHasAccessProject,
     userHasAccessItem,
     userHasAccessWorkflow,
     userHasAccessRun,
-    userHasAccessCache
+    userHasAccessCache,
+    userHasAccessCollaboration
 };

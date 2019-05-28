@@ -37,7 +37,8 @@ const TABLES = Object.freeze({
   TemplateDo: 'template_do',
   BlockType: 'block_type',
   WorkersOfWorkflow: 'workers_of_workflow',
-  User: 'users'
+  User: 'users',
+  ProjectCollaborations: 'project_collaborations'
 });
 
 /**

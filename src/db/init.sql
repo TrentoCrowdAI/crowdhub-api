@@ -154,3 +154,15 @@ CREATE TABLE users (
   data JSONB,
   CONSTRAINT pk_user PRIMARY KEY (id)
 );
+
+-- table used for adding collaborators to a project
+CREATE TABLE project_collaborations (
+  id bigserial NOT NULL,
+  created_at timestamp,
+  updated_at timestamp,
+  deleted_at timestamp,
+  id_user varchar(80) NOT NULL,
+  id_project bigint NOT NULL,
+  CONSTRAINT pk_project_collaborations PRIMARY KEY (id),
+  CONSTRAINT unique_project_collaborations UNIQUE (id_user, id_project)
+);
