@@ -2,20 +2,26 @@ const google = require('./google.authentication');
 const usersDelegate = require(__base + 'delegates/users.delegate');
 
 const authenticate = async (req, res, next) => {
-    let token;
     try {
-        token = req.headers.authorization.substring(7); //remove 'Bearer ' before the token  
+        let token;
+        try {
+            token = req.headers.authorization.substring(7); //remove 'Bearer ' before the token  
+        }
+        catch (e) {
+            throw errHandler.createBusinessUnauthorizedError(e.message);
+        }
+
+        let user = await google(token);
+
+        let userId = user.id;
+        delete user.id;
+
+        req.user = await registerOnlyNewUsers(userId, user);
     }
     catch (e) {
-        throw errHandler.createBusinessUnauthorizedError(e.message);
+        // we delegate to the error-handling middleware
+        next(e);
     }
-
-    let user = await google(token);
-
-    let userId = user.id;
-    delete user.id;
-
-    req.user = await registerOnlyNewUsers(userId, user);
     next();
 };
 
