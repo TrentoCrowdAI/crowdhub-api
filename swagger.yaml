@@ -749,6 +749,43 @@ paths:
         404:
           description: Not Found
 
+  /public-workflows:
+    get:
+      tags:
+      - "Public-workflows"
+      security: []
+      description: Return only the public workflows
+      summary: Get public workflows
+      responses:
+        200:
+          description: The workflows
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Workflow'
+
+  /public-workflows/{workID}:
+    parameters:
+      - in: path
+        name: workID
+        required: true
+        schema:
+          type: integer
+    get:
+      tags:
+      - "Public-workflows"
+      security: []
+      description: Returns a public workflow by ID
+      summary: Get public workflow by ID
+      responses:
+        200:
+          description: The requested workflow.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Workflow'
+        404:
+          description: Not Found
 
 components:
   securitySchemes:
