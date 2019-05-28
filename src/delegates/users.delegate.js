@@ -58,8 +58,13 @@ const update = async (user) => {
     return user;
 };
 
-const getAll = async () => {
-    return await usersDao.getAll();
+const getAll = async (email) => {
+    if (email === undefined || email.length < 4) {
+        return await usersDao.getAll();
+    }
+    else {
+        return await usersDao.searchUsers(email);
+    }
 };
 
 module.exports = {

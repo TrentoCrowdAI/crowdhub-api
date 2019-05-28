@@ -54,6 +54,16 @@ const update = async (user) => {
     return parseIntFields(res.rows[0]);
 };
 
+const searchUsers = async (email) => {
+    let res = await db.query(
+        `select * from ${db.TABLES.User} 
+            where deleted_at is NULL and
+            cast(data->'email' AS text) like '"%${email}%"'`
+    );
+
+    return res.rows.map(x => parseIntFields(x));
+};
+
 const parseIntFields = (item) => {
     return item;
 };
@@ -63,5 +73,6 @@ module.exports = {
     get,
     getAll,
     update,
-    deleteUser
+    deleteUser,
+    searchUsers
 };
