@@ -14,4 +14,9 @@ describe('Users controller', async () => {
         expect(response.body).toBeInstanceOf(Array);
         console.log(response.body);
     });
+
+    test('GET /users/id should return 200 if the user exists', async () => {
+        let response = await request(app).get('/users/104634519869758789343');
+        expect(response.status).toBe(200);
+    })
 });

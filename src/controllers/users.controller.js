@@ -16,7 +16,7 @@ router.get('/users', async (req, res, next) => {
 
 router.get('/users/:id', async (req, res, next) => {
     try {
-        let id = req.param.id;
+        let id = req.params.id;
         let user = await usersDelegate.get(id);
         res.json(user);
     } catch (e) {
