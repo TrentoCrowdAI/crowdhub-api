@@ -1,4 +1,5 @@
 jest.mock(__base + 'dao/cache.dao');
+require(__base + 'delegates/user-access.delegate.mocked');
 
 const cacheDao = require(__base + 'dao/cache.dao');
 const cacheDelegate = require('./cache.delegate');

@@ -21,17 +21,26 @@ const get = async (cacheId) => {
 
     return parseIntFields(res.rows[0]);
 };
-const getAll = async (runId) => {
+const getAll = async (runId, userId) => {
     let cond = "";
-    let params = [];
+    let params = [userId];
     if (runId !== undefined) {
-        cond = `and id_run = $1`;
-        params = [runId];
+        cond = `and id_run = $2`;
+        params.push(runId);
     }
 
     let res = await db.query(
         `select * from ${db.TABLES.Cache} 
-            where deleted_at is NULL ${cond}`,
+            where deleted_at is NULL ${cond}
+            and id_run in (
+                select id from run where id_workflow in (
+                    select id from ${db.TABLES.Workflow} 
+                        where id_project in (
+                            select id from ${db.TABLES.Project} 
+                            where id_user = $1
+                        )
+                )
+            )`,
         params
     );
 
@@ -82,9 +91,9 @@ const getCacheFromPoolIdToloka = async (pool_id) => {
 };
 
 const parseIntFields = (item) => {
-    if(item === undefined)
+    if (item === undefined)
         return undefined;
-        
+
     item.id = parseInt(item.id);
     item.id_run = parseInt(item.id_run);
 

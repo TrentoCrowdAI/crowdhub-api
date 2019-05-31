@@ -21,18 +21,26 @@ const get = async (itemId) => {
 
     return parseIntFields(res.rows[0]);
 };
-const getAll = async (projectId) => {
+const getAll = async (projectId, userId) => {
     let cond = "";
     let params = [];
     if (projectId !== undefined) {
         cond = `and id_project = $1`;
-        params = [projectId];
+        params.push(projectId);
+    }
+    if (userId !== undefined) {
+        cond += `and id_project in (
+            select id from ${db.TABLES.Project}
+                where id_user = $${(params.length + 1)}
+        )`;
+        params.push(userId);
     }
 
     let res = await db.query(
         `select * from ${db.TABLES.Item} 
-            where deleted_at is NULL ${cond}`,
-            params
+            where deleted_at is NULL ${cond}
+            `,
+        params
     );
 
     return res.rows.map(x => parseIntFields(x));
@@ -63,9 +71,9 @@ const update = async (item) => {
 };
 
 const parseIntFields = (item) => {
-    if(item === undefined)
+    if (item === undefined)
         return undefined;
-        
+
     item.id = parseInt(item.id);
     item.id_project = parseInt(item.id_project);
 

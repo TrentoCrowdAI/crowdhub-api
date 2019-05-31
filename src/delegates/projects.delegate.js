@@ -1,18 +1,26 @@
 const projectsDao = require(__base + 'dao/projects.dao');
 const errHandler = require(__base + 'utils/errors');
+const { userHasAccessProject } = require('./user-access.delegate');
 
-const create = async (project) => {
+const create = async (project, userId) => {
+  if (userId === undefined) {
+    throw errHandler.createBusinessError('User id is not defined!');
+  }
   check(project);
-  let newProj = await projectsDao.create(project);
+  let newProj = await projectsDao.create(project, userId);
   return newProj;
 };
 
-const get = async (projId) => {
+const get = async (projId, userId) => {
+  if (userId === undefined) {
+    throw errHandler.createBusinessError('User id is not defined!');
+  }
   projId = parseInt(projId);
   if (typeof projId != "number" || isNaN(projId)) {
     throw errHandler.createBusinessError('Project id is of an invalid type!');
   }
 
+  await userHasAccessProject(userId, projId);
   let proj = await projectsDao.get(projId);
 
   if (!proj)
@@ -21,12 +29,16 @@ const get = async (projId) => {
   return proj;
 };
 
-const deleteProject = async (projId) => {
+const deleteProject = async (projId, userId) => {
+  if (userId === undefined) {
+    throw errHandler.createBusinessError('User id is not defined!');
+  }
   projId = parseInt(projId);
   if (typeof projId != "number" || isNaN(projId)) {
     throw errHandler.createBusinessError('Project id is of an invalid type!');
   }
 
+  await userHasAccessProject(userId, projId);
   let proj = await projectsDao.deleteProject(projId);
 
   if (!proj)
@@ -35,7 +47,10 @@ const deleteProject = async (projId) => {
   return proj;
 };
 
-const update = async (proj, projId) => {
+const update = async (proj, projId, userId) => {
+  if (userId === undefined) {
+    throw errHandler.createBusinessError('User id is not defined!');
+  }
   projId = parseInt(projId);
   if (typeof projId != "number" || isNaN(projId)) {
     throw errHandler.createBusinessError('Project id is of an invalid type!');
@@ -44,6 +59,7 @@ const update = async (proj, projId) => {
   proj.id = projId;
 
   check(proj.data);
+  await userHasAccessProject(userId, projId);
 
   proj = await projectsDao.update(proj);
 
@@ -53,8 +69,11 @@ const update = async (proj, projId) => {
   return proj;
 };
 
-const getAll = async () => {
-  return await projectsDao.getAll();
+const getAll = async (userId) => {
+  if (userId === undefined) {
+    throw errHandler.createBusinessError('User id is not defined!');
+  }
+  return await projectsDao.getAll(userId);
 };
 
 const check = (project) => {
@@ -63,6 +82,7 @@ const check = (project) => {
   if (typeof project.description !== "string")
     throw errHandler.createBusinessError('Project: description is not valid!');
 };
+
 
 module.exports = {
   update,

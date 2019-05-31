@@ -4,18 +4,22 @@ const neatCsv = require('neat-csv');
 const itemsDao = require(__base + 'dao/items.dao');
 const errHandler = require(__base + 'utils/errors');
 
+const { userHasAccessProject, userHasAccessItem } = require('./user-access.delegate');
+
 const create = async (item, idProj) => {
     check(item);
     let newItem = await itemsDao.create(item, idProj);
     return newItem;
 };
 
-const createItems = async (items) => {
-    if(items.items == undefined)
+const createItems = async (items, userId) => {
+    if (items.items == undefined)
         items = await parseCsvItems(items);
 
+    await userHasAccessProject(userId, items.id_project);
+
     let promises = [];
-    for(let i of items.items)
+    for (let i of items.items)
         promises.push(create(i, items.id_project));
 
     let newItems = await Promise.all(promises);
@@ -33,11 +37,14 @@ const parseCsvItems = async (items) => {
     return parsedItems;
 };
 
-const get = async (itemId) => {
+const get = async (itemId, userId) => {
     itemId = parseInt(itemId);
     if (typeof itemId != "number" || isNaN(itemId)) {
         throw errHandler.createBusinessError('Item id is of an invalid type!');
     }
+
+    if (userId !== undefined)
+        await userHasAccessItem(userId, itemId);
 
     let item = await itemsDao.get(itemId);
 
@@ -47,11 +54,13 @@ const get = async (itemId) => {
     return item;
 };
 
-const deleteItem = async (itemId) => {
+const deleteItem = async (itemId, userId) => {
     itemId = parseInt(itemId);
     if (typeof itemId != "number" || isNaN(itemId)) {
         throw errHandler.createBusinessError('Item id is of an invalid type!');
     }
+
+    await userHasAccessItem(userId, itemId);
 
     let item = await itemsDao.deleteItem(itemId);
 
@@ -61,7 +70,7 @@ const deleteItem = async (itemId) => {
     return item;
 };
 
-const update = async (item, itemId) => {
+const update = async (item, itemId, userId) => {
     itemId = parseInt(itemId);
     if (typeof itemId != "number" || isNaN(itemId)) {
         throw errHandler.createBusinessError('Item id is of an invalid type!');
@@ -69,6 +78,7 @@ const update = async (item, itemId) => {
 
     item.id = itemId;
 
+    await userHasAccessItem(userId, itemId);
     check(item.data);
 
     item = await itemsDao.update(item);
@@ -79,8 +89,8 @@ const update = async (item, itemId) => {
     return item;
 };
 
-const getAll = async (projectId) => {
-    return await itemsDao.getAll(projectId);
+const getAll = async (projectId, userId) => {
+    return await itemsDao.getAll(projectId, userId);
 };
 
 const check = (item) => {

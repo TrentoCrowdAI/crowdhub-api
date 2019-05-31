@@ -1,7 +1,9 @@
 jest.mock(__base + 'dao/workflows.dao');
+require(__base + 'delegates/user-access.delegate.mocked');
 
 const workflowsDao = require(__base + 'dao/workflows.dao');
 const workflowsDelegate = require('./workflows.delegate');
+
 
 describe('Workflows delegate', () => {
     workflowsDao.create.mockImplementation((cache) => Promise.resolve({ id: 1, ...cache }));

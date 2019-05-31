@@ -6,8 +6,8 @@ const exampleTextHighlighting = require(example + 'job-example-text-highlighting
 const exampleImageClassification = require(example + 'job-example-image-classification.json');
 const exampleImageHighlighting = require(example + 'job-example-image-highlighting.json');
 
-//set jest timeout to 20 seconds
-jest.setTimeout(20000);
+//set jest timeout to 40 seconds
+jest.setTimeout(40000);
 
 describe('F8 tests', async () => {
     let ids = [];

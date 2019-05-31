@@ -22,5 +22,8 @@ module.exports = {
     database: process.env.PGDATABASE,
     // heroku postgres adds automatically the following variable.
     url: process.env.DATABASE_URL
+  },
+  googleOauth: {
+    clientId: process.env.GOOGLE_CLIENT_ID
   }
 };

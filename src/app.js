@@ -16,6 +16,13 @@ const itemsController = require('./controllers/items.controller');
 const blockTypesController = require('./controllers/block-types.controller');
 const workerOfWorkflowsController = require('./controllers/worker-of-workflows.controller');
 const accountBalanceController = require('./controllers/account-balance.controller');
+const projectCollaborationsController = require('./controllers/project-collaborations.controller');
+const usersController = require('./controllers/users.controller');
+const publicWorkflowsController = require('./controllers/public-workflows.controller');
+
+
+
+const authentication = require('./authentication/authentication');
 
 const app = express();
 
@@ -28,8 +35,14 @@ app.get('/', (req, res) => {
   res.json({ msg: 'Hello world!' });
 });
 
+// define routes without authentication
+app.use(workerOfWorkflowsController);
+app.use(publicWorkflowsController);
 
-// define routes here
+// define authentication middleware
+app.use(authentication);
+
+// define authenticated routes here
 app.use(projectsController);
 app.use(workflowsController);
 app.use(templateDoController);
@@ -37,8 +50,9 @@ app.use(runsController);
 app.use(cacheController);
 app.use(itemsController);
 app.use(blockTypesController);
-app.use(workerOfWorkflowsController);
 app.use(accountBalanceController);
+app.use(projectCollaborationsController);
+app.use(usersController);
 
 
 app.use((e, req, res, next) => {

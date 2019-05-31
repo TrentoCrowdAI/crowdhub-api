@@ -1,3 +1,15 @@
+jest.mock(__base + 'authentication/authentication');
+const authentication = require(__base + 'authentication/authentication');
+authentication.mockImplementation((req, res, next) => { 
+  req.user = {
+    id: 'testId',
+    data: {
+      name: 'Mario'
+    }
+  };
+  next(); 
+});
+
 const request = require('supertest');
 
 const app = require(__base + 'app');
@@ -31,7 +43,7 @@ test('Right project insert, get, update, delete', async () => {
   response = await request(app).get('/projects/' + projRes.id);
   expect(response.status).toBe(200);
   expect(response.body).toBeDefined();
-  
+
   //PUT /projects/id should return 200
   response = await request(app).put('/projects/' + projRes.id).send(projRes);
   expect(response.status).toBe(200);

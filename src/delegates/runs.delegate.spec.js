@@ -24,7 +24,7 @@ describe('Runs delegate', () => {
 
         await runsDelegate.getAll();
         expect(runsDao.getAll).toBeCalled();
-
+        
         await runsDelegate.update(newrun, newrun.id);
         expect(runsDao.update).toBeCalled();
 

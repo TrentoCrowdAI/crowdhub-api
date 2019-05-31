@@ -5,7 +5,8 @@ info:
   version: "1"
 servers:
   - url: https://crowdai-servant-api.herokuapp.com
-
+security:
+  - bearerAuth: []
 
 paths:
   /projects:
@@ -404,7 +405,7 @@ paths:
         required: true
         schema:
           type: integer
-    get:
+    post:
       tags:
       - "Workflows"
       description: Start a workflow by ID
@@ -630,7 +631,167 @@ paths:
                 $ref: '#/components/schemas/AccountBalance'
   
 
+  /project-collaborations:
+    get:
+      parameters:
+        - in: query
+          name: projectId
+          schema:
+            type: integer
+          description: ID of the project related to the collaboration.
+      tags:
+      - "Project-collaborations"
+      description: Return the collaboration between users on projects
+      summary: Get collaborations
+      responses:
+        200:
+          description: The collaborations
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Collaboration'
+    post:
+      tags:
+      - "Project-collaborations"
+      description: Add a collaborator to a project.
+      summary: Share a project
+      parameters:
+        - in: body
+          name: collaboration
+          description: The collaboration to create.
+          required: true
+          schema:
+            $ref: '#/components/schemas/Collaboration_create'
+      responses:
+        201:
+          description: The created collaboration.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Collaboration'
+        400:
+          description: Bad Request   
+  
+  /project-collaborations/{collaborationID}:
+    parameters:
+      - in: path
+        name: collaborationID
+        required: true
+        schema:
+          type: integer
+    get:
+      tags:
+      - "Project-collaborations"
+      description: Returns a single collaboration by ID
+      summary: Get collaboration by ID
+      responses:
+        200:
+          description: The requested collaboration.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Collaboration'
+        404:
+          description: Not Found
+    delete:
+      tags:
+      - "Project-collaborations"
+      summary: Delete a collaboration by ID.
+      responses:
+        204:
+          description: OK, deleted.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Collaboration'
+        404:
+          description: Not Found
+
+  /users:
+    get:
+      parameters:
+        - in: query
+          name: email
+          schema:
+            type: string
+          description: search a user by email (at least 4 chars)
+      tags:
+      - "Users"
+      description: Return the users
+      summary: Get users
+      responses:
+        200:
+          description: The users
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+
+  /users/{userID}:
+    parameters:
+      - in: path
+        name: userID
+        required: true
+        schema:
+          type: integer
+    get:
+      tags:
+      - "Users"
+      description: Returns a single user by ID
+      summary: Get user by ID
+      responses:
+        200:
+          description: The requested user.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+        404:
+          description: Not Found
+
+  /public-workflows:
+    get:
+      tags:
+      - "Public-workflows"
+      security: []
+      description: Return only the public workflows
+      summary: Get public workflows
+      responses:
+        200:
+          description: The workflows
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Workflow'
+
+  /public-workflows/{workID}:
+    parameters:
+      - in: path
+        name: workID
+        required: true
+        schema:
+          type: integer
+    get:
+      tags:
+      - "Public-workflows"
+      security: []
+      description: Returns a public workflow by ID
+      summary: Get public workflow by ID
+      responses:
+        200:
+          description: The requested workflow.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Workflow'
+        404:
+          description: Not Found
+
 components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
   schemas:
     Project:
       type: object
@@ -878,5 +1039,54 @@ components:
         f8:
           type: integer
           description: The F8 balance of the user
-
       
+    Collaboration:
+      type: object
+      properties:
+        id:
+          type: integer
+          description: The ID of the collaboration
+        created_at:
+          type: string
+          description: The creation timestamp of the collaboration
+        updated_at:
+          type: string
+          description: The update timestamp of the collaboration
+        deleted_at:
+          type: string
+          description: The delete timestamp of the collaboration
+        id_user:
+          type: object
+          description: The ID of the user related to the collaboration
+        id_project:
+          type: object
+          description: The ID of the project related to the collaboration
+      
+    Collaboration_create:
+      type: object
+      properties:
+        userId:
+          type: object
+          description: The ID of the user related to the collaboration
+        projectId:
+          type: object
+          description: The ID of the project related to the collaboration
+      
+    User:
+      type: object
+      properties:
+        id:
+          type: integer
+          description: The ID of the user
+        created_at:
+          type: string
+          description: The creation timestamp of the user
+        updated_at:
+          type: string
+          description: The update timestamp of the user
+        deleted_at:
+          type: string
+          description: The delete timestamp of the user
+        data:
+          type: object
+          description: The data related to the user

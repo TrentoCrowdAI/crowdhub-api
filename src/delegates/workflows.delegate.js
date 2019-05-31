@@ -1,21 +1,27 @@
 const workflowsDao = require(__base + 'dao/workflows.dao');
 const errHandler = require(__base + 'utils/errors');
-const workflowExecutor = require('./workflow-executor.delegate');
 const itemsDelegate = require('./items.delegate');
 const tolokaApi = require(__base + 'platform-api/toloka');
 const tolokaRender = require(__base + 'blocks/do-publish/platforms/toloka/render');
+const workflowsGraph = require('./workflow-graph.delegate');
 
-const create = async (workflow) => {
+const { userHasAccessProject, userHasAccessWorkflow } = require('./user-access.delegate');
+
+const create = async (workflow, userId) => {
     check(workflow);
+    await userHasAccessProject(userId, workflow.id_project);
     let newWork = await workflowsDao.create(workflow);
     return newWork;
 };
 
-const get = async (workId) => {
+const get = async (workId, userId) => {
     workId = parseInt(workId);
     if (typeof workId != "number" || isNaN(workId)) {
         throw errHandler.createBusinessError('Workflow id is of an invalid type!');
     }
+
+    if (userId !== undefined) //let the method be accessible from other functions inside lib which haven't authentication
+        await userHasAccessWorkflow(userId, workId);
 
     let workflow = await workflowsDao.get(workId);
 
@@ -25,12 +31,27 @@ const get = async (workId) => {
     return workflow;
 };
 
-const deleteWorkflow = async (workId) => {
+const getPublic = async (workId) => {
     workId = parseInt(workId);
     if (typeof workId != "number" || isNaN(workId)) {
         throw errHandler.createBusinessError('Workflow id is of an invalid type!');
     }
 
+    let workflow = await workflowsDao.getPublic(workId);
+
+    if (!workflow)
+        throw errHandler.createBusinessNotFoundError('Workflow id does not exist!');
+
+    return workflow;
+};
+
+const deleteWorkflow = async (workId, userId) => {
+    workId = parseInt(workId);
+    if (typeof workId != "number" || isNaN(workId)) {
+        throw errHandler.createBusinessError('Workflow id is of an invalid type!');
+    }
+
+    await userHasAccessWorkflow(userId, workId);
     let workflow = await workflowsDao.deleteWorkflow(workId);
 
     if (!workflow)
@@ -39,7 +60,7 @@ const deleteWorkflow = async (workId) => {
     return workflow;
 };
 
-const update = async (workflow, workId) => {
+const update = async (workflow, workId, userId) => {
     workId = parseInt(workId);
     if (typeof workId != "number" || isNaN(workId)) {
         throw errHandler.createBusinessError('Workflow id is of an invalid type!');
@@ -49,6 +70,7 @@ const update = async (workflow, workId) => {
 
     check(workflow);
 
+    await userHasAccessWorkflow(userId, workId);
     workflow = await workflowsDao.update(workflow);
 
     if (!workflow)
@@ -57,23 +79,30 @@ const update = async (workflow, workId) => {
     return workflow;
 };
 
-const getAll = async (projectId) => {
-    return await workflowsDao.getAll(projectId);
+const getAll = async (projectId, userId) => {
+    return await workflowsDao.getAll(projectId, userId);
 };
 
-const start = async (workId) => {
+const getAllPublic = async () => {
+    return await workflowsDao.getAllPublic();
+};
+
+const start = async (workId, userId) => {
+    await userHasAccessWorkflow(userId, workId);
     let workflow = await get(workId);
 
+    const workflowExecutor = require('./workflow-executor.delegate'); // imported here to avoid cycle require
     return await workflowExecutor.start(workflow);
 };
 
 const getLastBlocks = async (workId) => {
     let workflow = await get(workId);
 
-    return workflowExecutor.getLastBlocks(workflow);
+    return workflowsGraph.getLastBlocks(workflow);
 };
 
-const estimateDoBlockCost = async (workId, blockId) => {
+const estimateDoBlockCost = async (workId, blockId, userId) => {
+    await userHasAccessWorkflow(userId, workId);
     //retrieve the block
     let workflow = await get(workId);
     let block = workflow.data.graph.nodes.find(b => b.id === blockId);
@@ -131,5 +160,7 @@ module.exports = {
     update,
     start,
     getLastBlocks,
-    estimateDoBlockCost
+    estimateDoBlockCost,
+    getAllPublic,
+    getPublic
 };

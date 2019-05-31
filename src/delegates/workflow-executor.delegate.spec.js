@@ -15,25 +15,27 @@ jest.setTimeout(1000 * 60 * 15);
 
 describe('Workflow execution tests', () => {
     const blockId = '5e102960-790b-4d13-a58e-49573bd4e560';
+    const userId = 'testUser';
+    let delIds = [];
 
     test('Empty lambda block + F8 do block', async () => {
         //create the new project
-        let proj = await projectsDelegate.create(workflowBase.project);
+        let proj = await projectsDelegate.create(workflowBase.project, userId);
 
         //create the items
         let items = { id_project: proj.id, items: workflowBase.items };
-        items = await itemsDelegate.createItems(items);
+        items = await itemsDelegate.createItems(items, userId);
 
         //create the workflow
         workflowBase.workflow.id_project = parseInt(proj.id);
-        let workflow = await workflowsDelegate.create(workflowBase.workflow);
+        let workflow = await workflowsDelegate.create(workflowBase.workflow, userId);
 
         //test the estimation cost functions
-        let cost = await workflowsDelegate.estimateDoBlockCost(workflow.id, blockId);
+        let cost = await workflowsDelegate.estimateDoBlockCost(workflow.id, blockId, userId);
         expect(typeof cost).toBe('number');
 
         //execute the workflow
-        let result = await workflowsDelegate.start(workflow.id);
+        let result = await workflowsDelegate.start(workflow.id, userId);
 
         //test the result
         expect(typeof result).toBe("number");
@@ -43,7 +45,7 @@ describe('Workflow execution tests', () => {
         let cacheId;
         while (wait) {
             sleep(300);
-            let run = await runsDelegate.get(result);
+            let run = await runsDelegate.get(result, userId);
             if (run.data[blockId].state === 'finished') {
                 wait = false;
                 cacheId = run.data[blockId].id_cache;
@@ -51,7 +53,7 @@ describe('Workflow execution tests', () => {
         }
 
         //block do-publish is finished
-        let doCache = await cacheDelegate.get(cacheId);
+        let doCache = await cacheDelegate.get(cacheId, userId);
 
         //change the state of the rows to finished
         await f8Helper.finalizeAllRows(doCache.data.result.id);
@@ -61,7 +63,7 @@ describe('Workflow execution tests', () => {
         wait = true;
         while (wait) {
             sleep(5000);
-            let run = await runsDelegate.get(result);
+            let run = await runsDelegate.get(result, userId);
             let blockWaitId = blockId + '_wait';
             if (run.data[blockWaitId].state === 'finished') {
                 wait = false;
@@ -70,43 +72,39 @@ describe('Workflow execution tests', () => {
         }
 
         //check the result
-        let doWaitCache = await cacheDelegate.get(cacheId);
+        let doWaitCache = await cacheDelegate.get(cacheId, userId);
         expect(doWaitCache).toBeDefined();
 
-        let runResult = await runsDelegate.getResult(result);
+        let runResult = await runsDelegate.getResult(result, userId);
         expect(runResult).toBeDefined();
 
-        //delete the workflow
-        await workflowsDelegate.deleteWorkflow(workflow.id);
-
-        //delete the items
-        for (let item of items)
-            await itemsDelegate.deleteItem(item.id);
-
-        //delete project
-        await projectsDelegate.deleteProject(proj.id);
+        delIds.push({
+            workflowId: workflow.id,
+            itemsId: items.map(x => x.id),
+            projectId: proj.id
+        });
     });
 
     test('Empty lambda block + Toloka do block', async () => {
         //create the new project
-        let proj = await projectsDelegate.create(workflowBase.project);
+        let proj = await projectsDelegate.create(workflowBase.project, userId);
 
         //create the items
         let items = { id_project: proj.id, items: workflowBase.items };
-        items = await itemsDelegate.createItems(items);
+        items = await itemsDelegate.createItems(items, userId);
 
         //create the workflow
         workflowBase.workflow.id_project = parseInt(proj.id);
         //change platform to toloka
         workflowBase.workflow.data.graph.nodes[1].parameters.platform = 'toloka';
-        let workflow = await workflowsDelegate.create(workflowBase.workflow);
+        let workflow = await workflowsDelegate.create(workflowBase.workflow, userId);
 
         //test the estimation cost functions
-        let cost = await workflowsDelegate.estimateDoBlockCost(workflow.id, blockId);
+        let cost = await workflowsDelegate.estimateDoBlockCost(workflow.id, blockId, userId);
         expect(typeof cost).toBe('number');
 
         //execute the workflow
-        let result = await workflowsDelegate.start(workflow.id);
+        let result = await workflowsDelegate.start(workflow.id, userId);
 
         //test the result
         expect(typeof result).toBe("number");
@@ -116,7 +114,7 @@ describe('Workflow execution tests', () => {
         let cacheId;
         while (wait) {
             sleep(300);
-            let run = await runsDelegate.get(result);
+            let run = await runsDelegate.get(result, userId);
             if (run.data[blockId].state === 'finished') {
                 wait = false;
                 cacheId = run.data[blockId].id_cache;
@@ -124,7 +122,7 @@ describe('Workflow execution tests', () => {
         }
 
         //block do-publish is finished
-        let doCache = await cacheDelegate.get(cacheId);
+        let doCache = await cacheDelegate.get(cacheId, userId);
 
         //change the state of the rows to finished
         await tolokaHelper.closePool(doCache.data.result.taskPool.id, true);
@@ -133,7 +131,7 @@ describe('Workflow execution tests', () => {
         wait = true;
         while (wait) {
             sleep(5000);
-            let run = await runsDelegate.get(result);
+            let run = await runsDelegate.get(result, userId);
             let blockWaitId = blockId + '_wait';
             if (run.data[blockWaitId].state === 'finished') {
                 wait = false;
@@ -142,20 +140,30 @@ describe('Workflow execution tests', () => {
         }
 
         //check the result
-        let doWaitCache = await cacheDelegate.get(cacheId);
+        let doWaitCache = await cacheDelegate.get(cacheId, userId);
         expect(doWaitCache).toBeDefined();
 
-        let runResult = await runsDelegate.getResult(result);
+        let runResult = await runsDelegate.getResult(result, userId);
         expect(runResult).toBeDefined();
 
-        //delete the workflow
-        await workflowsDelegate.deleteWorkflow(workflow.id);
+        delIds.push({
+            workflowId: workflow.id,
+            itemsId: items.map(x => x.id),
+            projectId: proj.id
+        });
+    });
 
-        //delete the items
-        for (let item of items)
-            await itemsDelegate.deleteItem(item.id);
+    afterAll(async () => {
+        for (let id of delIds) {
+            //delete the workflow
+            await workflowsDelegate.deleteWorkflow(id.workflowId, userId);
 
-        //delete project
-        await projectsDelegate.deleteProject(proj.id);
+            //delete the items
+            for (let item of id.itemsId)
+                await itemsDelegate.deleteItem(item);
+
+            //delete project
+            await projectsDelegate.deleteProject(id.projectId, userId);
+        }
     });
 });

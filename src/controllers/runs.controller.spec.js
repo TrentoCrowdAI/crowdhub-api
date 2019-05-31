@@ -1,3 +1,5 @@
+require(__base + 'delegates/user-access.delegate.mocked');
+
 const request = require('supertest');
 
 const app = require(__base + 'app');

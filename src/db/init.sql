@@ -11,6 +11,7 @@ CREATE TABLE project (
   created_at timestamp,
   updated_at timestamp,
   deleted_at timestamp,
+  id_user varchar(80) NOT NULL, -- google_id
   data JSONB,
   CONSTRAINT pk_proj PRIMARY KEY (id)
 );
@@ -135,4 +136,33 @@ CREATE TABLE workers_of_workflow (
   data JSONB,
   CONSTRAINT pk_workers_of_worflow PRIMARY KEY (id),
   CONSTRAINT unique_workers_of_worflow UNIQUE(id_workflow, id_context, id_worker)
+);
+
+-- data: {
+--  email: <string>,
+--  fullName: <string>,
+--  picture: <string>, //url
+--  name: <string>,
+--  surname: <string>,
+--  locale: <string> //like 'it'
+-- }
+CREATE TABLE users (
+  id varchar(80) NOT NULL, -- google_id
+  created_at timestamp,
+  updated_at timestamp,
+  deleted_at timestamp,
+  data JSONB,
+  CONSTRAINT pk_user PRIMARY KEY (id)
+);
+
+-- table used for adding collaborators to a project
+CREATE TABLE project_collaborations (
+  id bigserial NOT NULL,
+  created_at timestamp,
+  updated_at timestamp,
+  deleted_at timestamp,
+  id_user varchar(80) NOT NULL,
+  id_project bigint NOT NULL,
+  CONSTRAINT pk_project_collaborations PRIMARY KEY (id),
+  CONSTRAINT unique_project_collaborations UNIQUE (id_user, id_project)
 );
