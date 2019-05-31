@@ -16,7 +16,11 @@ describe('Users controller', async () => {
     });
 
     test('GET /users/id should return 200 if the user exists', async () => {
-        let response = await request(app).get('/users/104634519869758789343');
+        jest.mock(__base + 'dao/users.dao');
+        const userDao = require(__base + 'dao/users.dao');
+        userDao.get.mockReturnValue(Promise.resolve({ id: '1234' }));
+
+        let response = await request(app).get('/users/1234');
         expect(response.status).toBe(200);
     })
 });
