@@ -8,19 +8,13 @@ const app = require(__base + 'app');
 jest.setTimeout(20000);
 
 describe('Users controller', async () => {
-    test('GET /users with email filter should return 200', async () => {
+    test('GET /users with email filter should return 200 and test /users/id', async () => {
         let response = await request(app).get('/users?email=davide.zanella10@gmail.com');
         expect(response.status).toBe(200);
         expect(response.body).toBeInstanceOf(Array);
-        console.log(response.body);
+        for(let user of response.body){
+            let res = await request(app).get('/users/' + user.id);
+            expect(res.status).toBe(200);
+        }
     });
-
-    test('GET /users/id should return 200 if the user exists', async () => {
-        jest.mock(__base + 'dao/users.dao');
-        const userDao = require(__base + 'dao/users.dao');
-        userDao.get.mockReturnValue(Promise.resolve({ id: '1234' }));
-
-        let response = await request(app).get('/users/1234');
-        expect(response.status).toBe(200);
-    })
 });
