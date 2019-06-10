@@ -580,6 +580,7 @@ paths:
     get:
       tags:
       - "Block-types"
+      security: []
       description: Returns the list of the block-types.
       summary: Get block-types
       responses:
@@ -604,6 +605,7 @@ paths:
     get:
       tags:
       - "Block-types"
+      security: []
       description: Returns a single block-type by ID
       summary: Get block-type by ID
       responses:

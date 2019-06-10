@@ -38,6 +38,7 @@ app.get('/', (req, res) => {
 // define routes without authentication
 app.use(workerOfWorkflowsController);
 app.use(publicWorkflowsController);
+app.use(blockTypesController);
 
 // define authentication middleware
 app.use(authentication);
@@ -49,7 +50,6 @@ app.use(templateDoController);
 app.use(runsController);
 app.use(cacheController);
 app.use(itemsController);
-app.use(blockTypesController);
 app.use(accountBalanceController);
 app.use(projectCollaborationsController);
 app.use(usersController);
