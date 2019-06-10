@@ -94,7 +94,7 @@ const getAll = async (projectId, userId) => {
 };
 
 const check = (item) => {
-    if (!(item.constructor === Object))
+    if (typeof item !== 'object' || Array.isArray(item))
         throw errHandler.createBusinessError('Item: type is not valid!');
 };
 
