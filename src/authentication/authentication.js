@@ -1,5 +1,6 @@
 const google = require('./google.authentication');
 const usersDelegate = require(__base + 'delegates/users.delegate');
+const errHandler = require(__base + 'utils/errors');
 
 const authenticate = async (req, res, next) => {
     try {
