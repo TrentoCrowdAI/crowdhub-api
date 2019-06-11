@@ -1,6 +1,8 @@
 # servant
 
+> This is the repository of the backend.
 
+> [Link to the frontend](https://github.com/TrentoCrowdAI/servant-web/)
 
 
 
@@ -13,4 +15,4 @@ servant sits on top of major crowdsourcing platforms to intelligently assists cu
 
 ## status
 
-Under development.
+Current release: v0.1.0
