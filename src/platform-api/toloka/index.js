@@ -111,8 +111,10 @@ const createTaskPool = async (blockData, project, sandbox) =>
 
       let json = await res.json();
 
-      if (res.status !== 201)
+      if (res.status !== 201) {
+        console.error(json);
         throw new Error('Toloka Error: Not able to create a new Pool!');
+      }
 
       return json;
     },
@@ -141,8 +143,10 @@ const createTasks = async (tasks, sandbox) =>
       });
       let json = await res.json();
 
-      if (res.status !== 201)
+      if (res.status !== 201) {
+        console.error(json);
         throw new Error('Toloka Error: Not able to create new Tasks!');
+      }
 
       return json;
     },
@@ -168,12 +172,12 @@ const startPool = async (pool, sandbox) =>
           'Content-Type': 'application/JSON'
         }
       });
-
-      if (res.status !== 202)
-        throw new Error('Toloka Error: Not able to start the Pool!');
-
       let json = await res.json();
 
+      if (res.status !== 202) {
+        console.error(json);
+        throw new Error('Toloka Error: Not able to start the Pool!');
+      }
       return json;
     },
     { retries: RetryRetries }
@@ -197,11 +201,12 @@ const getPool = async (pool, sandbox) =>
           Authorization: 'OAuth ' + config.toloka.accessToken
         }
       });
-
-      if (res.status !== 200)
-        throw new Error('Toloka Error: Not able to get the Pool!');
-
       let json = await res.json();
+
+      if (res.status !== 200) {
+        console.error(json);
+        throw new Error('Toloka Error: Not able to get the Pool!');
+      }
       return json;
     },
     { retries: RetryRetries }
@@ -225,13 +230,14 @@ const getPoolResponses = async (pool, sandbox) =>
           Authorization: 'OAuth ' + config.toloka.accessToken
         }
       });
+      let json = await res.json();
 
-      if (res.status !== 200)
+      if (res.status !== 200) {
+        console.error(json);
         throw new Error(
           'Toloka Error: Not able to get the responses of the Pool!'
         );
-
-      let json = await res.json();
+      }
       return json;
     },
     { retries: RetryRetries }
@@ -255,9 +261,12 @@ const closePool = async (pool, sandbox) =>
           Authorization: 'OAuth ' + config.toloka.accessToken
         }
       });
+      let json = await res.json();
 
-      if (res.status !== 204)
+      if (res.status !== 204) {
+        console.error(json);
         throw new Error('Toloka Error: Not able to close the Pool!');
+      }
     },
     { retries: RetryRetries }
   );
@@ -329,13 +338,14 @@ const estimatePoolCost = (poolId, sandbox) =>
           Authorization: 'OAuth ' + config.toloka.accessToken
         }
       });
+      let json = await res.json();
 
-      if (res.status !== 200)
+      if (res.status !== 200) {
+        console.error(json);
         throw new Error(
           'Toloka Error: Not able to get the estimation of the Pool cost!'
         );
-
-      let json = await res.json();
+      }
 
       return json.expectedBudget.value;
     },
