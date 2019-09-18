@@ -1,3 +1,5 @@
+// This module needs work.
+
 const fetch = require('node-fetch');
 const retry = require('async-retry');
 
@@ -297,6 +299,7 @@ const itemsToTasks = async (pool, items, design) => {
         let pos = key.indexOf('_gold');
 
         let fieldName = key.substring(0, pos);
+
         if (Object.keys(design.output_spec).indexOf(fieldName) != -1) {
           if (task.known_solutions === undefined)
             task.known_solutions = [
@@ -311,8 +314,12 @@ const itemsToTasks = async (pool, items, design) => {
     if (task.known_solutions !== undefined) {
       //fill with missing gold items in order to avoid errors
       for (let gold of Object.keys(design.output_spec)) {
-        if (task.known_solutions[0].output_values[gold] === undefined)
+        if (
+          task.known_solutions[0].output_values[gold] === undefined &&
+          gold !== 'decision_time' // TMP HOTFIX.
+        ) {
           task.known_solutions[0].output_values[gold] = '';
+        }
       }
     }
 
