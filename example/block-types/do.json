@@ -69,8 +69,8 @@
     },
     {
       "name": "blockingContextId",
-      "displayName": "Blocking context",
-      "description": "If selected, worker belonging to the same blocking context will not be able to jump between jobs of the blocking context",
+      "displayName": "Experimental group",
+      "description": "If checked,  workers will be able to work only on one experimental condition of this workflow.",
       "default": null,
       "required": false,
       "type": "blockingContext"
