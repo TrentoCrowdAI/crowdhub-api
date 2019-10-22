@@ -31,7 +31,7 @@
             "label": "Maybe"
           }
         ],
-        "required": "boolean",
+        "required": true,
         "choice_type": "single_radio"
       }
     },

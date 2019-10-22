@@ -19,7 +19,7 @@ const renderBody = (block, context) => {
 };
 
 const renderText = (block, {res}) => {
-    res.markup += `
+    res.markup += String.raw`
     <div>
         <h2>{{${block.csvTitleVariable}}}</h2>
         <p>{{${block.csvVariable}}}</p>

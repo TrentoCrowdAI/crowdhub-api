@@ -1,21 +1,21 @@
 {
-  "name": "servant-api",
+  "name": "crowdhub-api",
   "version": "0.1.0",
-  "description": "servant API",
+  "description": "crowdhub API",
   "scripts": {
     "start": "node src/server.js",
     "test": "jest --verbose"
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/TrentoCrowdAI/servant-api.git"
+    "url": "git+https://github.com/TrentoCrowdAI/crowdhub-api.git"
   },
   "author": "Jorge Ramírez",
   "license": "ISC",
   "bugs": {
-    "url": "https://github.com/TrentoCrowdAI/servant-api/issues"
+    "url": "https://github.com/TrentoCrowdAI/crowdhub-api/issues"
   },
-  "homepage": "https://github.com/TrentoCrowdAI/servant-api#readme",
+  "homepage": "https://github.com/TrentoCrowdAI/crowdhub-api#readme",
   "dependencies": {
     "adm-zip": "^0.4.13",
     "async-retry": "^1.2.3",

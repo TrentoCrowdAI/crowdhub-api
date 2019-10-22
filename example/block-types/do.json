@@ -305,6 +305,9 @@
                 {
                   "value": "no",
                   "label": "No"
+                },{
+                  "value": "maybe",
+                  "label": "Maybe"
                 }
               ],
               "type": "choiceBuilder",
@@ -332,8 +335,8 @@
                   "label": "Single choice radio"
                 },
                 {
-                  "value": "Single choice dropdown",
-                  "label": "single_dropdown"
+                  "value": "single_dropdown",
+                  "label": "Single choice dropdown"
                 }
               ]
             }

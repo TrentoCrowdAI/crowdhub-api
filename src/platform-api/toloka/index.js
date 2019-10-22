@@ -13,7 +13,7 @@ const RetryRetries = 3;
  * @param {{}} design
  */
 const createProject = async (template_do, design, sandbox) =>
-  retry(
+  await retry(
     async () => {
       let baseUrl = sandbox
         ? config.toloka.sandboxEndpoint
@@ -40,7 +40,7 @@ const createProject = async (template_do, design, sandbox) =>
             script: design.javascript,
             styles: design.css,
             settings: {
-              showSkip: true,
+              showSkip: false,
               showTimer: true,
               showTitle: true,
               showSubmit: true,
@@ -78,7 +78,7 @@ const createProject = async (template_do, design, sandbox) =>
  * @param {{}} project
  */
 const createTaskPool = async (blockData, project, sandbox) =>
-  retry(
+  await retry(
     async () => {
       let baseUrl = sandbox
         ? config.toloka.sandboxEndpoint
@@ -130,7 +130,7 @@ const createTaskPool = async (blockData, project, sandbox) =>
  * @param {[]} tasks
  */
 const createTasks = async (tasks, sandbox) =>
-  retry(
+  await retry(
     async () => {
       let baseUrl = sandbox
         ? config.toloka.sandboxEndpoint
@@ -162,7 +162,7 @@ const createTasks = async (tasks, sandbox) =>
  * @param {[]} pool
  */
 const startPool = async (pool, sandbox) =>
-  retry(
+  await retry(
     async () => {
       let baseUrl = sandbox
         ? config.toloka.sandboxEndpoint
@@ -192,7 +192,7 @@ const startPool = async (pool, sandbox) =>
  * @param {{}} pool
  */
 const getPool = async (pool, sandbox) =>
-  retry(
+  await retry(
     async () => {
       let baseUrl = sandbox
         ? config.toloka.sandboxEndpoint
@@ -221,7 +221,7 @@ const getPool = async (pool, sandbox) =>
  * @param {{}} pool
  */
 const getPoolResponses = async (pool, sandbox) =>
-  retry(
+  await retry(
     async () => {
       let baseUrl = sandbox
         ? config.toloka.sandboxEndpoint
@@ -242,7 +242,7 @@ const getPoolResponses = async (pool, sandbox) =>
           'Toloka Error: Not able to get the responses of the Pool!'
         );
       }
-      return json;
+      return flattenAssignmentResponses(json.items);
     },
     { retries: RetryRetries }
   );
@@ -252,7 +252,7 @@ const getPoolResponses = async (pool, sandbox) =>
  * @param {{}} pool
  */
 const closePool = async (pool, sandbox) =>
-  retry(
+  await retry(
     async () => {
       let baseUrl = sandbox
         ? config.toloka.sandboxEndpoint
@@ -299,7 +299,7 @@ const itemsToTasks = async (pool, items, design) => {
       task.input_values[col] = row[col];
     }
 
-    if (row.is_control && parseInt(row.is_control) === 1) {
+    if (row.is_gold && parseInt(row.is_gold) === 1) {
       console.info(
         'The row is a control task. Configuring known_solutions now.'
       );
@@ -322,8 +322,8 @@ const itemsToTasks = async (pool, items, design) => {
   return tasks;
 };
 
-const estimatePoolCost = (poolId, sandbox) =>
-  retry(
+const estimatePoolCost = async (poolId, sandbox) =>
+  await retry(
     async () => {
       let baseUrl = sandbox
         ? 'https://sandbox.toloka.yandex.ru/api/'
@@ -351,6 +351,56 @@ const estimatePoolCost = (poolId, sandbox) =>
     },
     { retries: RetryRetries }
   );
+
+/**
+ * This function returns an array of judgments where each element in the array is a response to a task. We follow the same
+ * formatting that Toloka uses when generating the TSV file with the results (via its web UI).
+ *
+ * @param {Object[]} assignments Each record in the array is an assignment (response from a TaskSuite which contains multiple tasks)
+ *                               with its associated responses.
+ */
+const flattenAssignmentResponses = assignments => {
+  console.info('Processing results: flattenAssignmentResponses...');
+  let judgments = [];
+
+  for (let ts of assignments) {
+    for (let i = 0; i < ts.tasks.length; i++) {
+      let task = ts.tasks[i];
+      let taskSolution = ts.solutions[i];
+      let row = {};
+      row['ASSIGNMENT:assignment_id'] = ts.id;
+      row['ASSIGNMENT:worker_id'] = ts.user_id;
+      row['ASSIGNMENT:status'] = ts.status;
+      row['ASSIGNMENT:started'] = ts.created;
+      row['ASSIGNMENT:submitted'] = ts.submitted;
+      row['ASSIGNMENT:accepted'] = ts.accepted;
+      row['ASSIGNMENT:reward'] = ts.reward;
+
+      for (const [column, value] of Object.entries(task.input_values)) {
+        row[`INPUT:${column}`] = value;
+      }
+
+      for (const [column, value] of Object.entries(
+        taskSolution.output_values
+      )) {
+        row[`OUTPUT:${column}`] = value;
+      }
+
+      if (task.known_solutions) {
+        for (let knownSolution of task.known_solutions) {
+          for (const [column, value] of Object.entries(
+            knownSolution.output_values
+          )) {
+            row[`GOLDEN:${column}`] = value;
+          }
+        }
+      }
+      judgments.push(row);
+    }
+  }
+  console.info('Judgments: \n', judgments);
+  return judgments;
+};
 
 module.exports = {
   createProject,
