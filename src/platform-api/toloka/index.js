@@ -96,9 +96,10 @@ const createTaskPool = async (blockData, project, sandbox) =>
         defaults: {
           default_overlap_for_new_task_suites: blockData.numVotes
         },
+        // TODO: add support for mixin configuration. Now the strategy is always one control task per page.
         mixer_config: {
-          real_tasks_count: blockData.taskPerPage,
-          golden_tasks_count: 0, //TODO: change
+          real_tasks_count: blockData.taskPerPage - 1,
+          golden_tasks_count: 1,
           training_tasks_count: 0
         }
       };
@@ -299,8 +300,12 @@ const itemsToTasks = async (pool, items, design) => {
     }
 
     if (row.is_main === 1) {
+      console.info(
+        'The row is a main task. skipping known_solutions configuration'
+      );
       continue;
     }
+    console.info('The row is a control task. Configuring known_solutions.');
     // let's setup the control tasks.
     task.known_solutions = [];
 
