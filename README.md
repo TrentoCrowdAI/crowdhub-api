@@ -1,8 +1,8 @@
-# servant
+# CrowdHub API
 
 > This is the repository of the backend.
 
-> [Link to the frontend](https://github.com/TrentoCrowdAI/servant-web/)
+> [Link to the frontend](https://github.com/TrentoCrowdAI/crowdhub-web/)
 
 
 
