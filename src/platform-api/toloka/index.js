@@ -90,7 +90,7 @@ const createTaskPool = async (blockData, project, sandbox) =>
         private_name: 'pool',
         may_contain_adult_content: false,
         will_expire: '2022-03-11T12:00:00', //TODO: change
-        reward_per_assignment: blockData.reward,
+        reward_per_assignment: parseInt(blockData.reward) / 100,
         assignment_max_duration_seconds: 60 * 10,
         defaults: {
           default_overlap_for_new_task_suites: 1
