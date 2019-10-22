@@ -299,24 +299,22 @@ const itemsToTasks = async (pool, items, design) => {
       task.input_values[col] = row[col];
     }
 
-    if (row.is_main && parseInt(row.is_main) === 1) {
+    if (row.is_control && parseInt(row.is_control) === 1) {
       console.info(
-        'The row is a main task. skipping known_solutions configuration'
+        'The row is a control task. Configuring known_solutions now.'
       );
-      continue;
-    }
-    console.info('The row is a control task. Configuring known_solutions now.');
-    // let's setup the control tasks.
-    task.known_solutions = [];
+      // let's setup the control tasks.
+      task.known_solutions = [];
 
-    for (let col of designOutputColumns) {
-      let ks = { output_values: {}, correctness_weight: 1 };
+      for (let col of designOutputColumns) {
+        let ks = { output_values: {}, correctness_weight: 1 };
 
-      if (!itemColumns.includes(col)) {
-        continue;
+        if (!itemColumns.includes(`${col}_gold`)) {
+          continue;
+        }
+        ks.output_values[col] = row[`${col}_gold`];
+        task.known_solutions.push(ks);
       }
-      ks.output_values[col] = row[`${col}_gold`];
-      task.known_solutions.push(ks);
     }
     tasks.push(task);
   }
