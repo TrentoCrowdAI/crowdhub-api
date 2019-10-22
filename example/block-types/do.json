@@ -86,7 +86,7 @@
     {
       "name": "maxVotes",
       "displayName": "Max votes",
-      "description": "Max votes per performer",
+      "description": "Max votes per worker",
       "default": 3,
       "required": true,
       "type": "number"
@@ -94,7 +94,7 @@
     {
       "name": "numVotes",
       "displayName": "Number of votes",
-      "description": "Number of votes per each job",
+      "description": "Number of votes per item",
       "default": 3,
       "required": true,
       "type": "number"
@@ -110,7 +110,7 @@
     {
       "name": "instructions",
       "displayName": "Instructions",
-      "description": "Some instructions to show to the performer",
+      "description": "The instructions of the task to show to the workers.",
       "default": "<p><h2>Example</h2>Insert here an example</p>",
       "required": true,
       "type": "html",
@@ -118,8 +118,8 @@
     },
     {
       "name": "jobDesign",
-      "displayName": "Job design",
-      "description": "Design of the job that will be published on the platforms",
+      "displayName": "Task interface",
+      "description": "Task interface that will be published on the crowdsourcing platform.",
       "default": {
         "blocks": []
       },
@@ -149,7 +149,7 @@
             {
               "name": "highlightable",
               "displayName": "Highlightable",
-              "description": "Allow the performer to highlight text",
+              "description": "Allow the worker to highlight text",
               "default": false,
               "type": "boolean",
               "required": true
@@ -157,7 +157,7 @@
             {
               "name": "question",
               "displayName": "Highlight question",
-              "description": "Question that asks the performer to highlight the text",
+              "description": "Question that asks the worker to highlight the text",
               "default": "Select where the title appears",
               "type": "text",
               "condition": "highlightable",
@@ -189,7 +189,7 @@
             {
               "name": "highlightable",
               "displayName": "Highlightable",
-              "description": "Allow the performer to highlight the image",
+              "description": "Allow the worker to highlight the image",
               "default": false,
               "type": "boolean",
               "required": true
@@ -197,7 +197,7 @@
             {
               "name": "question",
               "displayName": "Highlight question",
-              "description": "Question that asks the performer to highlight the image",
+              "description": "Question that asks the worker to highlight the image",
               "default": "Highlight people in the image",
               "type": "text",
               "condition": "highlightable",
@@ -235,7 +235,7 @@
             {
               "name": "question",
               "displayName": "Question",
-              "description": "Question to show to the performer",
+              "description": "Question to show to the worker",
               "default": "Describe in few words ...",
               "type": "text",
               "required": true
@@ -243,7 +243,7 @@
             {
               "name": "csvVariable",
               "displayName": "CSV Variable",
-              "description": "CSV variable where to store the answer of the performer",
+              "description": "CSV variable where to store the answer of the worker",
               "default": "answer",
               "type": "text",
               "required": true
@@ -280,7 +280,7 @@
             {
               "name": "question",
               "displayName": "Question",
-              "description": "Question to show to the performer",
+              "description": "Question to show to the worker",
               "default": "text",
               "type": "text",
               "required": true
