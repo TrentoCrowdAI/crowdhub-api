@@ -299,13 +299,13 @@ const itemsToTasks = async (pool, items, design) => {
       task.input_values[col] = row[col];
     }
 
-    if (row.is_main === 1) {
+    if (row.is_main && parseInt(row.is_main) === 1) {
       console.info(
         'The row is a main task. skipping known_solutions configuration'
       );
       continue;
     }
-    console.info('The row is a control task. Configuring known_solutions.');
+    console.info('The row is a control task. Configuring known_solutions now.');
     // let's setup the control tasks.
     task.known_solutions = [];
 
@@ -320,6 +320,7 @@ const itemsToTasks = async (pool, items, design) => {
     }
     tasks.push(task);
   }
+  console.info('Generated tasks: \n', tasks);
   return tasks;
 };
 
