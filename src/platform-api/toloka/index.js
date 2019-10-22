@@ -290,7 +290,8 @@ const itemsToTasks = async (pool, items, design) => {
   for (let row of items) {
     let task = {
       pool_id: pool.id,
-      input_values: {}
+      input_values: {},
+      overlap: pool.defaults.default_overlap_for_new_task_suites
     };
 
     for (let col of designInputColumns) {
