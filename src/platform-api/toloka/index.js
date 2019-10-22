@@ -92,6 +92,7 @@ const createTaskPool = async (blockData, project, sandbox) =>
         will_expire: '2022-03-11T12:00:00', //TODO: change
         reward_per_assignment: parseInt(blockData.reward) / 100,
         assignment_max_duration_seconds: 60 * 10, // TODO: change this
+        allow_defaults: true,
         defaults: {
           default_overlap_for_new_task_suites: blockData.numVotes
         },
@@ -289,7 +290,8 @@ const itemsToTasks = async (pool, items, design) => {
   for (let row of items) {
     let task = {
       pool_id: pool.id,
-      input_values: {}
+      input_values: {},
+      overlap
     };
 
     for (let col of designInputColumns) {
