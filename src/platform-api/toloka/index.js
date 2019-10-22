@@ -91,9 +91,9 @@ const createTaskPool = async (blockData, project, sandbox) =>
         may_contain_adult_content: false,
         will_expire: '2022-03-11T12:00:00', //TODO: change
         reward_per_assignment: parseInt(blockData.reward) / 100,
-        assignment_max_duration_seconds: 60 * 10,
+        assignment_max_duration_seconds: 60 * 10, // TODO: change this
         defaults: {
-          default_overlap_for_new_task_suites: 1
+          default_overlap_for_new_task_suites: blockData.numVotes
         },
         mixer_config: {
           real_tasks_count: blockData.taskPerPage,
@@ -280,52 +280,39 @@ const closePool = async (pool, sandbox) =>
  * @param {{}} design
  */
 const itemsToTasks = async (pool, items, design) => {
+  // This function supports main and control items. Train pool tasks are not supported yet.
   let tasks = [];
+  let designInputColumns = Object.keys(design.input_spec);
+  let designOutputColumns = Object.keys(design.output_spec);
+  let itemColumns = Object.keys(items[0]);
 
-  for (let el of items) {
-    let headers = Object.keys(el);
-
+  for (let row of items) {
     let task = {
       pool_id: pool.id,
-      input_values: {},
-      overlap: 1
+      input_values: {}
     };
 
-    for (let key of headers) {
-      if (Object.keys(design.input_spec).indexOf(key) != -1) {
-        task.input_values[key] = el[key];
-      } else if (key.endsWith('_gold')) {
-        //gold item
-        let pos = key.indexOf('_gold');
-
-        let fieldName = key.substring(0, pos);
-
-        if (Object.keys(design.output_spec).indexOf(fieldName) != -1) {
-          if (task.known_solutions === undefined)
-            task.known_solutions = [
-              { output_values: {}, correctness_weight: 1 }
-            ];
-
-          task.known_solutions[0].output_values[fieldName] = el[key];
-        }
-      }
+    for (let col of designInputColumns) {
+      task.input_values[col] = row[col];
     }
 
-    if (task.known_solutions !== undefined) {
-      //fill with missing gold items in order to avoid errors
-      for (let gold of Object.keys(design.output_spec)) {
-        if (
-          task.known_solutions[0].output_values[gold] === undefined &&
-          gold !== 'decision_time' // TMP HOTFIX.
-        ) {
-          task.known_solutions[0].output_values[gold] = '';
-        }
-      }
+    if (row.is_main === 1) {
+      continue;
     }
+    // let's setup the control tasks.
+    task.known_solutions = [];
 
+    for (let col of designOutputColumns) {
+      let ks = { output_values: {}, correctness_weight: 1 };
+
+      if (!itemColumns.includes(col)) {
+        continue;
+      }
+      ks.output_values[col] = row[`${col}_gold`];
+      task.known_solutions.push(ks);
+    }
     tasks.push(task);
   }
-
   return tasks;
 };
 
