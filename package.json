@@ -22,7 +22,7 @@
     "body-parser": "^1.18.3",
     "boom": "^7.3.0",
     "cors": "^2.8.5",
-    "express": "^4.16.4",
+    "express": "^4.17.3",
     "google-auth-library": "^4.0.0",
     "jest": "^24.1.0",
     "json-2-csv": "^3.13.0",
